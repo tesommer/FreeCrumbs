@@ -1,0 +1,2 @@
+FileInfo @copyright@\n"
+        + "Usage: finf -c <config-file> <intput-dir/file>\n

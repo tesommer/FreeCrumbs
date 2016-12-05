@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<project name="FreeCrumbs" default="make-javadoc" basedir=".">
+	<target name="make-javadoc">
+		<ant target="make-javadoc"/>
+	</target>
+</project>

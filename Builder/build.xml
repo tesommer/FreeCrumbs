@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+
+<project name="FreeCrumbs" default="main" basedir=".">
+	
+	<property name="version" value="0.1.0"/>
+	<property name="copyright.year.owner" value="2016 Tone Sommerland"/>
+	<property name="copyright" value="Copyright (C) ${copyright.year.owner}"/>
+	
+	<property name="build.dir" value="../Build"/>
+	<property name="build.dir.home" value="${build.dir}/FreeCrumbs-${version}"/>
+	<property name="build.dir.src" value="${build.dir}/FreeCrumbs_src-${version}"/>
+	<property name="build.dir.javadoc" value="${build.dir}/FreeCrumbs_javadoc-${version}"/>
+	
+	<property name="finf.project.dir" value="../Finf"/>
+	
+	<!-- Dependencies -->
+	<path id="classpath">
+	  <fileset dir="${finf.project.dir}/lib"/>
+	</path>
+	
+	<target name="main">
+		
+		<!-- Delete BUILD -->
+		<delete dir="${build.dir}"/>
+		
+		<!-- Create BUILD_SRC -->
+		<mkdir dir="${build.dir.src}"/>
+		
+		<!-- Copy source files to BUILD_SRC -->
+		<copy todir="${build.dir.src}">
+			<fileset dir="${finf.project.dir}/src">
+				<include name="**/*.java"/>
+			</fileset>
+			<!-- Prepend source header -->
+			<filterchain>
+				<concatfilter prepend="srcheader.txt"/>
+				<replacetokens>
+					<token key="version" value="${version}"/>
+					<token key="copyright" value="${copyright}"/>
+				</replacetokens>
+			</filterchain>
+		</copy>
+		
+		<!-- Make BUILD/Temp -->
+		<mkdir dir="${build.dir}/Temp"/>
+		
+		<!-- Insert finf help text -->
+		<copy todir="${build.dir}/Temp">
+			<fileset file="${finf.project.dir}/help.txt"/>
+			<filterchain>
+				<replacetokens>
+					<token key="version" value="${version}"/>
+					<token key="copyright" value="${copyright}"/>
+				</replacetokens>
+			</filterchain>
+		</copy>
+		<loadresource property="finf.help">
+		   <file file="${build.dir}/Temp/help.txt"/>
+		</loadresource>
+		<replace
+			file="${build.dir.src}/main/java/freecrumbs/finf/Main.java"
+			token="@finfhelp@"
+			value="${finf.help}"/>
+		<delete>
+			<fileset file="${build.dir}/Temp/help.txt"/>
+		</delete>
+		
+		<!-- Compile BUILD_SRC to BUILD/Temp -->
+		<javac
+			srcdir="${build.dir.src}/main/java"
+			destdir="${build.dir}/Temp"
+			includeantruntime="false">
+			<classpath refid="classpath"/>
+		</javac>
+		
+		<!-- Create BUILD_HOME/lib -->
+		<mkdir dir="${build.dir.home}/lib"/>
+		<jar destfile="${build.dir.home}/lib/freecrumbs-${version}.jar">
+			<fileset dir="${build.dir}/Temp">
+				<include name="**/*.class"/>
+			</fileset>
+			<fileset file="Home/LICENSE.txt"/>
+		</jar>
+		<copy todir="${build.dir.home}/lib">
+			<fileset dir="${finf.project.dir}/lib"/>
+		</copy>
+		
+		<!-- Delete BUILD/Temp -->
+		<delete dir="${build.dir}/Temp"/>
+		
+		<!-- Copy license to BUILD_SRC -->
+		<copy todir="${build.dir.src}">
+			<fileset file="Home/LICENSE.txt"/>
+		</copy>
+		
+		<!-- Copy home files to BUILD_HOME -->
+		<copy todir="${build.dir.home}">
+			<fileset dir="Home"/>
+		</copy>
+		
+	</target>
+
+	<!-- Makes Javadoc distribution. -->
+	<target name="make-javadoc" depends="main">
+		<javadoc
+			sourcepath="${build.dir.src}/main/java"
+			destdir="${build.dir.javadoc}"
+			author="true"
+			failonerror="true"
+			packagenames="freecrumbs.*">
+		</javadoc>
+	</target>
+</project>
