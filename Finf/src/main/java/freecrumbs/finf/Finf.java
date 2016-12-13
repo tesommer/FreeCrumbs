@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.security.MessageDigest;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.calclipse.lib.util.EncodingUtil;
 import com.calclipse.lib.util.IOUtil;
@@ -33,8 +33,14 @@ public final class Finf {
             final Config config,
             final PrintStream out) {
         
-        final List<? extends Info> sorted = new ArrayList<>(infoList);
-        config.getOrder().ifPresent(sorted::sort);
+        final List<? extends Info> sorted;
+        if (config.getOrder().isPresent()) {
+            sorted = infoList.stream()
+                    .sorted(config.getOrder().get())
+                    .collect(Collectors.toList());
+        } else {
+            sorted = infoList;
+        }
         for (int i = 0; (config.getCount() < 0 || i < config.getCount())
                 && i < sorted.size(); i++) {
             out.println(config.getInfoFormat().toString(sorted.get(i)));
