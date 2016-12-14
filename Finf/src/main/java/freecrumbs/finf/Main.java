@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -81,6 +82,8 @@ public final class Main {
         final ConfigLoader loader
             = new PropertiesConfigLoader(locale, getConfigOverrides(args));
         if (args.configFile == null) {
+            return loader.loadConfig(new StringReader(""));
+        } else if ("-".equals(args.configFile)) {
             return loader.loadConfig(new InputStreamReader(System.in));
         }
         try (
