@@ -78,16 +78,16 @@ public final class Main {
     private static Config loadConfig(final Args args, final Locale locale)
             throws IOException {
         
-        final ConfigLoader configLoader
+        final ConfigLoader loader
             = new PropertiesConfigLoader(locale, getConfigOverrides(args));
         if (args.configFile == null) {
-            return configLoader.loadConfig(new InputStreamReader(System.in));
+            return loader.loadConfig(new InputStreamReader(System.in));
         }
         try (
             final Reader reader
                 = new InputStreamReader(new FileInputStream(args.configFile));
         ) {
-            return configLoader.loadConfig(reader);
+            return loader.loadConfig(reader);
         }
     }
     

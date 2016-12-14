@@ -63,7 +63,7 @@ public class PropertiesConfigLoader implements ConfigLoader {
     private final Map<String, String> overrides;
 
     /**
-     * Creates a config properties loader.
+     * Creates a properties config loader.
      * @param overrides overrides keys in the properties file
      */
     public PropertiesConfigLoader(
@@ -74,7 +74,7 @@ public class PropertiesConfigLoader implements ConfigLoader {
     }
     
     /**
-     * Creates a config properties loader.
+     * Creates a properties config loader.
      */
     public PropertiesConfigLoader(final Locale locale) {
         this(locale, new HashMap<>());
