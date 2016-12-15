@@ -32,7 +32,7 @@ public class PropertiesConfigLoaderTest {
     @Test
     public void testEmptyConfig() throws IOException {
         final Config config = getConfig("");
-        assertConfig(config, MD5, false, -1);
+        assertConfig(config, MD5, false, -1, true);
         assertInfoFormat(config, "f1", I1, DEFAULT_DATE_FORMAT);
     }
     
@@ -40,22 +40,22 @@ public class PropertiesConfigLoaderTest {
     public void testOrder() throws IOException {
         final String prop = "order=path filename desc size asc";
         final Config config = getConfig(prop);
-        assertConfig(config, MD5, false, -1, I3, I1, I2);
+        assertConfig(config, MD5, false, -1, true, I3, I1, I2);
         final String prop2 = "order=modified hash desc";
         final Config config2 = getConfig(prop2);
-        assertConfig(config2, MD5, false, -1, I1, I3, I2);
+        assertConfig(config2, MD5, false, -1, true, I1, I3, I2);
     }
     
     @Test
     public void testInvalidOrder() throws IOException {
         final Config config = getConfig("order=wtf hash");
-        assertConfig(config, MD5, false, -1, I1, I2, I3);
+        assertConfig(config, MD5, false, -1, true, I1, I2, I3);
     }
     
     @Test
     public void testHashAlgorithm() throws IOException {
         final Config config = getConfig("hash.algorithm=sha-256");
-        assertConfig(config, "sha-256", false, -1);
+        assertConfig(config, "sha-256", false, -1, true);
     }
     
     @Test(expected = IOException.class)
@@ -66,7 +66,7 @@ public class PropertiesConfigLoaderTest {
     @Test
     public void testCount() throws IOException {
         final Config config = getConfig("count = 2");
-        assertConfig(config, MD5, false, 2);
+        assertConfig(config, MD5, false, 2, true);
     }
     
     @Test(expected = IOException.class)
@@ -78,7 +78,7 @@ public class PropertiesConfigLoaderTest {
     public void testFileFilter() throws IOException {
         final String prop = "file.filter= a\\\\d*";
         final Config config = getConfig(prop);
-        assertConfig(config, MD5, true, -1);
+        assertConfig(config, MD5, true, -1, true);
         final File exclude = new File("abc");
         final File include = new File("a23");
         Assert.assertFalse(
@@ -97,7 +97,7 @@ public class PropertiesConfigLoaderTest {
     @Test
     public void testInvalidProperty() throws IOException {
         final Config config = getConfig("count=22\nabc=xyz");
-        assertConfig(config, MD5, false, 22);
+        assertConfig(config, MD5, false, 22, true);
     }
     
     @Test
@@ -105,7 +105,7 @@ public class PropertiesConfigLoaderTest {
         final String prop
             = "info.format= ${size}|${path}${hash}§${modified}$${filename}";
         final Config config = getConfig(prop);
-        assertConfig(config, MD5, false, -1);
+        assertConfig(config, MD5, false, -1, false);
         assertInfoFormat(
                 config, "2|p1h2§${modified}$f1", I2, DEFAULT_DATE_FORMAT);
     }
@@ -121,7 +121,7 @@ public class PropertiesConfigLoaderTest {
         overrides.put("hash.algorithm", "SHa-512");
         overrides.put("count", "22");
         final Config config = getConfig("hash.algorithm=shA-256", overrides);
-        assertConfig(config, "SHA-512", false, 22);
+        assertConfig(config, "SHA-512", false, 22, true);
     }
     
     private static Config getConfig(
@@ -147,6 +147,7 @@ public class PropertiesConfigLoaderTest {
             final String hashAlgorithm,
             final boolean fileFilterPresent,
             final int count,
+            final boolean hashUnused,
             final Info... order) {
         
         Assert.assertEquals(
@@ -163,6 +164,15 @@ public class PropertiesConfigLoaderTest {
                     actual.getFileFilter().isPresent());
         }
         Assert.assertEquals("Count", count, actual.getCount());
+        if (hashUnused) {
+            Assert.assertTrue(
+                    "Assert hashUnused is true",
+                    actual.isHashUnused());
+        } else {
+            Assert.assertFalse(
+                    "Assert hashUnused is false",
+                    actual.isHashUnused());
+        }
         if (order.length == 0) {
             Assert.assertFalse(
                     "Assert order is not present",

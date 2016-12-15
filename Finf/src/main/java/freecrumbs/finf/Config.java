@@ -16,6 +16,8 @@ import java.util.Optional;
  *  <li>{@code fileFilter}: filters input files (optional)</li>
  *  <li>{@code order}: sort order of the info units (optional)</li>
  *  <li>{@code count}: max lines to output (-1 = all)</li>
+ *  <li>{@code hashUnused}: a flag signaling that hash generation is unnecessary
+ *  because it's not part of the output</li>
  * </ul>
  *
  * @author Tone Sommerland
@@ -26,6 +28,7 @@ public class Config {
     private final FileFilter fileFilter;
     private final Comparator<Info> order;
     private final int count;
+    private final boolean hashUnused;
     
     /**
      * Creates a new configuration.
@@ -34,19 +37,22 @@ public class Config {
      * @param fileFilter the file filter (nullable)
      * @param order the file info sorter (nullable)
      * @param count max lines to output (-1 = all)
+     * @param hashUnused allows hash generation to be skipped if true
      */
     public Config(
         final MessageDigest messageDigest,
         final InfoFormat infoFormat,
         final FileFilter fileFilter,
         final Comparator<Info> order,
-        final int count) {
+        final int count,
+        final boolean hashUnused) {
         
         this.messageDigest = requireNonNull(messageDigest, "messageDigest");
         this.infoFormat = requireNonNull(infoFormat, "infoFormat");
         this.fileFilter = fileFilter;
         this.order = order;
         this.count = count;
+        this.hashUnused = hashUnused;
     }
     
     public MessageDigest getMessageDigest() {
@@ -67,6 +73,10 @@ public class Config {
     
     public int getCount() {
         return count;
+    }
+
+    public boolean isHashUnused() {
+        return hashUnused;
     }
     
 }

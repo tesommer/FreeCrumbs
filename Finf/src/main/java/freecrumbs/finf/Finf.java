@@ -73,6 +73,9 @@ public final class Finf {
     private static String getHash(final File file, final Config config)
             throws IOException {
 
+        if (config.isHashUnused()) {
+            return "";
+        }
         try (
             final InputStream in = new FileInputStream(file);
         ) {

@@ -84,11 +84,17 @@ public class PropertiesConfigLoader implements ConfigLoader {
     public Config loadConfig(final Reader reader) throws IOException {
         final Properties props = getProperties(reader);
         final MessageDigest messageDigest = getMessageDigest(props);
-        final InfoFormat infoFormat = getInfoFormat(props);
+        final TokenInfoFormat infoFormat = getInfoFormat(props);
         final FileFilter fileFilter = getFileFilter(props);
         final Comparator<Info> order = getOrder(props);
         final int count = getCount(props);
-        return new Config(messageDigest, infoFormat, fileFilter, order, count);
+        return new Config(
+                messageDigest,
+                infoFormat,
+                fileFilter,
+                order,
+                count,
+                infoFormat.isHashUnused());
     }
 
     private Properties getProperties(final Reader reader) throws IOException {
@@ -111,7 +117,7 @@ public class PropertiesConfigLoader implements ConfigLoader {
         }
     }
 
-    private InfoFormat getInfoFormat(final Properties props)
+    private TokenInfoFormat getInfoFormat(final Properties props)
             throws IOException {
         
         return new TokenInfoFormat(
@@ -186,6 +192,10 @@ public class PropertiesConfigLoader implements ConfigLoader {
             } catch (final IllegalArgumentException ex) {
                 throw new IOException(ex);
             }
+        }
+        
+        public boolean isHashUnused() {
+            return !infoFormat.contains(HASH_TOKEN);
         }
         
         @Override
