@@ -31,7 +31,7 @@
 + "* date.format: applied to the modified field (default: yyyy-MM-dd HH:mm)\n"
 + "* file.filter: a regex that matches filenames to include as input\n"
 + "* order: sort order specification on the following format:\n"
-+ "         field [asc|desc] field [asc|desc] ...\n"
++ "         field [asc|desc] field [asc|desc]...\n"
 + "         (field = path|filename|size|modified|hash)\n"
 + "* count: number of output lines\n"
 + "\n"
@@ -49,10 +49,10 @@
 + "--------\n"
 + "\n"
 + "Example 1: specify a config file:\n"
-+ "finf -c myconfig.properties file1 file2 ...\n"
++ "finf -c myconfig.properties file1 file2...\n"
 + "\n"
 + "Example 2: display file checksum:\n"
 + "finf -o \"info.format=${hash}\" file\n"
 + "\n"
 + "Example 3: read config from standard in:\n"
-+ "finf -c - file1 file2 ...\n
++ "finf -c - file1 file2...\n
