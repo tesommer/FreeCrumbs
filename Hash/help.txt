@@ -1,0 +1,8 @@
+     FreeCrumbs version @version@\n"
++ "@copyright@\n"
++ "See LISENCE.txt for lisence terms.\n"
++ "\n"
++ "Hash: Generate file hashes.\n"
++ "Usage: hash <file> [algorithm list]\n"
++ "Example 1: hash some_file.tar.gz\n"
++ "Example 2: hash some_file.tar.gz md5 sha-512

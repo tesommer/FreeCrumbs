@@ -12,6 +12,7 @@
 	<property name="build.dir.javadoc" value="${build.dir}/FreeCrumbs_javadoc-${version}"/>
 	
 	<property name="finf.project.dir" value="../Finf"/>
+	<property name="hash.project.dir" value="../Hash"/>
 	
 	<!-- Dependencies -->
 	<path id="classpath">
@@ -31,6 +32,9 @@
 			<fileset dir="${finf.project.dir}/src">
 				<include name="**/*.java"/>
 			</fileset>
+			<fileset dir="${hash.project.dir}/src">
+				<include name="**/*.java"/>
+			</fileset>
 			<!-- Prepend source header -->
 			<filterchain>
 				<concatfilter prepend="srcheader.txt"/>
@@ -44,8 +48,8 @@
 		<!-- Make BUILD/Temp -->
 		<mkdir dir="${build.dir}/Temp"/>
 		
-		<!-- Insert finf help text -->
-		<copy todir="${build.dir}/Temp">
+		<!-- Insert help texts into entry point source files -->
+		<copy todir="${build.dir}/Temp/HelpText/Finf">
 			<fileset file="${finf.project.dir}/help.txt"/>
 			<filterchain>
 				<replacetokens>
@@ -54,15 +58,31 @@
 				</replacetokens>
 			</filterchain>
 		</copy>
+		<copy todir="${build.dir}/Temp/HelpText/Hash">
+			<fileset file="${hash.project.dir}/help.txt"/>
+			<filterchain>
+				<replacetokens>
+					<token key="version" value="${version}"/>
+					<token key="copyright" value="${copyright}"/>
+				</replacetokens>
+			</filterchain>
+		</copy>
 		<loadresource property="finf.help">
-		   <file file="${build.dir}/Temp/help.txt"/>
+		   <file file="${build.dir}/Temp/HelpText/Finf/help.txt"/>
+		</loadresource>
+		<loadresource property="hash.help">
+		   <file file="${build.dir}/Temp/HelpText/Hash/help.txt"/>
 		</loadresource>
 		<replace
 			file="${build.dir.src}/main/java/freecrumbs/finf/Main.java"
 			token="@finfhelp@"
 			value="${finf.help}"/>
+		<replace
+			file="${build.dir.src}/main/java/freecrumbs/hash/Hash.java"
+			token="@hashhelp@"
+			value="${hash.help}"/>
 		<delete>
-			<fileset file="${build.dir}/Temp/help.txt"/>
+			<fileset dir="${build.dir}/Temp/HelpText"/>
 		</delete>
 		
 		<!-- Compile BUILD_SRC to BUILD/Temp -->
