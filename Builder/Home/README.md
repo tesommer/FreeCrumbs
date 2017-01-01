@@ -26,11 +26,11 @@ A collection of tiny command-line tools.
                             / | \
 ```
 
-Lisence
+License
 -------
 
-See **LISENCE.txt** for lisence information. (Third party libraries have their
-own lisences.)
+See **LICENSE.txt** for license information. (Third party libraries have their
+own licenses.)
 
 Directory layout
 ----------------
