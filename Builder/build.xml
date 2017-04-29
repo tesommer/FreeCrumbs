@@ -13,6 +13,7 @@
 	
 	<property name="finf.project.dir" value="../Finf"/>
 	<property name="hash.project.dir" value="../Hash"/>
+	<property name="macro.project.dir" value="../Macro"/>
 	
 	<!-- Dependencies -->
 	<path id="classpath">
@@ -33,6 +34,9 @@
 				<include name="**/*.java"/>
 			</fileset>
 			<fileset dir="${hash.project.dir}/src">
+				<include name="**/*.java"/>
+			</fileset>
+			<fileset dir="${macro.project.dir}/src">
 				<include name="**/*.java"/>
 			</fileset>
 			<!-- Prepend source header -->
@@ -67,11 +71,23 @@
 				</replacetokens>
 			</filterchain>
 		</copy>
+		<copy todir="${build.dir}/Temp/HelpText/Macro">
+			<fileset file="${macro.project.dir}/help.txt"/>
+			<filterchain>
+				<replacetokens>
+					<token key="version" value="${version}"/>
+					<token key="copyright" value="${copyright}"/>
+				</replacetokens>
+			</filterchain>
+		</copy>
 		<loadresource property="finf.help">
 		   <file file="${build.dir}/Temp/HelpText/Finf/help.txt"/>
 		</loadresource>
 		<loadresource property="hash.help">
 		   <file file="${build.dir}/Temp/HelpText/Hash/help.txt"/>
+		</loadresource>
+		<loadresource property="macro.help">
+		   <file file="${build.dir}/Temp/HelpText/Macro/help.txt"/>
 		</loadresource>
 		<replace
 			file="${build.dir.src}/main/java/freecrumbs/finf/Main.java"
@@ -81,6 +97,10 @@
 			file="${build.dir.src}/main/java/freecrumbs/hash/Hash.java"
 			token="@hashhelp@"
 			value="${hash.help}"/>
+		<replace
+			file="${build.dir.src}/main/java/freecrumbs/macro/Main.java"
+			token="@macrohelp@"
+			value="${macro.help}"/>
 		<delete>
 			<fileset dir="${build.dir}/Temp/HelpText"/>
 		</delete>
