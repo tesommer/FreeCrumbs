@@ -1,29 +1,37 @@
 package freecrumbs.macro.gesture;
 
-import java.util.Arrays;
-
-import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
+import freecrumbs.macro.GestureParser;
 import freecrumbs.macro.MacroException;
+import freecrumbs.macro.Macros;
 
 /**
  * {@code print [args...]}.
  * 
  * @author Tone Sommerland
  */
-public class Print extends Command {
+public class Print implements GestureParser {
     
     private static final String NAME = "print";
     
     public Print() {
-        super(NAME, 0, Integer.MAX_VALUE);
     }
 
     @Override
-    protected Gesture getGesture(final String[] params) throws MacroException {
+    public boolean supports(final String line) {
+        return Macros.isFirstPart(line, NAME);
+    }
+
+    @Override
+    public Gesture parse(final String line) throws MacroException {
         return (script, robot) -> {
-            Arrays.stream(params).map(s -> s + ' ').forEach(System.out::print);
-            System.out.println();
+            String output = line.trim().substring(NAME.length()).trim();
+            for (final String variableName : script.getVariableNames()) {
+                output = output.replace(
+                        "$" + variableName,
+                        String.valueOf(script.getVariable(variableName)));
+            }
+            System.out.println(output);
         };
     }
 

@@ -20,7 +20,7 @@ public class StandardScriptLoader implements ScriptLoader {
     public StandardScriptLoader(final GestureParser... gestureParsers) {
         this.gestureParsers = gestureParsers.clone();
     }
-    
+
     @Override
     public Script load(final String location) throws MacroException {
         try (

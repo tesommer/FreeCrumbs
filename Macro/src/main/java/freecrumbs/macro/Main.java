@@ -8,8 +8,12 @@ import freecrumbs.macro.gesture.Delay;
 import freecrumbs.macro.gesture.Exit;
 import freecrumbs.macro.gesture.KeyPress;
 import freecrumbs.macro.gesture.KeyRelease;
+import freecrumbs.macro.gesture.MouseMove;
+import freecrumbs.macro.gesture.MousePress;
+import freecrumbs.macro.gesture.MouseRelease;
 import freecrumbs.macro.gesture.Play;
 import freecrumbs.macro.gesture.Print;
+import freecrumbs.macro.gesture.SetVariable;
 
 /**
  * The entry point to Macro.
@@ -34,8 +38,12 @@ public final class Main {
             new Exit(),
             new KeyPress(),
             new KeyRelease(),
+            new MouseMove(),
+            new MousePress(),
+            new MouseRelease(),
             new Play(),
             new Print(),
+            new SetVariable(),
         };
 
     private Main() {

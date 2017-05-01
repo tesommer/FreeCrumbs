@@ -1,6 +1,5 @@
 package freecrumbs.macro;
 
-
 /**
  * Macro script loader.
  * 
