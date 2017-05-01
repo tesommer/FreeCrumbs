@@ -38,13 +38,12 @@ public abstract class Command implements GestureParser {
 
     @Override
     public boolean supports(final String line) {
-        final String[] parts = split(line);
-        return parts.length >= 1 && parts[0].equals(name);
+        return Macros.isFirstPart(line, name);
     }
 
     @Override
     public Gesture parse(final String line) throws MacroException {
-        final String[] parts = split(line);
+        final String[] parts = Macros.split(line);
         final String[] params = Arrays.copyOfRange(parts, 1, parts.length);
         if (params.length < minParams || params.length > maxParams) {
             throw new MacroException("Syntax incorrect: " + line);
@@ -58,16 +57,5 @@ public abstract class Command implements GestureParser {
      */
     protected abstract Gesture getGesture(String[] params)
             throws MacroException;
-    
-    /**
-     * Splits a line into pieces separated by space or tab.
-     */
-    private static String[] split(final String line) {
-        final String[] parts = line.trim().split("[ \\t]+");
-        if (parts[0].isEmpty()) {
-            return new String[0];
-        }
-        return parts;
-    }
 
 }

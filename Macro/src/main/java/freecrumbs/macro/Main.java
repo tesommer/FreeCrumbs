@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
+import freecrumbs.macro.gesture.AddKeyCodeVariables;
 import freecrumbs.macro.gesture.Delay;
+import freecrumbs.macro.gesture.Exit;
 import freecrumbs.macro.gesture.KeyPress;
 import freecrumbs.macro.gesture.KeyRelease;
 import freecrumbs.macro.gesture.Play;
@@ -31,7 +33,9 @@ public final class Main {
     private static final GestureParser[]
     GESTURE_PARSERS
         = new GestureParser[] {
+            new AddKeyCodeVariables(),
             new Delay(),
+            new Exit(),
             new KeyPress(),
             new KeyRelease(),
             new Play(),
