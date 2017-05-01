@@ -35,7 +35,7 @@ public class Script {
     
     /**
      * Sets the value of a variable.
-     * Creates the variable if it does not exist.
+     * Creates the variable if it doesn't exist.
      * @param name the variable name
      * @param value the variable value
      */
@@ -57,7 +57,7 @@ public class Script {
      * @throws MacroException if the variable does not exist.
      */
     public int getVariable(final String name) throws MacroException {
-        if (variables.containsKey(variables)) {
+        if (variables.containsKey(name)) {
             return variables.get(name);
         }
         throw new MacroException("No such variable: " + name);
@@ -65,7 +65,7 @@ public class Script {
     
     /**
      * Returns the value of an integer literal or a stored variable.
-     * @param nameOrLiteral either a variable name or an integer literal
+     * @param nameOrLiteral either an integer literal or a variable name
      * @throws MacroException if it's neither
      * a valid integer nor a stored variable.
      */

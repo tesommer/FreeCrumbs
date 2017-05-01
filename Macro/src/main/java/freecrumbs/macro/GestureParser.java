@@ -1,7 +1,7 @@
 package freecrumbs.macro;
 
 /**
- * Creates gestures from lines in a script.
+ * Creates gestures from script lines.
  * 
  * @author Tone Sommerland
  */
@@ -14,7 +14,7 @@ public interface GestureParser {
     
     /**
      * Parses the given line and returns a gesture instance.
-     * {@link #supports(String)} have returned {@code true}
+     * {@link #supports(String)} has returned {@code true}
      * for the given line before this method is called.
      */
     Gesture parse(String line) throws MacroException;

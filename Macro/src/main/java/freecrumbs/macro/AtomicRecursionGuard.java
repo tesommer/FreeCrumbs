@@ -3,19 +3,19 @@ package freecrumbs.macro;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * A recursion guard using an atomic integer.
+ * A recursion guard using an atomic counter.
  * 
  * @author Tone Sommerland
  */
-public class AtomicPlayCounter implements RecursionGuard {
+public class AtomicRecursionGuard implements RecursionGuard {
     private final AtomicInteger count = new AtomicInteger();
     private final int limit;
     
     /**
-     * Creates a new atomic play counter.
+     * Creates a new atomic recursion counter.
      * @param limit the number of recursions at which an exception is thrown
      */
-    public AtomicPlayCounter(final int limit) {
+    public AtomicRecursionGuard(final int limit) {
         this.limit = limit;
     }
 

@@ -1,14 +1,14 @@
 package freecrumbs.macro;
 
 /**
- * Makes sure recursive macros doesn't keep playing indefinitely.
+ * Prevents recursive macros from playing indefinitely.
  * 
  * @author Tone Sommerland
  */
 public interface RecursionGuard {
     
     /**
-     * Increments the play count.
+     * Increments the recursion count.
      * @throws MacroException
      * if the count has reached the maximum play limit.
      */

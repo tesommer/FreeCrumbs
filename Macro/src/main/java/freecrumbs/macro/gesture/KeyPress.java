@@ -1,0 +1,25 @@
+package freecrumbs.macro.gesture;
+
+import freecrumbs.macro.Command;
+import freecrumbs.macro.Gesture;
+import freecrumbs.macro.MacroException;
+
+/**
+ * {@code key_press <key code>}.
+ * 
+ * @author Tone Sommerland
+ */
+public class KeyPress extends Command {
+    
+    private static final String NAME = "key_press";
+
+    public KeyPress() {
+        super(NAME, 1, 1);
+    }
+
+    @Override
+    protected Gesture getGesture(final String[] params) throws MacroException {
+        return (script, robot) -> robot.keyPress(script.getValue(params[0]));
+    }
+
+}

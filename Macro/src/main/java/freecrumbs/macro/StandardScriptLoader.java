@@ -10,7 +10,9 @@ public class StandardScriptLoader implements ScriptLoader {
     
     private static final int RECURSION_LIMIT = 2;
 
-    private static final String NAME_PREFIX = "name ";
+    private static final String NAME_PREFIX = "name";
+    
+    private static final String COMMENT_PREFIX = "#";
     
     private final GestureParser[] gestureParsers;
 
@@ -27,14 +29,17 @@ public class StandardScriptLoader implements ScriptLoader {
         try {
             String line = bReader.readLine();
             while (line != null) {
-                if (line.isEmpty()) {
+                if (line.trim().isEmpty()) {
                     addMacro(macros, gestures, macroName);
                     gestures.clear();
                     macroName = null;
-                } else if (line.startsWith(NAME_PREFIX)) {
-                    macroName = line.substring(NAME_PREFIX.length()).trim();
-                } else {
-                    addGesture(gestures, line);
+                } else if (!isComment(line)) {
+                    final String name = getMacroName(line);
+                    if (name == null) {
+                        addGesture(gestures, line);
+                    } else {
+                        macroName = name;
+                    }
                 }
                 line = bReader.readLine();
             }
@@ -43,6 +48,21 @@ public class StandardScriptLoader implements ScriptLoader {
             throw new MacroException(ex);
         }
         return new Script(macros.stream().toArray(Macro[]::new));
+    }
+    
+    /**
+     * Returns null if the given line does not specify the macro name.
+     */
+    private static String getMacroName(final String line) {
+        final String trimmedLine = line.trim();
+        if (trimmedLine.startsWith(NAME_PREFIX)) {
+            return trimmedLine.substring(NAME_PREFIX.length()).trim();
+        }
+        return null;
+    }
+    
+    private static boolean isComment(final String line) {
+        return line.trim().startsWith(COMMENT_PREFIX);
     }
 
     /**
@@ -78,11 +98,11 @@ public class StandardScriptLoader implements ScriptLoader {
         }
         if (macroName == null) {
             macros.add(new Macro(
-                    new AtomicPlayCounter(RECURSION_LIMIT),
+                    new AtomicRecursionGuard(RECURSION_LIMIT),
                     gestures.stream().toArray(Gesture[]::new)));
         } else {
             macros.add(new Macro(
-                    new AtomicPlayCounter(RECURSION_LIMIT),
+                    new AtomicRecursionGuard(RECURSION_LIMIT),
                     macroName,
                     gestures.stream().toArray(Gesture[]::new)));
         }

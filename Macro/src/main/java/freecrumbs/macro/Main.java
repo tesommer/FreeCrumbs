@@ -7,10 +7,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import freecrumbs.macro.gesture.delay.DelayParser;
-import freecrumbs.macro.gesture.keypress.KeyPressParser;
-import freecrumbs.macro.gesture.keyrelease.KeyReleaseParser;
-import freecrumbs.macro.gesture.play.PlayParser;
+import freecrumbs.macro.gesture.Delay;
+import freecrumbs.macro.gesture.KeyPress;
+import freecrumbs.macro.gesture.KeyRelease;
+import freecrumbs.macro.gesture.Play;
+import freecrumbs.macro.gesture.Print;
 
 /**
  * The entry point to Macro.
@@ -30,10 +31,11 @@ public final class Main {
     private static final GestureParser[]
     GESTURE_PARSERS
         = new GestureParser[] {
-            new PlayParser(),
-            new KeyPressParser(),
-            new KeyReleaseParser(),
-            new DelayParser(),
+            new Delay(),
+            new KeyPress(),
+            new KeyRelease(),
+            new Play(),
+            new Print(),
         };
 
     private Main() {
