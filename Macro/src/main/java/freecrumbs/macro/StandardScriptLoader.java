@@ -1,8 +1,9 @@
 package freecrumbs.macro;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.Reader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -19,15 +20,17 @@ public class StandardScriptLoader implements ScriptLoader {
     public StandardScriptLoader(final GestureParser... gestureParsers) {
         this.gestureParsers = gestureParsers.clone();
     }
-
+    
     @Override
-    public Script load(final Reader reader) throws MacroException {
-        final Collection<Macro> macros = new ArrayList<>();
-        final Collection<Gesture> gestures = new ArrayList<>();
-        final BufferedReader bReader = new BufferedReader(reader);
-        String macroName = null;
-        try {
-            String line = bReader.readLine();
+    public Script load(final String location) throws MacroException {
+        try (
+            final BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(new FileInputStream(location)))
+        ) {
+            final Collection<Macro> macros = new ArrayList<>();
+            final Collection<Gesture> gestures = new ArrayList<>();
+            String macroName = null;
+            String line = reader.readLine();
             while (line != null) {
                 if (line.trim().isEmpty()) {
                     addMacro(macros, gestures, macroName);
@@ -41,13 +44,13 @@ public class StandardScriptLoader implements ScriptLoader {
                         macroName = name;
                     }
                 }
-                line = bReader.readLine();
+                line = reader.readLine();
             }
             addMacro(macros, gestures, macroName);
+            return new Script(location, macros.stream().toArray(Macro[]::new));
         } catch (final IOException ex) {
             throw new MacroException(ex);
         }
-        return new Script(macros.stream().toArray(Macro[]::new));
     }
     
     /**

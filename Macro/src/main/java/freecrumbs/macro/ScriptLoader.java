@@ -1,6 +1,5 @@
 package freecrumbs.macro;
 
-import java.io.Reader;
 
 /**
  * Macro script loader.
@@ -9,6 +8,9 @@ import java.io.Reader;
  */
 public interface ScriptLoader {
     
-    Script load(Reader reader) throws MacroException;
+    /**
+     * Loads the script file at the specified location.
+     */
+    Script load(String location) throws MacroException;
 
 }

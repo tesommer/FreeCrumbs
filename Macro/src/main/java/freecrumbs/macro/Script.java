@@ -1,5 +1,7 @@
 package freecrumbs.macro;
 
+import static java.util.Objects.requireNonNull;
+
 import java.awt.Robot;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,16 +18,26 @@ public class Script {
     private final Map<String, Integer>
     variables = new HashMap<String, Integer>();
     
+    private final String location;
     private final Macro[] macros;
 
     /**
      * Creates a new macro script.
+     * @param location the location of the script file
      * @param macros the macros in this script
      */
-    public Script(final Macro... macros) {
+    public Script(final String location, final Macro... macros) {
+        this.location = requireNonNull(location, "location");
         this.macros = macros.clone();
     }
     
+    /**
+     * The location of the script file.
+     */
+    public String getLocation() {
+        return location;
+    }
+
     /**
      * The names of all variables stored in this script.
      */

@@ -2,10 +2,6 @@ package freecrumbs.macro;
 
 import java.awt.AWTException;
 import java.awt.Robot;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 
 import freecrumbs.macro.gesture.AddKeyCodeVariables;
 import freecrumbs.macro.gesture.Delay;
@@ -71,15 +67,7 @@ public final class Main {
     }
     
     private static Script loadScript(final Args args) throws MacroException {
-        final ScriptLoader loader = new StandardScriptLoader(GESTURE_PARSERS);
-        try (
-            final Reader reader
-                = new InputStreamReader(new FileInputStream(args.inputFile));
-        ) {
-            return loader.load(reader);
-        } catch (final IOException ex) {
-            throw new MacroException(ex);
-        }
+        return new StandardScriptLoader(GESTURE_PARSERS).load(args.inputFile);
     }
     
     /**
