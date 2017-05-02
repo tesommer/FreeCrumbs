@@ -18,20 +18,20 @@ public final class Macros {
      * Splits a line into pieces separated by space or tab.
      */
     public static String[] split(final String line) {
-        final String[] parts = line.trim().split("[ \\t]+");
-        if (parts[0].isEmpty()) {
+        final String[] pieces = line.trim().split("[ \\t]+");
+        if (pieces[0].isEmpty()) {
             return new String[0];
         }
-        return parts;
+        return pieces;
     }
     
     /**
-     * Whether or not the given prefix is the first part of a line
+     * Whether or not the given prefix is the first piece of a line
      * with parts separated by space or tab.
      */
-    public static boolean isFirstPart(final String line, final String prefix) {
-        final String[] parts = split(line);
-        return parts.length >= 1 && parts[0].equals(prefix);
+    public static boolean isFirstPiece(final String prefix, final String line) {
+        final String[] pieces = split(line);
+        return pieces.length >= 1 && pieces[0].equals(prefix);
     }
     
     /**

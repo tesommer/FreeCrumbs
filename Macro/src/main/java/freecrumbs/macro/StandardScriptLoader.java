@@ -57,7 +57,7 @@ public class StandardScriptLoader implements ScriptLoader {
      * Returns null if the given line does not specify the macro name.
      */
     private static String getMacroName(final String line) {
-        if (Macros.isFirstPart(line, NAME_PREFIX)) {
+        if (Macros.isFirstPiece(NAME_PREFIX, line)) {
             return line.trim().substring(NAME_PREFIX.length()).trim();
         }
         return null;

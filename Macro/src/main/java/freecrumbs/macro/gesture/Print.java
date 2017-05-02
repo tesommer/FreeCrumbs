@@ -19,7 +19,7 @@ public class Print implements GestureParser {
 
     @Override
     public boolean supports(final String line) {
-        return Macros.isFirstPart(line, NAME);
+        return Macros.isFirstPiece(NAME, line);
     }
 
     @Override
