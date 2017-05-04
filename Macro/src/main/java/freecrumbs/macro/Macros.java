@@ -15,23 +15,23 @@ public final class Macros {
     }
     
     /**
-     * Splits a line into pieces separated by space or tab.
+     * Splits a line into words separated by space or tab.
      */
     public static String[] split(final String line) {
-        final String[] pieces = line.trim().split("[ \\t]+");
-        if (pieces[0].isEmpty()) {
+        final String[] words = line.trim().split("[ \\t]+");
+        if (words[0].isEmpty()) {
             return new String[0];
         }
-        return pieces;
+        return words;
     }
     
     /**
-     * Whether or not the given prefix is the first piece of a line
-     * with parts separated by space or tab.
+     * Whether or not the given prefix is the first word of a line
+     * with words separated by space or tab.
      */
-    public static boolean isFirstPiece(final String prefix, final String line) {
-        final String[] pieces = split(line);
-        return pieces.length >= 1 && pieces[0].equals(prefix);
+    public static boolean isFirstWord(final String prefix, final String line) {
+        final String[] words = split(line);
+        return words.length >= 1 && words[0].equals(prefix);
     }
     
     /**
