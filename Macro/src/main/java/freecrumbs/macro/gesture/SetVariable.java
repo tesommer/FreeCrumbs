@@ -6,6 +6,7 @@ import freecrumbs.macro.MacroException;
 
 /**
  * Sets a script variable.
+ * Syntax:
  * <ul>
  * <li>{@code set_variable <name> <value>}</li>
  * <li>{@code set_variable <name> <value> <+|-|*|/|%> <value>}</li>
@@ -40,23 +41,27 @@ public class SetVariable extends Command {
                     params[0],
                     script.getValue(params[1]) * script.getValue(params[3]));
         } else if ("/".equals(params[2])) {
-            try {
-                return (script, robot) -> script.setVariable(
-                        params[0],
-                        script.getValue(params[1])
-                            / script.getValue(params[3]));
-            } catch (final ArithmeticException ex) {
-                throw new MacroException(ex);
-            }
+            return (script, robot) -> {
+                try {
+                    script.setVariable(
+                            params[0],
+                            script.getValue(params[1])
+                                / script.getValue(params[3]));
+                } catch (final ArithmeticException ex) {
+                    throw new MacroException(ex);
+                }
+            };
         } else if ("%".equals(params[2])) {
-            try {
-                return (script, robot) -> script.setVariable(
-                        params[0],
-                        script.getValue(params[1])
-                            % script.getValue(params[3]));
-            } catch (final ArithmeticException ex) {
-                throw new MacroException(ex);
-            }
+            return (script, robot) -> {
+                try {
+                    script.setVariable(
+                            params[0],
+                            script.getValue(params[1])
+                                % script.getValue(params[3]));
+                } catch (final ArithmeticException ex) {
+                    throw new MacroException(ex);
+                }
+            };
         }
         throw new MacroException("Invalid operator: " + params[2]);
     }
