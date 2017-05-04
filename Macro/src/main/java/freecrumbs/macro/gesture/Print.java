@@ -6,7 +6,10 @@ import freecrumbs.macro.MacroException;
 import freecrumbs.macro.Macros;
 
 /**
- * {@code print [args...]}.
+ * Prints output to STDOUT.
+ * Script variables may be referenced in the output by preceding them with $.
+ * Syntax:
+ * {@code print <output>}.
  * 
  * @author Tone Sommerland
  */

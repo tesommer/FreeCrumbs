@@ -5,6 +5,8 @@ import freecrumbs.macro.Gesture;
 import freecrumbs.macro.MacroException;
 
 /**
+ * Moves the mouse to specified x-y coordinates.
+ * Syntax:
  * {@code mouse_move <x> <y>}.
  * 
  * @author Tone Sommerland

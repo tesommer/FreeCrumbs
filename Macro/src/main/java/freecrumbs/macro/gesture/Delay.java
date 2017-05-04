@@ -5,6 +5,8 @@ import freecrumbs.macro.Gesture;
 import freecrumbs.macro.MacroException;
 
 /**
+ * Delays further execution a specified number of milliseconds.
+ * Syntax:
  * {@code delay <millis>}.
  * 
  * @author Tone Sommerland

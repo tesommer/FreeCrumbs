@@ -5,7 +5,9 @@ import freecrumbs.macro.Gesture;
 import freecrumbs.macro.MacroException;
 
 /**
- * {@code key_released <key code>}.
+ * Generates a key release event.
+ * Syntax:
+ * {@code key_release <key code>}.
  * 
  * @author Tone Sommerland
  */

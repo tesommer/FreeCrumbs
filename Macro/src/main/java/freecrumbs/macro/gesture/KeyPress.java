@@ -5,6 +5,8 @@ import freecrumbs.macro.Gesture;
 import freecrumbs.macro.MacroException;
 
 /**
+ * Generates a key press event.
+ * Syntax:
  * {@code key_press <key code>}.
  * 
  * @author Tone Sommerland

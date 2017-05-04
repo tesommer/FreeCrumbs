@@ -1,12 +1,16 @@
 package freecrumbs.macro.gesture;
 
+import static freecrumbs.macro.gesture.MousePress.getButtons;
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
 import freecrumbs.macro.MacroException;
 
 /**
- * {@code mouse_press <button1> [<button2> [<button3>]]}.
- * A button is an integer, zero is false.
+ * Generates a mouse release event.
+ * Syntax:
+ * {@code mouse_release <button1> [<button2> [<button3>]]}.
+ * A button is an integer where zero is released and nonzero is not.
+ * Buttons are numbered left to right.
  * 
  * @author Tone Sommerland
  */
@@ -20,8 +24,7 @@ public class MouseRelease extends Command {
 
     @Override
     protected Gesture getGesture(final String[] params) throws MacroException {
-        return (script, robot)
-                -> robot.mouseRelease(MousePress.getButtons(params, script));
+        return (script, robot) -> robot.mouseRelease(getButtons(script, params));
     }
 
 }

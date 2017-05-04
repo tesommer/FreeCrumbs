@@ -5,7 +5,9 @@ import freecrumbs.macro.Gesture;
 import freecrumbs.macro.MacroException;
 
 /**
- * {@code play <macro name> [times]}
+ * Plays a named macro a certain number of times (default is one).
+ * Syntax:
+ * {@code play <macro name> [times]}.
  * 
  * @author Tone Sommerland
  */

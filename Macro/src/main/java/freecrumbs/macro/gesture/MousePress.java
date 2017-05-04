@@ -8,8 +8,11 @@ import freecrumbs.macro.MacroException;
 import freecrumbs.macro.Script;
 
 /**
+ * Generates a mouse press event.
+ * Syntax:
  * {@code mouse_press <button1> [<button2> [<button3>]]}.
- * A button is an integer, zero is false.
+ * A button is an integer where zero is pressed and nonzero is not.
+ * Buttons are numbered left to right.
  * 
  * @author Tone Sommerland
  */
@@ -21,7 +24,7 @@ public class MousePress extends Command {
         super(NAME, 1, 3);
     }
 
-    static int getButtons(final String[] params, Script script)
+    static int getButtons(final Script script, final String[] params)
             throws MacroException {
         
         int buttons = 0;
@@ -41,7 +44,7 @@ public class MousePress extends Command {
 
     @Override
     protected Gesture getGesture(final String[] params) throws MacroException {
-        return (script, robot) -> robot.mousePress(getButtons(params, script));
+        return (script, robot) -> robot.mousePress(getButtons(script, params));
     }
 
 }

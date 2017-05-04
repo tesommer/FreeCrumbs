@@ -4,6 +4,13 @@ import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
 import freecrumbs.macro.MacroException;
 
+/**
+ * Exits the script.
+ * Syntax:
+ * {@code exit}.
+ * 
+ * @author Tone Sommerland
+ */
 public class Exit extends Command {
     
     private static final String NAME = "exit";
