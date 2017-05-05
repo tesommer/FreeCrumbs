@@ -6,6 +6,7 @@ import java.awt.Robot;
 import freecrumbs.macro.gesture.AddKeyCodeVariables;
 import freecrumbs.macro.gesture.Delay;
 import freecrumbs.macro.gesture.Exit;
+import freecrumbs.macro.gesture.ImageXY;
 import freecrumbs.macro.gesture.KeyPress;
 import freecrumbs.macro.gesture.KeyRelease;
 import freecrumbs.macro.gesture.MouseMove;
@@ -36,6 +37,7 @@ public final class Main {
             new AddKeyCodeVariables(),
             new Delay(),
             new Exit(),
+            new ImageXY(),
             new KeyPress(),
             new KeyRelease(),
             new MouseMove(),
@@ -69,7 +71,7 @@ public final class Main {
             } else {
                 script.play(robot, args.macroName, args.times);
             }
-        } catch (final AWTException|SecurityException ex) {
+        } catch (final AWTException ex) {
             throw new MacroException(ex);
         }
     }

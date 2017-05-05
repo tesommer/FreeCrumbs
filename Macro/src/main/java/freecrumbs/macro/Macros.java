@@ -16,13 +16,26 @@ public final class Macros {
     
     /**
      * Splits a line into words separated by space or tab.
+     * @param limit the maximum number of parts to split the line in,
+     * starting left.
+     * The returned array will not be longer than the limit.
+     * If the line contains more words than the limit,
+     * the last element will contain a trimmed substring of the input line
+     * after the first {@code limit - 1} words.
      */
-    public static String[] split(final String line) {
-        final String[] words = line.trim().split("[ \\t]+");
+    public static String[] split(final String line, final int limit) {
+        final String[] words = line.trim().split("[ \\t]+", limit);
         if (words[0].isEmpty()) {
             return new String[0];
         }
         return words;
+    }
+    
+    /**
+     * Splits a line into words separated by space or tab.
+     */
+    public static String[] split(final String line) {
+        return split(line, 0);
     }
     
     /**
