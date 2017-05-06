@@ -1,5 +1,6 @@
 package freecrumbs.macro;
 
+import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -129,6 +130,21 @@ public final class Macros {
             return script.getValue(left) >= script.getValue(right);
         }
         throw new MacroException("Invalid operator: " + operator);
+    }
+    
+    /**
+     * Generates key events that types the given value.
+     * @param robot event generator
+     * @param value the digits to type
+     */
+    public static void type(final Robot robot, final int value) {
+        final String digits = String.valueOf(value);
+        for (int i = 0; i < digits.length(); i++) {
+            final char ch = digits.charAt(i);
+            final int codePoint = (int)ch;
+            robot.keyPress(codePoint);
+            robot.keyRelease(codePoint);
+        }
     }
 
 }

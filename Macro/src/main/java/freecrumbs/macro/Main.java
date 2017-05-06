@@ -15,6 +15,7 @@ import freecrumbs.macro.gesture.MouseRelease;
 import freecrumbs.macro.gesture.Play;
 import freecrumbs.macro.gesture.Print;
 import freecrumbs.macro.gesture.SetVariable;
+import freecrumbs.macro.gesture.Type;
 
 /**
  * The entry point to Macro.
@@ -46,6 +47,7 @@ public final class Main {
             new Play(),
             new Print(),
             new SetVariable(),
+            new Type(),
         };
 
     private Main() {
