@@ -20,7 +20,9 @@ public class Delay extends Command {
     }
 
     @Override
-    protected Gesture getGesture(final String[] params) throws MacroException {
+    protected Gesture getGesture(final String line, final String[] params)
+            throws MacroException {
+        
         return (script, robot) -> robot.delay(script.getValue(params[0]));
     }
 

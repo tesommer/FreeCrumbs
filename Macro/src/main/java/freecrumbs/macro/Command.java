@@ -48,14 +48,15 @@ public abstract class Command implements GestureParser {
         if (params.length < minParams || params.length > maxParams) {
             throw new MacroException("Syntax incorrect: " + line);
         }
-        return getGesture(params);
+        return getGesture(line, params);
     }
     
     /**
      * Returns a gesture that executes this command.
+     * @param line the parsed line
      * @param params the command parameters
      */
-    protected abstract Gesture getGesture(String[] params)
+    protected abstract Gesture getGesture(String line, String[] params)
             throws MacroException;
 
 }

@@ -23,8 +23,11 @@ public class MouseRelease extends Command {
     }
 
     @Override
-    protected Gesture getGesture(final String[] params) throws MacroException {
-        return (script, robot) -> robot.mouseRelease(getButtons(script, params));
+    protected Gesture getGesture(final String line, final String[] params)
+            throws MacroException {
+        
+        return (script, robot)
+                -> robot.mouseRelease(getButtons(script, params));
     }
 
 }

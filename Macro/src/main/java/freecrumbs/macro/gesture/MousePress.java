@@ -43,7 +43,9 @@ public class MousePress extends Command {
     }
 
     @Override
-    protected Gesture getGesture(final String[] params) throws MacroException {
+    protected Gesture getGesture(final String line, final String[] params)
+            throws MacroException {
+        
         return (script, robot) -> robot.mousePress(getButtons(script, params));
     }
 

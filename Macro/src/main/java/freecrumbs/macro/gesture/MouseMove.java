@@ -20,7 +20,9 @@ public class MouseMove extends Command {
     }
 
     @Override
-    protected Gesture getGesture(final String[] params) throws MacroException {
+    protected Gesture getGesture(final String line, final String[] params)
+            throws MacroException {
+        
         return (script, robot) -> robot.mouseMove(
                 script.getValue(params[0]), script.getValue(params[1]));
     }

@@ -66,5 +66,69 @@ public final class Macros {
             }
         }
     }
+    
+    /**
+     * Evaluates a three-word arithmetic expression.
+     * @param script the script
+     * @param left left operand (integer or variable)
+     * @param operator +, -, *, / or %
+     * @param right right operand (integer or variable)
+     */
+    public static int evaluateArithmetic(
+            final Script script,
+            final String left,
+            final String operator,
+            final String right) throws MacroException {
+        
+        if ("+".equals(operator)) {
+            return script.getValue(left) + script.getValue(right);
+        } else if ("-".equals(operator)) {
+            return script.getValue(left) - script.getValue(right);
+        } else if ("*".equals(operator)) {
+            return script.getValue(left) * script.getValue(right);
+        } else if ("/".equals(operator)) {
+            try {
+                return script.getValue(left) / script.getValue(right);
+            } catch (final ArithmeticException ex) {
+                throw new MacroException(ex);
+            }
+        } else if ("%".equals(operator)) {
+            try {
+                return script.getValue(left) % script.getValue(right);
+            } catch (final ArithmeticException ex) {
+                throw new MacroException(ex);
+            }
+        }
+        throw new MacroException("Invalid operator: " + operator);
+    }
+    
+    /**
+     * Evaluates a three-word logical expression.
+     * @param script the script
+     * @param left left operand (integer or variable)
+     * @param operator ==, !=, <, >, <= or >=
+     * @param right right operand (integer or variable)
+     */
+    public static boolean evaluateLogical(
+            final Script script,
+            final String left,
+            final String operator,
+            final String right) throws MacroException {
+        
+        if ("==".equals(operator)) {
+            return script.getValue(left) == script.getValue(right);
+        } else if ("!=".equals(operator)) {
+            return script.getValue(left) != script.getValue(right);
+        } else if ("<".equals(operator)) {
+            return script.getValue(left) < script.getValue(right);
+        } else if (">".equals(operator)) {
+            return script.getValue(left) > script.getValue(right);
+        } else if ("<=".equals(operator)) {
+            return script.getValue(left) <= script.getValue(right);
+        } else if (">=".equals(operator)) {
+            return script.getValue(left) >= script.getValue(right);
+        }
+        throw new MacroException("Invalid operator: " + operator);
+    }
 
 }

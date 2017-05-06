@@ -42,15 +42,15 @@ public class ImageXY implements GestureParser {
         if (parts.length != 4) {
             throw new MacroException("Syntax incorrect: " + line);
         }
-        return new ImageCoordinatesGesture(parts[1], parts[2], parts[3]);
+        return new ImageXYGesture(parts[1], parts[2], parts[3]);
     }
     
-    private static final class ImageCoordinatesGesture implements Gesture {
+    private static final class ImageXYGesture implements Gesture {
         private final String xVariable;
         private final String yVariable;
         private final String file;
         
-        public ImageCoordinatesGesture(
+        public ImageXYGesture(
                 final String xVariable,
                 final String yVariable,
                 final String file) {

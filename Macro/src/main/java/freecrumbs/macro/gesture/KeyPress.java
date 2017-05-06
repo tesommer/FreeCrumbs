@@ -20,7 +20,9 @@ public class KeyPress extends Command {
     }
 
     @Override
-    protected Gesture getGesture(final String[] params) throws MacroException {
+    protected Gesture getGesture(final String line, final String[] params)
+            throws MacroException {
+        
         return (script, robot) -> robot.keyPress(script.getValue(params[0]));
     }
 
