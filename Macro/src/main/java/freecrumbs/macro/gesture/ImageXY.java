@@ -20,7 +20,9 @@ import freecrumbs.macro.Script;
  * Stores the coordinates of an image within the current screen capture
  * to script variables.
  * Syntax:
- * {@code image_xy <x-variable> <y-variable> <image file>}.
+ * {@code image_xy x-variable y-variable image-file}.
+ * Image location relative to script location is supported.
+ * If the image was not on screen, the variables will be set to -1.
  * 
  * @author Tone Sommerland
  */
@@ -40,7 +42,7 @@ public class ImageXY implements GestureParser {
     public Gesture parse(final String line) throws MacroException {
         final String parts[] = Macros.split(line, 4);
         if (parts.length != 4) {
-            throw new MacroException("Syntax incorrect: " + line);
+            throw new MacroException("Syntax error: " + line);
         }
         return new ImageXYGesture(parts[1], parts[2], parts[3]);
     }
@@ -70,11 +72,21 @@ public class ImageXY implements GestureParser {
             final BufferedImage capture
                 = robot.createScreenCapture(new Rectangle(screenSize));
             final int[] xy = findImageInCapture(image, capture);
-            if (xy.length != 2) {
-                throw new MacroException("Image not on screen: " + file);
+            setXYVariables(script, xy);
+        }
+
+        private void setXYVariables(final Script script, final int[] xy) {
+            final int x;
+            final int y;
+            if (xy.length == 2) {
+                x = xy[0];
+                y = xy[1];
+            } else {
+                x = -1;
+                y = -1;
             }
-            script.setVariable(xVariable, xy[0]);
-            script.setVariable(yVariable, xy[1]);
+            script.setVariable(xVariable, x);
+            script.setVariable(yVariable, y);
         }
 
         private static BufferedImage loadImage(

@@ -7,7 +7,7 @@ import freecrumbs.macro.MacroException;
 /**
  * Generates a key press event.
  * Syntax:
- * {@code key_press <key code>}.
+ * {@code key_press key-code}.
  * 
  * @author Tone Sommerland
  */

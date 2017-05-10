@@ -9,7 +9,7 @@ import freecrumbs.macro.Macros;
  * Prints output to STDOUT.
  * Script variables may be referenced in the output by preceding them with $.
  * Syntax:
- * {@code print <output>}.
+ * {@code print output}.
  * 
  * @author Tone Sommerland
  */

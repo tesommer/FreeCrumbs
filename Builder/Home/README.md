@@ -51,6 +51,7 @@ Programs included in FreeCrumbs
 * [Finf](#finf)
 * [Dups](#dups)
 * [Hash](#hash)
+* [Macro](#macro)
 
 <a name="finf"></a>Finf
 -----------------------
@@ -226,5 +227,110 @@ ___
 
 Prints the MD5 and SHA-512 checksums of **xyz.iso**.
 ___
+
+<a name="macro"></a>Macro
+-------------------------
+
+Macro is an interpreter for a tiny scripting language that automates human-like
+interaction with the computer: key strokes, mouse moves, etc. Macro utilizes
+Java's robot API to inject events into the system event queue. The **bin**
+directory contains launchers for Macro:
+
+* **macro.bat** for Windows
+* **macro** for Unix/GNU Linux
+
+### Basic usage:
+
+The procedure for executing a macro script is straight forward:
+
+    macro <script-file>
+
+The ``macro`` command permits a couple of options:
+
+* ``-m`` followed by a macro name executes a named macro within the script.
+* ``-t`` is followed by the number of time to run a named macro. Default is one.
+  If this option is specified, ``-m`` must also be.
+
+### Macro scripts
+
+A script may contain an arbitrary number of macros. A macro is terminated by a
+blank line or the end-of-file. Comments are lines that start with ``#``. The
+macro name is specified like this: ``name MyMacro``.
+
+This is an example macro script:
+
+    # This macro tabs between windows.
+    add_key_code_variables
+    key_press VK_ALT
+    key_press VK_TAB
+    key_release VK_TAB
+    key_release VK_ALT
+
+**Important:**
+*A ``key_press`` must be followed by a ``key_release`` with the same key code
+somewhere down the line. Similarly, pressed mouse buttons must also be
+released.*
+
+#### Macro script reference
+
+This is a list of macro script commands. A script allows declaration of integer
+variables. For any parameter written in &lt;angles&gt;, either an integer
+literal or script variable may be used.
+
+* ``add_key_code_variables``:
+  Creates script variables corresponding to constants in
+  *java.awt.event.KeyEvent* (VK_A, VK_ALT, VK_SPACE, …).
+
+* ``delay <millis>``: Delays further execution a specified number of
+  milliseconds.
+
+* ``exit``: Exits the script.
+
+* ``image_xy x-variable y-variable image-file``: Stores the coordinates of an
+  image within the current screen capture to script variables. The image
+  location may be relative to the script location. If the image was not on
+  screen, both variables will be set to -1.
+
+* ``key_press <key-code>``: Generates a key press event. There must be a
+  ``key_release`` command with the same key code afterwards.
+
+* ``key_release <key-code>``: Generates a key release event.
+
+* ``mouse_move <x> <y>``: Moves the mouse to specified x-y coordinates.
+
+* ``mouse_press <button1> [<button2> [<button3>]]``: Generates a mouse press
+  event. A button is an integer where nonzero is pressed and zero is not.
+  Buttons are numbered left to right. In other words, to press the middle
+  button: ``mouse_press 0 1``. Mouse buttons must be released with the
+  ``mouse_release`` command.
+
+* ``mouse_release <button1> [<button2> [<button3>]]``: The release analogue to
+  ``mouse_press``.
+
+* ``play macro-name [<times>]``: Plays the macro with the given name a certain
+  number of times (default is one time). This command supports an optional
+  logical expression, e.g.: ``play macro1 1 x > -1``. The macro will be playd if
+  the condition is true. The following logical operators are supported:
+    * ``==``: equals
+    * ``!=``: not equals
+    * ``<``: less than
+    * ``<=``: less than or equals
+    * ``>``: greater than
+    * ``>=``: greater than or equals
+
+* ``print output``: Prints output to STDOUT. Script variables may be referenced
+  by precedeing them with $ in the output.
+
+* ``set variable <value>``: Sets a script variable. The variable is created if
+  it doesn't already exist. The variable may be assigned an arithmetic
+  expression, e.g.: ``set xysum x + y``. Supported operators are:
+    * ``+``
+    * ``-``
+    * ``*``
+    * ``/``
+    * ``%``: modulus
+
+* ``type <value>``: Generates key-presses and -releases that types the given
+  value.
 
 *Copyright &copy; 2017 Tone Sommerland*

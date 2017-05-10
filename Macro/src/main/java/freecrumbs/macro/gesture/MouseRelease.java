@@ -8,8 +8,8 @@ import freecrumbs.macro.MacroException;
 /**
  * Generates a mouse release event.
  * Syntax:
- * {@code mouse_release <button1> [<button2> [<button3>]]}.
- * A button is an integer where zero is released and nonzero is not.
+ * {@code mouse_release button1 [button2 [button3]]}.
+ * A button is an integer where nonzero is released and zero is not.
  * Buttons are numbered left to right.
  * 
  * @author Tone Sommerland

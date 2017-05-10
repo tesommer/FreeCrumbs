@@ -52,7 +52,7 @@ public class Macro {
 
     /**
      * Plays this macro.
-     * @param script the script that this macro is part of
+     * @param script the script containing this macro
      * @param robot the event generator
      */
     public void play(final Script script, final Robot robot)

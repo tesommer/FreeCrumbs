@@ -22,7 +22,7 @@ public class AtomicRecursionGuard implements RecursionGuard {
     @Override
     public void increment() throws MacroException {
         if (count.incrementAndGet() >= limit) {
-            throw new MacroException("Infinite recursion");
+            throw new MacroException("Recursion limit reached.");
         }
     }
 

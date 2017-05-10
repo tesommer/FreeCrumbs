@@ -9,8 +9,8 @@ import freecrumbs.macro.Macros;
  * Plays a named macro a certain number of times (default is one).
  * Syntax:
  * <ul>
- * <li>{@code play <macro name> [times]}</li>
- * <li>{@code play <macro name> [times left operator right]}:
+ * <li>{@code play macro-name [times]}</li>
+ * <li>{@code play macro-name [times left operator right]}:
  * Plays the macro if a logical expression is true,
  * e.g.: {@code play macro-name 1 x == y}.
  * Supported operators: {@code == != <= >= < >}</li>
@@ -31,7 +31,7 @@ public class Play extends Command {
             throws MacroException {
         
         if (params.length == 3 || params.length == 4) {
-            throw new MacroException("Syntax incorrect: " + line);
+            throw new MacroException("Syntax error: " + line);
         }
         final String macroName = params[0];
         final String times = params.length >= 2 ? params[1] : "1";

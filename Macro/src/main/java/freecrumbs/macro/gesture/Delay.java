@@ -7,7 +7,7 @@ import freecrumbs.macro.MacroException;
 /**
  * Delays further execution a specified number of milliseconds.
  * Syntax:
- * {@code delay <millis>}.
+ * {@code delay millis}.
  * 
  * @author Tone Sommerland
  */

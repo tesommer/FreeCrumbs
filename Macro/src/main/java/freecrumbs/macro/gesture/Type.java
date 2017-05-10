@@ -8,7 +8,7 @@ import freecrumbs.macro.Macros;
 /**
  * Types a value.
  * Syntax:
- * {@code type <value>}.
+ * {@code type value}.
  * 
  * @author Tone Sommerland
  */

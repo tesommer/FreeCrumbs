@@ -7,7 +7,7 @@ import freecrumbs.macro.MacroException;
 /**
  * Generates a key release event.
  * Syntax:
- * {@code key_release <key code>}.
+ * {@code key_release key-code}.
  * 
  * @author Tone Sommerland
  */

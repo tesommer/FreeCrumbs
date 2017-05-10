@@ -9,17 +9,17 @@ import freecrumbs.macro.Macros;
  * Sets a script variable.
  * Syntax:
  * <ul>
- * <li>{@code set_variable <name> <value>}</li>
- * <li>{@code set_variable <name> <value> <+|-|*|/|%> <value>}</li>
+ * <li>{@code set name value}</li>
+ * <li>{@code set name value +|-|*|/|% value}</li>
  * </ul>
  * 
  * @author Tone Sommerland
  */
-public class SetVariable extends Command {
+public class Set extends Command {
     
-    private static final String NAME = "set_variable";
+    private static final String NAME = "set";
     
-    public SetVariable() {
+    public Set() {
         super(NAME, 2, 4);
     }
 
@@ -28,7 +28,7 @@ public class SetVariable extends Command {
             throws MacroException {
         
         if (params.length == 3) {
-            throw new MacroException("Syntax incorrect: " + line);
+            throw new MacroException("Syntax error: " + line);
         }
         if (params.length == 2) {
             return (script, robot) -> script.setVariable(

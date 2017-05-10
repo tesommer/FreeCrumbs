@@ -10,8 +10,8 @@ import freecrumbs.macro.Script;
 /**
  * Generates a mouse press event.
  * Syntax:
- * {@code mouse_press <button1> [<button2> [<button3>]]}.
- * A button is an integer where zero is pressed and nonzero is not.
+ * {@code mouse_press button1 [button2 [button3]]}.
+ * A button is an integer where nonzero is pressed and zero is not.
  * Buttons are numbered left to right.
  * 
  * @author Tone Sommerland

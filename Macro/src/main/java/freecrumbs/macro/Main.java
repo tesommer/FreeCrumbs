@@ -14,7 +14,7 @@ import freecrumbs.macro.gesture.MousePress;
 import freecrumbs.macro.gesture.MouseRelease;
 import freecrumbs.macro.gesture.Play;
 import freecrumbs.macro.gesture.Print;
-import freecrumbs.macro.gesture.SetVariable;
+import freecrumbs.macro.gesture.Set;
 import freecrumbs.macro.gesture.Type;
 
 /**
@@ -46,7 +46,7 @@ public final class Main {
             new MouseRelease(),
             new Play(),
             new Print(),
-            new SetVariable(),
+            new Set(),
             new Type(),
         };
 
