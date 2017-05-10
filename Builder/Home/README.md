@@ -166,7 +166,7 @@ If Finf doesn't get a config file, it will use this:
     info.format=${filename}
     date.format=yyyy-MM-dd HH:mm
 
-### Specifying config settings on the command-line
+### Specifying config settings on the command line
 
     finf -o "info.format=${hash}" -o "hash.algorithm=SHA-1" hypotheticalfile.zip
 
@@ -248,8 +248,9 @@ The procedure for executing a macro script is straight forward:
 The ``macro`` command permits a couple of options:
 
 * ``-m`` followed by a macro name executes a named macro within the script.
-* ``-t`` is followed by the number of time to run a named macro. Default is one.
-  If this option is specified, ``-m`` must also be.
+* ``-t`` is followed by the number of times to run a named macro. One is
+  default. If this option is specified, ``-m`` must also be.
+* ``-h`` prints a help message.
 
 ### Macro scripts
 
@@ -266,10 +267,9 @@ This is an example macro script:
     key_release VK_TAB
     key_release VK_ALT
 
-**Important:**
-*A ``key_press`` must be followed by a ``key_release`` with the same key code
-somewhere down the line. Similarly, pressed mouse buttons must also be
-released.*
+**Warning:**
+*A key press must have a corresponding key release. Similarly, a mouse button
+press must be paired with a release of the button.*
 
 #### Macro script reference
 
@@ -288,11 +288,10 @@ literal or script variable may be used.
 
 * ``image_xy x-variable y-variable image-file``: Stores the coordinates of an
   image within the current screen capture to script variables. The image
-  location may be relative to the script location. If the image was not on
-  screen, both variables will be set to -1.
+  file may be relative to the script location. If the image was not on screen,
+  both variables will be set to -1.
 
-* ``key_press <key-code>``: Generates a key press event. There must be a
-  ``key_release`` command with the same key code afterwards.
+* ``key_press <key-code>``: Generates a key press event.
 
 * ``key_release <key-code>``: Generates a key release event.
 
@@ -312,8 +311,8 @@ literal or script variable may be used.
 
 * ``play macro-name [<times>]``: Plays the macro with the given name a certain
   number of times (default is one time). This command supports an optional
-  logical expression, e.g.: ``play macro1 1 x > -1``. The macro will be playd if
-  the condition is true. The following logical operators are supported:
+  logical expression, e.g.: ``play macro1 1 x > -1``. The macro will be played
+  if the condition is true. The following logical operators are supported:
     * ``==``: equals
     * ``!=``: not equals
     * ``<``: less than
@@ -324,16 +323,16 @@ literal or script variable may be used.
 * ``print output``: Prints output to STDOUT. Script variables may be referenced
   by precedeing them with $ in the output.
 
-* ``set variable <value>``: Sets a script variable. The variable is created if
-  it doesn't already exist. The variable may be assigned an arithmetic
-  expression, e.g.: ``set xysum x + y``. Supported operators are:
-    * ``+``
-    * ``-``
-    * ``*``
-    * ``/``
-    * ``%``: modulus
+* ``set variable <value>``: Sets or creates a script variable. The variable may
+  be assigned an arithmetic expression, e.g.: ``set xysum x + y``. Supported
+  operators are:
+    * ``+``: addition
+    * ``-``: subtraction
+    * ``*``: multiplication
+    * ``/``: division
+    * ``%``: modulus (remainder of integer division)
 
-* ``type <value>``: Generates key-presses and -releases that types the given
+* ``type <value>``: Generates key presses and key releases that types the given
   value.
 
 *Copyright &copy; 2017 Tone Sommerland*

@@ -9,7 +9,7 @@ import java.util.Collection;
 
 public class StandardScriptLoader implements ScriptLoader {
     
-    private static final int RECURSION_LIMIT = 2;
+    private static final int RECURSION_LIMIT = 20;
 
     private static final String NAME_PREFIX = "name";
     
