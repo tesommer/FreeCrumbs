@@ -12,6 +12,7 @@ import freecrumbs.macro.gesture.KeyRelease;
 import freecrumbs.macro.gesture.MouseMove;
 import freecrumbs.macro.gesture.MousePress;
 import freecrumbs.macro.gesture.MouseRelease;
+import freecrumbs.macro.gesture.MouseWheel;
 import freecrumbs.macro.gesture.Play;
 import freecrumbs.macro.gesture.Print;
 import freecrumbs.macro.gesture.Set;
@@ -44,6 +45,7 @@ public final class Main {
             new MouseMove(),
             new MousePress(),
             new MouseRelease(),
+            new MouseWheel(),
             new Play(),
             new Print(),
             new Set(),

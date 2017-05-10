@@ -307,6 +307,9 @@ literal or script variable may be used.
 * ``mouse_release <button1> [<button2> [<button3>]]``: The release analogue to
   ``mouse_press``.
 
+* ``mouse_wheel <steps>``: Moves the mouse wheel. Negative steps means up/away
+  from user.
+
 * ``play macro-name [<times>]``: Plays the macro with the given name a certain
   number of times (default is one time). This command supports an optional
   logical expression, e.g.: ``play macro1 1 x > -1``. The macro will be playd if
