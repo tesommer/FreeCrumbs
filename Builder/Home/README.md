@@ -26,11 +26,19 @@ A collection of tiny command-line tools.
                             / | \
 ```
 
-License
--------
+Legal
+-----
 
-See **LICENSE.txt** for license information. (Third party libraries have their
-own licenses.)
+Copyright &copy; 2017 Tone Sommerland
+
+For the terms and conditions of this product, see **LICENSE.txt**.
+
+By acquiring and/or using this product, you also accept the licenses of any
+third-party libraries that this product depends on.
+
+FreeCrumbs comes bundled with:
+
+* [CalclipseLib version 2](http://www.calclipse.com)
 
 Directory layout
 ----------------
@@ -261,6 +269,7 @@ macro name is specified like this: ``name MyMacro``.
 This is an example macro script:
 
     # This macro tabs between windows.
+    name WTAB
     add_key_code_variables
     key_press VK_ALT
     key_press VK_TAB
@@ -273,8 +282,8 @@ press must be paired with a release of the button.*
 
 #### Macro script reference
 
-This is a list of macro script commands. A script allows declaration of integer
-variables. For any parameter written in &lt;angles&gt;, either an integer
+This is a list of macro script commands. A script allows integer-variable
+declarations. For any parameter written in &lt;angles&gt;, either an integer
 literal or script variable may be used.
 
 * ``add_key_code_variables``:
@@ -311,8 +320,8 @@ literal or script variable may be used.
 
 * ``play macro-name [<times>]``: Plays the macro with the given name a certain
   number of times (default is one time). This command supports an optional
-  logical expression, e.g.: ``play macro1 1 x > -1``. The macro will be played
-  if the condition is true. The following logical operators are supported:
+  logical expression, e.g.: ``play WTAB 1 x > -1``. The macro will be played if
+  the condition is true. The following logical operators are supported:
     * ``==``: equals
     * ``!=``: not equals
     * ``<``: less than
@@ -334,5 +343,3 @@ literal or script variable may be used.
 
 * ``type <value>``: Generates key presses and key releases that types the given
   value.
-
-*Copyright &copy; 2017 Tone Sommerland*
