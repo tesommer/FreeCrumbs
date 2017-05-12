@@ -107,7 +107,7 @@ public final class Macros {
      * Evaluates a three-word logical expression.
      * @param script the script
      * @param left left operand (integer or variable)
-     * @param operator ==, !=, <, >, <= or >=
+     * @param operator ==, !=, &lt;, &gt;, &lt;= or &gt;=
      * @param right right operand (integer or variable)
      */
     public static boolean evaluateLogical(
