@@ -3,6 +3,7 @@
 <project name="FreeCrumbs" default="main" basedir=".">
 	
 	<property name="version" value="0.2.0"/>
+	<property name="product.and.version" value="FreeCrumbs version ${version}"/>
 	<property name="copyright.year.owner" value="2017 Tone Sommerland"/>
 	<property name="copyright" value="Copyright (C) ${copyright.year.owner}"/>
 	
@@ -42,52 +43,21 @@
 			<!-- Prepend source header -->
 			<filterchain>
 				<concatfilter prepend="srcheader.txt"/>
-				<replacetokens>
-					<token key="version" value="${version}"/>
-					<token key="copyright" value="${copyright}"/>
-				</replacetokens>
 			</filterchain>
 		</copy>
 		
-		<!-- Make BUILD/Temp -->
-		<mkdir dir="${build.dir}/Temp"/>
+		<!-- Delete BUILD_SRC/test -->
+		<delete dir="${build.dir.src}/test"/>
 		
-		<!-- Insert help texts into entry point source files -->
-		<copy todir="${build.dir}/Temp/HelpText/Finf">
-			<fileset file="${finf.project.dir}/help.txt"/>
-			<filterchain>
-				<replacetokens>
-					<token key="version" value="${version}"/>
-					<token key="copyright" value="${copyright}"/>
-				</replacetokens>
-			</filterchain>
-		</copy>
-		<copy todir="${build.dir}/Temp/HelpText/Hash">
-			<fileset file="${hash.project.dir}/help.txt"/>
-			<filterchain>
-				<replacetokens>
-					<token key="version" value="${version}"/>
-					<token key="copyright" value="${copyright}"/>
-				</replacetokens>
-			</filterchain>
-		</copy>
-		<copy todir="${build.dir}/Temp/HelpText/Macro">
-			<fileset file="${macro.project.dir}/help.txt"/>
-			<filterchain>
-				<replacetokens>
-					<token key="version" value="${version}"/>
-					<token key="copyright" value="${copyright}"/>
-				</replacetokens>
-			</filterchain>
-		</copy>
+		<!-- Insert help text into entry point source files -->
 		<loadresource property="finf.help">
-		   <file file="${build.dir}/Temp/HelpText/Finf/help.txt"/>
+		   <file file="${finf.project.dir}/help.txt"/>
 		</loadresource>
 		<loadresource property="hash.help">
-		   <file file="${build.dir}/Temp/HelpText/Hash/help.txt"/>
+		   <file file="${hash.project.dir}/help.txt"/>
 		</loadresource>
 		<loadresource property="macro.help">
-		   <file file="${build.dir}/Temp/HelpText/Macro/help.txt"/>
+		   <file file="${macro.project.dir}/help.txt"/>
 		</loadresource>
 		<replace
 			file="${build.dir.src}/main/java/freecrumbs/finf/Main.java"
@@ -101,9 +71,27 @@
 			file="${build.dir.src}/main/java/freecrumbs/macro/Main.java"
 			token="@macrohelp@"
 			value="${macro.help}"/>
-		<delete>
-			<fileset dir="${build.dir}/Temp/HelpText"/>
-		</delete>
+		
+		<!-- Replace BUILD_SRC tokens -->
+		<replace
+			dir="${build.dir.src}/main/java"
+			token="@version@"
+			value="${version}"/>
+		<replace
+			dir="${build.dir.src}/main/java"
+			token="@productandversion@"
+			value="${product.and.version}"/>
+		<replace
+			dir="${build.dir.src}/main/java"
+			token="@copyrightyearowner@"
+			value="${copyright.year.owner}"/>
+		<replace
+			dir="${build.dir.src}/main/java"
+			token="@copyright@"
+			value="${copyright}"/>
+		
+		<!-- Make BUILD/Temp -->
+		<mkdir dir="${build.dir}/Temp"/>
 		
 		<!-- Compile BUILD_SRC to BUILD/Temp -->
 		<javac
@@ -137,6 +125,20 @@
 		<copy todir="${build.dir.home}">
 			<fileset dir="Home"/>
 		</copy>
+		
+		<!-- Replace BULD_HOME tokens -->
+		<replace dir="${build.dir.home}" token="@version@" value="${version}">
+			<include name="**/*.md"/>
+		</replace>
+		<replace dir="${build.dir.home}" token="@productandversion@" value="${product.and.version}">
+			<include name="**/*.md"/>
+		</replace>
+		<replace dir="${build.dir.home}" token="@copyrightyearowner@" value="${copyright.year.owner}">
+			<include name="**/*.md"/>
+		</replace>
+		<replace dir="${build.dir.home}" token="@copyright@" value="${copyright}">
+			<include name="**/*.md"/>
+		</replace>
 		
 	</target>
 

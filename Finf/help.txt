@@ -1,4 +1,4 @@
-     FreeCrumbs version @version@\n"
+     @productandversion@\n"
 + "@copyright@\n"
 + "See LISENCE.txt for lisence terms.\n"
 + "\n"
