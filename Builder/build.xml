@@ -51,13 +51,16 @@
 		
 		<!-- Insert help text into entry point source files -->
 		<loadresource property="finf.help">
-		   <file file="${finf.project.dir}/help.txt"/>
+		   <file file="${finf.project.dir}/finfhelp.txt"/>
 		</loadresource>
 		<loadresource property="hash.help">
-		   <file file="${hash.project.dir}/help.txt"/>
+		   <file file="${hash.project.dir}/hashhelp.txt"/>
 		</loadresource>
 		<loadresource property="macro.help">
-		   <file file="${macro.project.dir}/help.txt"/>
+		   <file file="${macro.project.dir}/macrohelp.txt"/>
+		</loadresource>
+		<loadresource property="macrec.help">
+		   <file file="${macro.project.dir}/macrechelp.txt"/>
 		</loadresource>
 		<replace
 			file="${build.dir.src}/main/java/freecrumbs/finf/Main.java"
@@ -71,6 +74,10 @@
 			file="${build.dir.src}/main/java/freecrumbs/macro/Main.java"
 			token="@macrohelp@"
 			value="${macro.help}"/>
+		<replace
+			file="${build.dir.src}/main/java/freecrumbs/macrec/MacroRecorder.java"
+			token="@macrechelp@"
+			value="${macrec.help}"/>
 		
 		<!-- Replace BUILD_SRC tokens -->
 		<replace

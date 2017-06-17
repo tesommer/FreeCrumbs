@@ -9,6 +9,10 @@ import freecrumbs.macro.MacroException;
  */
 public final class MacroRecorder {
     
+    private static final String
+    HELP
+        = "@macrechelp@";
+    
     private static final String KEY_REC_OPTION = "-k";
     private static final String MOUSE_REC_OPTION = "-m";
 
@@ -36,7 +40,7 @@ public final class MacroRecorder {
     }
     
     private static void printHelp() {
-        System.out.println("Hello heeelp!");
+        System.out.println(HELP);
     }
     
     private static void startKeyRecorder() {
