@@ -16,7 +16,7 @@ import freecrumbs.macro.MacroException;
  */
 public class MouseRelease extends Command {
     
-    private static final String NAME = "mouse_release";
+    public static final String NAME = "mouse_release";
     
     public MouseRelease() {
         super(NAME, 1, 3);

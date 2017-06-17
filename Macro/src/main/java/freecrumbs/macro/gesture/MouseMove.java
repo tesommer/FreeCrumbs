@@ -13,7 +13,7 @@ import freecrumbs.macro.MacroException;
  */
 public class MouseMove extends Command {
     
-    private static final String NAME = "mouse_move";
+    public static final String NAME = "mouse_move";
     
     public MouseMove() {
         super(NAME, 2, 2);

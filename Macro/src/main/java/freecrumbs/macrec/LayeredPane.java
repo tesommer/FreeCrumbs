@@ -1,0 +1,29 @@
+package freecrumbs.macrec;
+
+import java.awt.Graphics;
+
+import javax.swing.JPanel;
+
+/**
+ * This panel's visual appearance is rendered by a stack of {@link Layer}s.
+ * 
+ * @author Tone Sommerland
+ */
+public class LayeredPane extends JPanel {
+    
+    private static final long serialVersionUID = 1L;
+    
+    private final Layer[] layers;
+    
+    public LayeredPane(final Layer... layers) {
+        this.layers = layers.clone();
+    }
+    
+    @Override
+    protected void paintComponent(final Graphics g) {
+        super.paintComponent(g);
+        for (final Layer layer : layers) {
+            layer.paint(g);
+        }
+    }
+}

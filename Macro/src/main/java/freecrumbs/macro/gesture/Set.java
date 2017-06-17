@@ -17,7 +17,7 @@ import freecrumbs.macro.Macros;
  */
 public class Set extends Command {
     
-    private static final String NAME = "set";
+    public static final String NAME = "set";
     
     public Set() {
         super(NAME, 2, 4);

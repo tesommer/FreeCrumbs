@@ -13,7 +13,7 @@ import freecrumbs.macro.MacroException;
  */
 public class KeyPress extends Command {
     
-    private static final String NAME = "key_press";
+    public static final String NAME = "key_press";
 
     public KeyPress() {
         super(NAME, 1, 1);

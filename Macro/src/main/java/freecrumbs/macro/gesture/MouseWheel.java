@@ -14,7 +14,7 @@ import freecrumbs.macro.MacroException;
  */
 public class MouseWheel extends Command {
     
-    private static final String NAME = "mouse_wheel";
+    public static final String NAME = "mouse_wheel";
     
     public MouseWheel() {
         super(NAME, 1, 1);

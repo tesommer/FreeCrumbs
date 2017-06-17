@@ -13,7 +13,7 @@ import freecrumbs.macro.MacroException;
  */
 public class Exit extends Command {
     
-    private static final String NAME = "exit";
+    public static final String NAME = "exit";
     
     public Exit() {
         super(NAME, 0, 0);

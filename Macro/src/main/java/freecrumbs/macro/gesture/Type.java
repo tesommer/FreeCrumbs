@@ -14,7 +14,7 @@ import freecrumbs.macro.Macros;
  */
 public class Type extends Command {
     
-    private static final String NAME = "type";
+    public static final String NAME = "type";
 
     public Type() {
         super(NAME, 1, 1);

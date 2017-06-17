@@ -13,7 +13,7 @@ import freecrumbs.macro.MacroException;
  */
 public class KeyRelease extends Command {
     
-    private static final String NAME = "key_release";
+    public static final String NAME = "key_release";
 
     public KeyRelease() {
         super(NAME, 1, 1);

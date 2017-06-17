@@ -18,7 +18,7 @@ import freecrumbs.macro.Script;
  */
 public class MousePress extends Command {
     
-    private static final String NAME = "mouse_press";
+    public static final String NAME = "mouse_press";
     
     public MousePress() {
         super(NAME, 1, 3);

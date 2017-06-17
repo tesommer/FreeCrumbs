@@ -15,7 +15,7 @@ import freecrumbs.macro.Macros;
  */
 public class Print implements GestureParser {
     
-    private static final String NAME = "print";
+    public static final String NAME = "print";
     
     public Print() {
     }

@@ -14,7 +14,7 @@ import freecrumbs.macro.Macros;
  */
 public class AddKeyCodeVariables extends Command {
     
-    private static final String NAME = "add_key_code_variables";
+    public static final String NAME = "add_key_code_variables";
 
     public AddKeyCodeVariables() {
         super(NAME, 0, 0);

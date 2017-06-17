@@ -13,7 +13,7 @@ import freecrumbs.macro.MacroException;
  */
 public class Delay extends Command {
     
-    private static final String NAME = "delay";
+    public static final String NAME = "delay";
 
     public Delay() {
         super(NAME, 1, 1);

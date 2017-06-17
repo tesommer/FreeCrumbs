@@ -20,7 +20,7 @@ import freecrumbs.macro.Macros;
  */
 public class Play extends Command {
     
-    private static final String NAME = "play";
+    public static final String NAME = "play";
     
     public Play() {
         super(NAME, 1, 5);

@@ -28,7 +28,7 @@ import freecrumbs.macro.Script;
  */
 public class ImageXY implements GestureParser {
     
-    private static final String NAME = "image_xy";
+    public static final String NAME = "image_xy";
 
     public ImageXY() {
     }
