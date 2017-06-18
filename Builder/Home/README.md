@@ -60,6 +60,7 @@ Programs included in FreeCrumbs
 * [Dups](#dups)
 * [Hash](#hash)
 * [Macro](#macro)
+  * [Macrec](#macrec)
 
 <a name="finf"></a>Finf
 -----------------------
@@ -255,10 +256,11 @@ The procedure for executing a macro script is straight forward:
 
 The ``macro`` command permits a couple of options:
 
-* ``-m`` followed by a macro name executes a named macro within the script.
-* ``-t`` is followed by the number of times to run a named macro. One is
-  default. If this option is specified, ``-m`` must also be.
+* ``-t`` is followed by the number of times to play. One is default.
+* ``-m`` followed by a macro name plays a named macro within the script.
 * ``-h`` prints a help message.
+
+If a macro name is not specified, the first macro in the script is played.
 
 ### Macro scripts
 
@@ -343,3 +345,32 @@ literal or script variable may be used.
 
 * ``type <value>``: Generates key presses and key releases that types the given
   value.
+
+### <a name="macrec"></a>Macrec
+
+Macrec (Macro recorder) is a utility that prints macro script lines to STDOUT.
+The **bin** directory contains the Macrec launchers:
+
+* **macrec.bat** for Windows
+* **macrec** for Unix/GNU Linux
+
+To record key strokes, start Macrec with the ``-k`` argument:
+
+    macrec -k
+
+This opens a small window that reports key strokes as macro commands to STDOUT.
+
+To record mouse gestures, start Macrec with the ``-m`` argument followed by a
+delay in milliseconds, e.g.:
+
+    macrec -m 1000
+
+After the delay, a fullscreen window opens showing a screen capture. This window
+have three modes that are activated by pressing the following keys:
+
+* P: Press mouse buttons to records mouse button presses and releases.
+* M: Click in the screen capture to records mouse movement.
+* C: Click on two points in the screen capture to select a portion of it. The
+  selection is saved as PNG to the current directory.
+
+Press Escape to exit.

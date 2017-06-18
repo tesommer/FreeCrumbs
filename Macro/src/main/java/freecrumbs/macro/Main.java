@@ -28,9 +28,9 @@ public final class Main {
     private static final String
     HELP
         = "@macrohelp@";
-    
-    private static final String MACRO_NAME_OPTION = "-m";
+
     private static final String TIMES_OPTION = "-t";
+    private static final String MACRO_NAME_OPTION = "-m";
     private static final String HELP_OPTION = "-h";
     
     private static final GestureParser[]
@@ -71,9 +71,9 @@ public final class Main {
         try {
             final Robot robot = new Robot();
             if (args.macroName == null) {
-                script.play(robot);
+                script.play(robot, args.times);
             } else {
-                script.play(robot, args.macroName, args.times);
+                script.play(robot, args.times, args.macroName);
             }
         } catch (final AWTException ex) {
             throw new MacroException(ex);
@@ -88,23 +88,23 @@ public final class Main {
      * Returns null if help option or if args contains error.
      */
     private static Args parseArgs(final String[] args) throws MacroException {
-        String macroName = null;
         String times = null;
+        String macroName = null;
         String inputFile = null;
         int i = -1;
         while (++i < args.length) {
             if (HELP_OPTION.equals(args[i])) {
                 return null;
-            } else if (MACRO_NAME_OPTION.equals(args[i])) {
-                if (i == args.length - 1 || macroName != null) {
-                    return null;
-                }
-                macroName = args[++i];
             } else if (TIMES_OPTION.equals(args[i])) {
                 if (i == args.length - 1 || times != null) {
                     return null;
                 }
                 times = args[++i];
+            } else if (MACRO_NAME_OPTION.equals(args[i])) {
+                if (i == args.length - 1 || macroName != null) {
+                    return null;
+                }
+                macroName = args[++i];
             } else {
                 if (i != args.length - 1) {
                     return null;
@@ -119,30 +119,27 @@ public final class Main {
         if (times == null) {
             playTimes = 1;
         } else {
-            if (macroName == null) {
-                return null;
-            }
             try {
                 playTimes = Integer.valueOf(times);
             } catch (final NumberFormatException ex) {
                 throw new MacroException(ex);
             }
         }
-        return new Args(macroName, playTimes, inputFile);
+        return new Args(playTimes, macroName, inputFile);
     }
     
     private static final class Args {
-        final String macroName;
         final int times;
+        final String macroName;
         final String inputFile;
         
         public Args(
-                final String macroName,
                 final int times,
+                final String macroName,
                 final String inputFile) {
-            
-            this.macroName = macroName;
+
             this.times = times;
+            this.macroName = macroName;
             this.inputFile = inputFile;
         }
     }

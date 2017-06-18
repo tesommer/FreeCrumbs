@@ -3,6 +3,7 @@ package freecrumbs.macro;
 import static java.util.Objects.requireNonNull;
 
 import java.awt.Robot;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -91,33 +92,42 @@ public class Script {
     
     /**
      * Runs this script.
+     * Plays the first macro, if any, a specified number of times.
      * @param robot the event generator
+     * @param times the number of times to play
      */
-    public void play(final Robot robot) throws MacroException {
-        for (final Macro macro : macros) {
-            macro.play(this, robot);
+    public void play(final Robot robot, final int times) throws MacroException {
+        if (macros.length > 0) {
+            play(macros[0], robot, times);
         }
     }
     
     /**
      * Plays a named macro a specified number of times.
      * @param robot the event generator
+     * @param times the number of times to play
      * @param macroName the name of the macro to play
-     * @param times the number of times to play the macro
      * @throws MacroException in particular if the macro wasn't found.
      */
-    public void play(final Robot robot, final String macroName, final int times)
+    public void play(final Robot robot, final int times, final String macroName)
+            throws MacroException {
+
+        play(getMacro(macroName), robot, times);
+    }
+    
+    private Macro getMacro(final String name) throws MacroException {
+        return Arrays.stream(macros)
+            .filter(m -> m.getName().equals(name))
+            .findFirst()
+            .orElseThrow(() -> new MacroException("No such macro: " + name));
+    }
+    
+    private void play(final Macro macro, final Robot robot, final int times)
             throws MacroException {
         
-        for (final Macro macro : macros) {
-            if (macro.getName().equals(macroName)) {
-                for (int i = 0; i < times; i++) {
-                    macro.play(this, robot);
-                }
-                return;
-            }
+        for (int i = 0; i < times; i++) {
+            macro.play(this, robot);
         }
-        throw new MacroException("No such macro: " + macroName);
     }
 
 }
