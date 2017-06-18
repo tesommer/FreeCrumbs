@@ -20,7 +20,9 @@ import freecrumbs.macro.Script;
  * Stores the coordinates of an image within the current screen capture
  * to script variables.
  * Syntax:
- * {@code image_xy x-variable y-variable image-file}.
+ * {@code image_xy x-variable y-variable occurrence image-file}.
+ * Occurrences are counted from the top.
+ * The first occurrence has number one.
  * Image location relative to script location is supported.
  * If the image was not on screen, the variables will be set to -1.
  * 
@@ -40,25 +42,28 @@ public class ImageXY implements GestureParser {
 
     @Override
     public Gesture parse(final String line) throws MacroException {
-        final String parts[] = Macros.split(line, 4);
-        if (parts.length != 4) {
+        final String parts[] = Macros.split(line, 5);
+        if (parts.length != 5) {
             throw new MacroException("Syntax error: " + line);
         }
-        return new ImageXYGesture(parts[1], parts[2], parts[3]);
+        return new ImageXYGesture(parts[1], parts[2], parts[3], parts[4]);
     }
     
     private static final class ImageXYGesture implements Gesture {
         private final String xVariable;
         private final String yVariable;
+        private final String occurrence;
         private final String file;
         
         public ImageXYGesture(
                 final String xVariable,
                 final String yVariable,
+                final String occurrence,
                 final String file) {
             
             this.xVariable = xVariable;
             this.yVariable = yVariable;
+            this.occurrence = occurrence;
             this.file = file;
         }
         
@@ -71,7 +76,8 @@ public class ImageXY implements GestureParser {
                 = Toolkit.getDefaultToolkit().getScreenSize();
             final BufferedImage capture
                 = robot.createScreenCapture(new Rectangle(screenSize));
-            final int[] xy = findImageInCapture(image, capture);
+            final int[] xy = findImageInCapture(
+                    image, capture, script.getValue(occurrence));
             setXYVariables(script, xy);
         }
 
@@ -125,12 +131,16 @@ public class ImageXY implements GestureParser {
          * Returns an empty array if not found.
          */
         private static int[] findImageInCapture(
-                final BufferedImage image, final BufferedImage capture) {
+                final BufferedImage image,
+                final BufferedImage capture,
+                final int occurrence) {
             
+            int count = 0;
             for (int x = 0; x < capture.getWidth() - image.getWidth(); x++) {
                 for (int y = 0;
                         y < capture.getHeight() -  image.getHeight(); y++) {
-                    if (isImageAt(image, capture, x, y)) {
+                    if (isImageAt(image, capture, x, y)
+                            && ++count == occurrence) {
                         return new int[] {x, y};
                     }
                 }

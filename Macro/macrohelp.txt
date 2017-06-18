@@ -8,7 +8,7 @@
 + "\n"
 + "Options:\n"
 + "  -t    times to play\n"
-+ "  -m    specify named macro within the script\n"
++ "  -m    specify named macro\n"
 + "  -h    print this help message\n"
 + "\n"
 + "If -m is not specified, the first macro is played.\n"

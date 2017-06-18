@@ -297,10 +297,11 @@ literal or script variable may be used.
 
 * ``exit``: Exits the script.
 
-* ``image_xy x-variable y-variable image-file``: Stores the coordinates of an
-  image within the current screen capture to script variables. The image
-  file may be relative to the script location. If the image was not on screen,
-  both variables will be set to -1.
+* ``image_xy x-variable y-variable <occurrence> image-file``: Stores the
+  coordinates of an image within the current screen capture to script variables.
+  The image file may be relative to the script's location. If the image is not
+  located, both variables will be set to -1. Occurrences are counted from the
+  top. The first occurrence has number one.
 
 * ``key_press <key-code>``: Generates a key press event.
 
@@ -330,6 +331,9 @@ literal or script variable may be used.
     * ``<=``: less than or equals
     * ``>``: greater than
     * ``>=``: greater than or equals
+    * ``isset``: tests the existence of a variable.
+      ``var isset 1`` is true if ``var`` has been set.
+      ``var isset 0`` is true if ``var`` has not been set yet.
 
 * ``print output``: Prints output to STDOUT. Script variables may be referenced
   by precedeing them with $ in the output.

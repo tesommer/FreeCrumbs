@@ -105,9 +105,11 @@ public final class Macros {
     
     /**
      * Evaluates a three-word logical expression.
+     * An operator named {@code isset} tests the existence of a variable
+     * ({@code x isset 0} is true if {@code x} is nonexistent).
      * @param script the script
      * @param left left operand (integer or variable)
-     * @param operator ==, !=, &lt;, &gt;, &lt;= or &gt;=
+     * @param operator ==, !=, &lt;, &gt;, &lt;=, &gt;= or isset
      * @param right right operand (integer or variable)
      */
     public static boolean evaluateLogical(
@@ -128,6 +130,9 @@ public final class Macros {
             return script.getValue(left) <= script.getValue(right);
         } else if (">=".equals(operator)) {
             return script.getValue(left) >= script.getValue(right);
+        } else if ("isset".equals(operator)) {
+            final boolean existence = script.getValue(right) != 0;
+            return script.getVariableNames().contains(left) == existence;
         }
         throw new MacroException("Invalid operator: " + operator);
     }
