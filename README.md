@@ -29,7 +29,7 @@ A collection of tiny command-line tools.
 Legal
 -----
 
-Copyright &copy; 2017 Tone Sommerland
+Copyright &copy; @copyrightyearowner@
 
 For the terms and conditions of this product, see **LICENSE.txt**.
 
@@ -39,6 +39,17 @@ third-party libraries that this product depends on.
 FreeCrumbs comes bundled with:
 
 * [CalclipseLib version 2](http://www.calclipse.com)
+
+Release notes
+-------------
+
+* Important change to macro scripts: Running a script without specifying a name
+  now plays the first macro in the script and then exits.
+* The ``macro`` command allows ``-t`` option without ``-m``.
+* The ``image_xy`` macro command has a new parameter named occurrence.
+* The optional logical expression of the ``play`` macro command now supports an
+  operator named ``isset``.
+* The Macrec utility was added.
 
 Directory layout
 ----------------
@@ -60,6 +71,7 @@ Programs included in FreeCrumbs
 * [Dups](#dups)
 * [Hash](#hash)
 * [Macro](#macro)
+  * [Macrec](#macrec)
 
 <a name="finf"></a>Finf
 -----------------------
@@ -255,10 +267,11 @@ The procedure for executing a macro script is straight forward:
 
 The ``macro`` command permits a couple of options:
 
-* ``-m`` followed by a macro name executes a named macro within the script.
-* ``-t`` is followed by the number of times to run a named macro. One is
-  default. If this option is specified, ``-m`` must also be.
+* ``-t`` is followed by the number of times to play. One is default.
+* ``-m`` followed by a macro name plays a named macro within the script.
 * ``-h`` prints a help message.
+
+If a macro name is not specified, the first macro in the script is played.
 
 ### Macro scripts
 
@@ -295,10 +308,11 @@ literal or script variable may be used.
 
 * ``exit``: Exits the script.
 
-* ``image_xy x-variable y-variable image-file``: Stores the coordinates of an
-  image within the current screen capture to script variables. The image
-  file may be relative to the script location. If the image was not on screen,
-  both variables will be set to -1.
+* ``image_xy x-variable y-variable <occurrence> image-file``: Stores the
+  coordinates of an image within the current screen capture to script variables.
+  The image file may be relative to the script's location. If the image is not
+  located, both variables will be set to -1. Occurrences are counted from the
+  top. The first occurrence has number one.
 
 * ``key_press <key-code>``: Generates a key press event.
 
@@ -328,6 +342,9 @@ literal or script variable may be used.
     * ``<=``: less than or equals
     * ``>``: greater than
     * ``>=``: greater than or equals
+    * ``isset``: tests the existence of a variable.
+      ``var isset 1`` is true if ``var`` has been set.
+      ``var isset 0`` is true if ``var`` has not been set yet.
 
 * ``print output``: Prints output to STDOUT. Script variables may be referenced
   by precedeing them with $ in the output.
@@ -343,3 +360,32 @@ literal or script variable may be used.
 
 * ``type <value>``: Generates key presses and key releases that types the given
   value.
+
+### <a name="macrec"></a>Macrec
+
+Macrec (Macro recorder) is a utility that prints macro script lines to STDOUT.
+The **bin** directory contains the Macrec launchers:
+
+* **macrec.bat** for Windows
+* **macrec** for Unix/GNU Linux
+
+To record key strokes, start Macrec with the ``-k`` argument:
+
+    macrec -k
+
+This opens a small window that reports key strokes as macro commands to STDOUT.
+
+To record mouse gestures, start Macrec with the ``-m`` argument followed by a
+delay in milliseconds, e.g.:
+
+    macrec -m 1000
+
+After the delay, a fullscreen window opens showing a screen capture. This window
+have three modes that are activated by pressing the following keys:
+
+* P: Press mouse buttons to records mouse button presses and releases.
+* M: Click in the screen capture to records mouse movement.
+* C: Click on two points in the screen capture to select a portion of it. The
+  selection is saved as PNG to the current directory.
+
+Press Escape to exit.
