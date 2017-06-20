@@ -29,7 +29,7 @@ A collection of tiny command-line tools.
 Legal
 -----
 
-Copyright &copy; @copyrightyearowner@
+Copyright &copy; 2017 Tone Sommerland
 
 For the terms and conditions of this product, see **LICENSE.txt**.
 
@@ -39,17 +39,6 @@ third-party libraries that this product depends on.
 FreeCrumbs comes bundled with:
 
 * [CalclipseLib version 2](http://www.calclipse.com)
-
-Release notes
--------------
-
-* Important change to macro scripts: Running a script without specifying a name
-  now plays the first macro in the script and then exits.
-* The ``macro`` command allows ``-t`` option without ``-m``.
-* The ``image_xy`` macro command has a new parameter named occurrence.
-* The optional logical expression of the ``play`` macro command now supports an
-  operator named ``isset``.
-* The Macrec utility was added.
 
 Directory layout
 ----------------
@@ -387,5 +376,4 @@ have three modes that are activated by pressing the following keys:
 * M: Click in the screen capture to records mouse movement.
 * C: Click on two points in the screen capture to select a portion of it. The
   selection is saved as PNG to the current directory.
-
-Press Escape to exit.
+* Escape: Exit.
