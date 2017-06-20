@@ -7,7 +7,7 @@
 + "Usage: finf [OPTION...] <FILE|DIRECTORY...>\n"
 + "\n"
 + "Options:\n"
-+ "  -c    specify config file (- = standard in)\n"
++ "  -c    specify config file (- = STDIN)\n"
 + "  -o    override config setting\n"
 + "  -h    print this help message\n"
 + "\n"

@@ -105,11 +105,12 @@ public final class Macros {
     
     /**
      * Evaluates a three-word logical expression.
-     * An operator named {@code isset} tests the existence of a variable
-     * ({@code x isset 0} is true if {@code x} is nonexistent).
      * @param script the script
      * @param left left operand (integer or variable)
-     * @param operator ==, !=, &lt;, &gt;, &lt;=, &gt;= or isset
+     * @param operator ==, !=, &lt;, &gt;, &lt;=, &gt;= or isset.
+     * isset tests the existence of a variable;
+     * {@code x isset 1} is true if {@code x} exists and
+     * {@code x isset 0} is true if {@code x} is nonexistent.
      * @param right right operand (integer or variable)
      */
     public static boolean evaluateLogical(

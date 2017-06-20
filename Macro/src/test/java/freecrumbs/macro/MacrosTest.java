@@ -119,6 +119,18 @@ public class MacrosTest {
                     "Cause: 37 ¤ 73",
                     ex.getCause());
         }
+        Assert.assertTrue(
+                "x isset y",
+                Macros.evaluateLogical(script, "x", "isset", "y"));
+        Assert.assertFalse(
+                "x isset 0",
+                Macros.evaluateLogical(script, "x", "isset", "0"));
+        Assert.assertFalse(
+                "t isset 1",
+                Macros.evaluateLogical(script, "t", "isset", "1"));
+        Assert.assertTrue(
+                "t isset 0",
+                Macros.evaluateLogical(script, "t", "isset", "0"));
     }
     
     private static void assertSplit(

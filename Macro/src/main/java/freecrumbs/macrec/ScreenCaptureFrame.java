@@ -33,9 +33,8 @@ public class ScreenCaptureFrame extends JFrame
     protected ScreenCaptureFrame() throws MacroException {
         this.screenCapture = createScreenCapture();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        getContentPane().addKeyListener(this);
-        getContentPane().addMouseListener(this);
-        getContentPane().setFocusable(true);
+        addKeyListener(this);
+        addMouseListener(this);
         setExtendedState(MAXIMIZED_BOTH);
         setUndecorated(true);
     }

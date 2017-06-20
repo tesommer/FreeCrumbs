@@ -21,7 +21,7 @@ public final class MacroRecorder {
     
     public static void main(final String[] args) throws MacroException {
         if (args.length == 0) {
-            startKeyRecorder();
+            printHelp();
         } else if (KEY_REC_OPTION.equals(args[0]) && args.length == 1) {
             startKeyRecorder();
         } else if (MOUSE_REC_OPTION.equals(args[0]) && args.length == 2) {
