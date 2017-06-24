@@ -2,7 +2,7 @@
 
 <project name="FreeCrumbs" default="main" basedir=".">
 	
-	<property name="version" value="1.0.0"/>
+	<property name="version" value="1.1.0"/>
 	<property name="product.and.version" value="FreeCrumbs version ${version}"/>
 	<property name="copyright.year.owner" value="2017 Tone Sommerland"/>
 	<property name="copyright" value="Copyright (C) ${copyright.year.owner}"/>
