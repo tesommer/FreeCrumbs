@@ -292,8 +292,8 @@ literal or script variable may be used.
   Creates script variables corresponding to constants in
   *java.awt.event.KeyEvent* (VK_A, VK_ALT, VK_SPACE, …).
 
-* ``delay <millis>``: Delays further execution a specified number of
-  milliseconds.
+* ``delay <millis> [auto]``: Delays further execution a specified number of
+  milliseconds or sets the auto delay.
 
 * ``exit``: Exits the script.
 
