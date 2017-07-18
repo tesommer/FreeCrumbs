@@ -297,11 +297,15 @@ literal or script variable may be used.
 
 * ``exit``: Exits the script.
 
-* ``image_xy x-variable y-variable <occurrence> image-file``: Stores the
+* ``image_xy x-variable y-variable image-file[ <occurrence=1>[ <delay=0>[
+    <times=1>[ success-macro-name[ failure-macro-name]]]]]``: Stores the
   coordinates of an image within the current screen capture to script variables.
   The image file may be relative to the script's location. If the image is not
   located, both variables will be set to -1. Occurrences are counted from the
-  top. The first occurrence has number one.
+  top. This command will wait ``delay`` milliseconds, take a screen shot and
+  search for the image. It will do this ``times`` times. If the image was found,
+  ``success-macro-name`` will be played if specified. Otherwise,
+  ``failure-macro-name`` will be played if specified.
 
 * ``key_press <key-code>``: Generates a key press event.
 
@@ -321,7 +325,7 @@ literal or script variable may be used.
 * ``mouse_wheel <steps>``: Moves the mouse wheel. Negative steps means up/away
   from user.
 
-* ``play macro-name [<times>]``: Plays the macro with the given name a certain
+* ``play macro-name [<times=1>]``: Plays the macro with the given name a certain
   number of times (default is one time). This command supports an optional
   logical expression, e.g.: ``play WTAB 1 x > -1``. The macro will be played if
   the condition is true. The following logical operators are supported:
