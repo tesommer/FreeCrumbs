@@ -10,5 +10,5 @@ import java.io.Reader;
  */
 public interface ConfigLoader {
 
-    Config loadConfig(Reader reader) throws IOException;
+    public abstract Config loadConfig(Reader reader) throws IOException;
 }

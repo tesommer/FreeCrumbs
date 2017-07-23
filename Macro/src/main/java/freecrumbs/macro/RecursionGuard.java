@@ -12,11 +12,11 @@ public interface RecursionGuard {
      * @throws MacroException
      * if the count has reached the maximum play limit.
      */
-    void increment() throws MacroException;
+    public abstract void increment() throws MacroException;
     
     /**
      * Decrements the count.
      */
-    void decrement();
+    public abstract void decrement();
 
 }

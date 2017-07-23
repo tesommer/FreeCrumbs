@@ -16,6 +16,6 @@ public interface Gesture {
      * @param script the script containing this gesture
      * @param robot the event generator
      */
-    void play(Script script, Robot robot) throws MacroException;
+    public abstract void play(Script script, Robot robot) throws MacroException;
 
 }

@@ -7,5 +7,5 @@ package freecrumbs.finf;
  */
 public interface InfoFormat {
 
-    String toString(Info info);
+    public abstract String toString(Info info);
 }

@@ -9,6 +9,6 @@ import java.awt.Graphics;
  */
 public interface Layer {
     
-    void paint(Graphics g);
+    public abstract void paint(Graphics g);
 
 }

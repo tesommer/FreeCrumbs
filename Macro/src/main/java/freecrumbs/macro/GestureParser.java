@@ -10,13 +10,13 @@ public interface GestureParser {
     /**
      * Whether or not this parser supports the given line.
      */
-    boolean supports(String line);
+    public abstract boolean supports(String line);
     
     /**
      * Parses the given line and returns a gesture instance.
      * {@link #supports(String)} has returned {@code true}
      * for the given line before this method is called.
      */
-    Gesture parse(String line) throws MacroException;
+    public abstract Gesture parse(String line) throws MacroException;
 
 }
