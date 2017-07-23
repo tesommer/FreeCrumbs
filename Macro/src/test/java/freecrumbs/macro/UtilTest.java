@@ -3,9 +3,9 @@ package freecrumbs.macro;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class MacrosTest {
+public class UtilTest {
 
-    public MacrosTest() {
+    public UtilTest() {
     }
     
     @Test
@@ -45,25 +45,25 @@ public class MacrosTest {
         Assert.assertEquals(
                 "x + y",
                 5,
-                Macros.evaluateArithmetic(script, "x", "+", "y"));
+                Util.evaluateArithmetic(script, "x", "+", "y"));
         Assert.assertEquals(
                 "x - 21",
                 -19,
-                Macros.evaluateArithmetic(script, "x", "-", "21"));
+                Util.evaluateArithmetic(script, "x", "-", "21"));
         Assert.assertEquals(
                 "22 * y",
                 66,
-                Macros.evaluateArithmetic(script, "22", "*", "y"));
+                Util.evaluateArithmetic(script, "22", "*", "y"));
         Assert.assertEquals(
                 "23 / 7",
                 3,
-                Macros.evaluateArithmetic(script, "23", "/", "7"));
+                Util.evaluateArithmetic(script, "23", "/", "7"));
         Assert.assertEquals(
                 "23 % 7",
                 2,
-                Macros.evaluateArithmetic(script, "23", "%", "7"));
+                Util.evaluateArithmetic(script, "23", "%", "7"));
         try {
-            Macros.evaluateArithmetic(script, "27", "/", "0");
+            Util.evaluateArithmetic(script, "27", "/", "0");
             Assert.fail("27 / 0: Expected MacroException.");
         } catch (final MacroException ex) {
             Assert.assertTrue(
@@ -71,7 +71,7 @@ public class MacrosTest {
                     ex.getCause() instanceof ArithmeticException);
         }
         try {
-            Macros.evaluateArithmetic(script, "26", "%", "0");
+            Util.evaluateArithmetic(script, "26", "%", "0");
             Assert.fail("26 % 0: Expected MacroException.");
         } catch (final MacroException ex) {
             Assert.assertTrue(
@@ -79,7 +79,7 @@ public class MacrosTest {
                     ex.getCause() instanceof ArithmeticException);
         }
         try {
-            Macros.evaluateArithmetic(script, "11", "£", "73");
+            Util.evaluateArithmetic(script, "11", "£", "73");
             Assert.fail("11 £ 73: Expected MacroException.");
         } catch (final MacroException ex) {
             Assert.assertNull(
@@ -95,24 +95,24 @@ public class MacrosTest {
         script.variables().set("y", 11);
         Assert.assertTrue(
                 "x == 7",
-                Macros.evaluateLogical(script, "x", "==", "7"));
+                Util.evaluateLogical(script, "x", "==", "7"));
         Assert.assertTrue(
                 "x != y",
-                Macros.evaluateLogical(script, "x", "!=", "y"));
+                Util.evaluateLogical(script, "x", "!=", "y"));
         Assert.assertTrue(
                 "7 <= x",
-                Macros.evaluateLogical(script, "7", "<=", "x"));
+                Util.evaluateLogical(script, "7", "<=", "x"));
         Assert.assertFalse(
                 "11 < y",
-                Macros.evaluateLogical(script, "11", "<", "y"));
+                Util.evaluateLogical(script, "11", "<", "y"));
         Assert.assertFalse(
                 "21 >= 23",
-                Macros.evaluateLogical(script, "21", ">=", "23"));
+                Util.evaluateLogical(script, "21", ">=", "23"));
         Assert.assertTrue(
                 "3 > 2",
-                Macros.evaluateLogical(script, "3", ">", "2"));
+                Util.evaluateLogical(script, "3", ">", "2"));
         try {
-            Macros.evaluateLogical(script, "37", "¤", "73");
+            Util.evaluateLogical(script, "37", "¤", "73");
             Assert.fail("37 ¤ 73: Expected MacroException.");
         } catch (final MacroException ex) {
             Assert.assertNull(
@@ -121,22 +121,22 @@ public class MacrosTest {
         }
         Assert.assertTrue(
                 "x isset y",
-                Macros.evaluateLogical(script, "x", "isset", "y"));
+                Util.evaluateLogical(script, "x", "isset", "y"));
         Assert.assertFalse(
                 "x isset 0",
-                Macros.evaluateLogical(script, "x", "isset", "0"));
+                Util.evaluateLogical(script, "x", "isset", "0"));
         Assert.assertFalse(
                 "t isset 1",
-                Macros.evaluateLogical(script, "t", "isset", "1"));
+                Util.evaluateLogical(script, "t", "isset", "1"));
         Assert.assertTrue(
                 "t isset 0",
-                Macros.evaluateLogical(script, "t", "isset", "0"));
+                Util.evaluateLogical(script, "t", "isset", "0"));
     }
     
     private static void assertSplit(
             final String line, final int limit, final String... expecteds) {
         
-        final String[] actuals = Macros.split(line, limit);
+        final String[] actuals = Util.split(line, limit);
         Assert.assertArrayEquals(
                 "split(" + line + ", " + limit + ")", expecteds, actuals);
     }
@@ -144,7 +144,7 @@ public class MacrosTest {
     private static void assertSplit(
             final String line, final String... expecteds) {
         
-        final String[] actuals = Macros.split(line);
+        final String[] actuals = Util.split(line);
         Assert.assertArrayEquals("split(" + line + ")", expecteds, actuals);
     }
 

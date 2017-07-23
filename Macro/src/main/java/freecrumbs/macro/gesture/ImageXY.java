@@ -9,8 +9,8 @@ import java.awt.image.BufferedImage;
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
 import freecrumbs.macro.MacroException;
-import freecrumbs.macro.Macros;
 import freecrumbs.macro.Script;
+import freecrumbs.macro.Util;
 
 /**
  * Stores the coordinates of an image within a screen capture
@@ -112,7 +112,7 @@ public class ImageXY extends Command {
             while (xy.length == 0
                     && count++ < script.variables().getValue(times)) {
                 robot.delay(script.variables().getValue(delay));
-                xy = Macros.findImageInImage(
+                xy = Util.findImageInImage(
                         image,
                         createScreenCapture(robot),
                         script.variables().getValue(occurrence));

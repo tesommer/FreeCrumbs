@@ -3,7 +3,7 @@ package freecrumbs.macro.gesture;
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
 import freecrumbs.macro.MacroException;
-import freecrumbs.macro.Macros;
+import freecrumbs.macro.Util;
 
 /**
  * Plays a named macro a certain number of times (default is one).
@@ -36,7 +36,7 @@ public class Play extends Command {
         final String macroName = params[0];
         final String times = params.length >= 2 ? params[1] : "1";
         return (script, robot) -> {
-            if (params.length != 5 || Macros.evaluateLogical(
+            if (params.length != 5 || Util.evaluateLogical(
                     script, params[2], params[3], params[4])) {
                 script.play(
                         robot, script.variables().getValue(times), macroName);

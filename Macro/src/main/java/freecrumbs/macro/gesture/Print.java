@@ -3,7 +3,7 @@ package freecrumbs.macro.gesture;
 import freecrumbs.macro.Gesture;
 import freecrumbs.macro.GestureParser;
 import freecrumbs.macro.MacroException;
-import freecrumbs.macro.Macros;
+import freecrumbs.macro.Util;
 
 /**
  * Prints output to STDOUT.
@@ -22,7 +22,7 @@ public class Print implements GestureParser {
 
     @Override
     public boolean supports(final String line) {
-        return Macros.isFirstWord(NAME, line);
+        return Util.isFirstWord(NAME, line);
     }
 
     @Override

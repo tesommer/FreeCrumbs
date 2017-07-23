@@ -14,9 +14,9 @@ import javax.swing.ImageIcon;
  * 
  * @author Tone Sommerland
  */
-public final class Macros {
+public final class Util {
 
-    private Macros() {
+    private Util() {
     }
     
     /**

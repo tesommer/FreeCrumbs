@@ -70,7 +70,7 @@ public class ScriptImages {
         try {
             return get(nameOrFile);
         } catch (final MacroException ex) {
-            return Macros.loadImage(getScriptRelativeFile(nameOrFile));
+            return Util.loadImage(getScriptRelativeFile(nameOrFile));
         }
     }
     

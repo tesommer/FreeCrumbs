@@ -3,7 +3,7 @@ package freecrumbs.macro.gesture;
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
 import freecrumbs.macro.MacroException;
-import freecrumbs.macro.Macros;
+import freecrumbs.macro.Util;
 
 /**
  * Creates key code variables VK_A, VK_ALT, etc.
@@ -24,7 +24,7 @@ public class AddKeyCodeVariables extends Command {
     protected Gesture getGesture(final String line, final String[] params)
             throws MacroException {
         
-        return (script, robot) -> Macros.addKeyCodeVariables(script);
+        return (script, robot) -> Util.addKeyCodeVariables(script);
     }
 
 }

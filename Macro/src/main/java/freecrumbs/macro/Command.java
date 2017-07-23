@@ -53,12 +53,12 @@ public abstract class Command implements GestureParser {
 
     @Override
     public boolean supports(final String line) {
-        return Macros.isFirstWord(name, line);
+        return Util.isFirstWord(name, line);
     }
 
     @Override
     public Gesture parse(final String line) throws MacroException {
-        final String[] words = Macros.split(line);
+        final String[] words = Util.split(line);
         final String[] params = Arrays.copyOfRange(words, 1, words.length);
         if (params.length < minParams || params.length > maxParams) {
             throw new MacroException("Syntax incorrect: " + line);

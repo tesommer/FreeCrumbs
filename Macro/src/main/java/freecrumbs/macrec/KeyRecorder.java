@@ -9,8 +9,8 @@ import java.util.function.Consumer;
 import javax.swing.JFrame;
 
 import freecrumbs.macro.MacroException;
-import freecrumbs.macro.Macros;
 import freecrumbs.macro.Script;
+import freecrumbs.macro.Util;
 import freecrumbs.macro.gesture.KeyPress;
 import freecrumbs.macro.gesture.KeyRelease;
 
@@ -35,7 +35,7 @@ public class KeyRecorder extends JFrame implements KeyListener {
         addKeyListener(this);
         setFocusTraversalKeysEnabled(false);
         setSize(WIDTH, HEIGHT);
-        Macros.addKeyCodeVariables(script);
+        Util.addKeyCodeVariables(script);
     }
 
     @Override

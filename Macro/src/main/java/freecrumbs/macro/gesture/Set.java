@@ -3,7 +3,7 @@ package freecrumbs.macro.gesture;
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
 import freecrumbs.macro.MacroException;
-import freecrumbs.macro.Macros;
+import freecrumbs.macro.Util;
 
 /**
  * Sets a script variable.
@@ -36,7 +36,7 @@ public class Set extends Command {
         }
         return (script, robot) -> script.variables().set(
                 params[0],
-                Macros.evaluateArithmetic(
+                Util.evaluateArithmetic(
                         script, params[1], params[2], params[3]));
     }
 

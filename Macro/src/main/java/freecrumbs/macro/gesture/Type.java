@@ -3,7 +3,7 @@ package freecrumbs.macro.gesture;
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
 import freecrumbs.macro.MacroException;
-import freecrumbs.macro.Macros;
+import freecrumbs.macro.Util;
 
 /**
  * Types a value.
@@ -25,7 +25,7 @@ public class Type extends Command {
             throws MacroException {
         
         return (script, robot)
-                -> Macros.type(robot, script.variables().getValue(params[0]));
+                -> Util.type(robot, script.variables().getValue(params[0]));
     }
 
 }
