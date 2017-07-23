@@ -20,14 +20,13 @@ import freecrumbs.macro.Util;
  *  image_xy
  *   x-variable
  *    y-variable
- *     image-file
+ *     image
  *      [occurrence=1,
  *       [delay=0,
  *        [time=1,
  *         [success-macro-name,
  *          [failure-macro-name]]]]]}.
  * Occurrences are counted from the top.
- * Image location relative to script location is supported.
  * If the image was not seen, the variables will be set to -1.
  * 
  * @author Tone Sommerland
@@ -112,7 +111,7 @@ public class ImageXY extends Command {
             while (xy.length == 0
                     && count++ < script.variables().getValue(times)) {
                 robot.delay(script.variables().getValue(delay));
-                xy = Util.findImageInImage(
+                xy = Util.xyOf(
                         image,
                         createScreenCapture(robot),
                         script.variables().getValue(occurrence));
