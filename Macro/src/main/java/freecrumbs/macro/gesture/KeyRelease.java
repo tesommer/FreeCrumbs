@@ -23,7 +23,8 @@ public class KeyRelease extends Command {
     protected Gesture getGesture(final String line, final String[] params)
             throws MacroException {
         
-        return (script, robot) -> robot.keyRelease(script.getValue(params[0]));
+        return (script, robot)
+                -> robot.keyRelease(script.variables().getValue(params[0]));
     }
 
 }

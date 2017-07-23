@@ -1,9 +1,13 @@
 package freecrumbs.macro;
 
+import java.awt.Graphics;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+
+import javax.swing.ImageIcon;
 
 /**
  * Utility methods.
@@ -60,7 +64,8 @@ public final class Macros {
                     && (field.getModifiers() & Modifier.PUBLIC) != 0
                     && (field.getModifiers() & Modifier.STATIC) != 0) {
                 try {
-                    script.setVariable(field.getName(), field.getInt(null));
+                    script.variables()
+                        .set(field.getName(), field.getInt(null));
                 } catch (final IllegalAccessException ex) {
                     throw new AssertionError(ex);
                 }
@@ -82,20 +87,30 @@ public final class Macros {
             final String right) throws MacroException {
         
         if ("+".equals(operator)) {
-            return script.getValue(left) + script.getValue(right);
+            return
+                    script.variables().getValue(left)
+                  + script.variables().getValue(right);
         } else if ("-".equals(operator)) {
-            return script.getValue(left) - script.getValue(right);
+            return
+                    script.variables().getValue(left)
+                  - script.variables().getValue(right);
         } else if ("*".equals(operator)) {
-            return script.getValue(left) * script.getValue(right);
+            return
+                    script.variables().getValue(left)
+                  * script.variables().getValue(right);
         } else if ("/".equals(operator)) {
             try {
-                return script.getValue(left) / script.getValue(right);
+                return
+                        script.variables().getValue(left)
+                      / script.variables().getValue(right);
             } catch (final ArithmeticException ex) {
                 throw new MacroException(ex);
             }
         } else if ("%".equals(operator)) {
             try {
-                return script.getValue(left) % script.getValue(right);
+                return
+                        script.variables().getValue(left)
+                      % script.variables().getValue(right);
             } catch (final ArithmeticException ex) {
                 throw new MacroException(ex);
             }
@@ -120,20 +135,32 @@ public final class Macros {
             final String right) throws MacroException {
         
         if ("==".equals(operator)) {
-            return script.getValue(left) == script.getValue(right);
+            return
+                    script.variables().getValue(left)
+                 == script.variables().getValue(right);
         } else if ("!=".equals(operator)) {
-            return script.getValue(left) != script.getValue(right);
+            return
+                    script.variables().getValue(left)
+                 != script.variables().getValue(right);
         } else if ("<".equals(operator)) {
-            return script.getValue(left) < script.getValue(right);
+            return
+                    script.variables().getValue(left)
+                  < script.variables().getValue(right);
         } else if (">".equals(operator)) {
-            return script.getValue(left) > script.getValue(right);
+            return
+                    script.variables().getValue(left)
+                  > script.variables().getValue(right);
         } else if ("<=".equals(operator)) {
-            return script.getValue(left) <= script.getValue(right);
+            return
+                    script.variables().getValue(left)
+                 <= script.variables().getValue(right);
         } else if (">=".equals(operator)) {
-            return script.getValue(left) >= script.getValue(right);
+            return
+                    script.variables().getValue(left)
+                 >= script.variables().getValue(right);
         } else if ("isset".equals(operator)) {
-            final boolean existence = script.getValue(right) != 0;
-            return script.getVariableNames().contains(left) == existence;
+            final boolean existence = script.variables().getValue(right) != 0;
+            return script.variables().getNames().contains(left) == existence;
         }
         throw new MacroException("Invalid operator: " + operator);
     }
@@ -151,6 +178,69 @@ public final class Macros {
             robot.keyPress(codePoint);
             robot.keyRelease(codePoint);
         }
+    }
+    
+    /**
+     * Loads an image from file.
+     */
+    public static BufferedImage loadImage(final String file)
+            throws MacroException {
+        
+        final ImageIcon icon = new ImageIcon(file);
+        if (icon.getIconWidth() < 1 || icon.getIconHeight() < 1) {
+            throw new MacroException("Image could not be loaded: " + file);
+        }
+        final BufferedImage image = new BufferedImage(
+                icon.getIconWidth(),
+                icon.getIconHeight(),
+                BufferedImage.TYPE_INT_ARGB);
+        final Graphics g = image.getGraphics();
+        g.drawImage(icon.getImage(), 0, 0, null);
+        g.dispose();
+        return image;
+    }
+    
+    /**
+     * Finds the x-y coordinates of an image within another image.
+     * Starts looking at the top left of {@code inImage}.
+     * @param occurrence the occurrence to find
+     * (the first occurrence has number one).
+     * @return an empty array if not found.
+     */
+    public static int[] findImageInImage(
+            final BufferedImage findImage,
+            final BufferedImage inImage,
+            final int occurrence) {
+        
+        int count = 0;
+        for (int x = 0; x < inImage.getWidth() - findImage.getWidth(); x++) {
+            for (int y = 0;
+                    y < inImage.getHeight() -  findImage.getHeight(); y++) {
+                if (isImageAt(findImage, inImage, x, y)
+                        && ++count == occurrence) {
+                    return new int[] {x, y};
+                }
+            }
+        }
+        return new int[0];
+    }
+
+    private static boolean isImageAt(
+            final BufferedImage findImage,
+            final BufferedImage inImage,
+            final int x,
+            final int y) {
+        
+        for (int x2 = 0; x2 < findImage.getWidth(); x2++) {
+            for (int y2 = 0; y2 < findImage.getHeight(); y2++) {
+                final int rgb = findImage.getRGB(x2, y2);
+                final int rgb2 = inImage.getRGB(x + x2, y + y2);
+                if (rgb != rgb2) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 }

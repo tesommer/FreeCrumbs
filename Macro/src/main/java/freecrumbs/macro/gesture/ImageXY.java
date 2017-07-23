@@ -1,18 +1,15 @@
 package freecrumbs.macro.gesture;
 
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
-import java.io.File;
-
-import javax.swing.ImageIcon;
 
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
 import freecrumbs.macro.MacroException;
+import freecrumbs.macro.Macros;
 import freecrumbs.macro.Script;
 
 /**
@@ -71,16 +68,10 @@ public class ImageXY extends Command {
             this.failureMacroName = paramOrDefault(params, 7, null);
         }
         
-        public String getFile(final Script script) {
-            final int index = script.getLocation().lastIndexOf(File.separator);
-            if (index > -1) {
-                final File relative
-                    = new File(script.getLocation().substring(0, index), file);
-                if (relative.isFile()) {
-                    return relative.getPath();
-                }
-            }
-            return file;
+        public BufferedImage getImage(final Script script)
+                throws MacroException {
+            
+            return script.images().getOrLoad(file);
         }
         
         public void playResultMacro(
@@ -107,8 +98,8 @@ public class ImageXY extends Command {
                 x = -1;
                 y = -1;
             }
-            script.setVariable(xVariable, x);
-            script.setVariable(yVariable, y);
+            script.variables().set(xVariable, x);
+            script.variables().set(yVariable, y);
         }
         
         public int[] lookForImageInCapture(
@@ -118,12 +109,13 @@ public class ImageXY extends Command {
             
             int[] xy = new int[0];
             int count = 0;
-            while (xy.length == 0 && count++ < script.getValue(times)) {
-                robot.delay(script.getValue(delay));
-                xy = findImageInCapture(
+            while (xy.length == 0
+                    && count++ < script.variables().getValue(times)) {
+                robot.delay(script.variables().getValue(delay));
+                xy = Macros.findImageInImage(
                         image,
                         createScreenCapture(robot),
-                        script.getValue(occurrence));
+                        script.variables().getValue(occurrence));
             }
             return xy;
         }
@@ -141,81 +133,17 @@ public class ImageXY extends Command {
         public void play(final Script script, final Robot robot)
                 throws MacroException {
 
-            final BufferedImage image = loadImage(params.getFile(script));
+            final BufferedImage image = params.getImage(script);
             final int[] xy = params.lookForImageInCapture(script, robot, image);
             params.setXYVariables(script, xy);
             params.playResultMacro(script, robot, xy);
         }
-    }
-    
-    private static String paramOrDefault(
-            final String[] params,
-            final int index,
-            final String defaultParam) {
-        
-        return index < params.length ? params[index] : defaultParam;
-    }
-
-    private static BufferedImage loadImage(final String file)
-            throws MacroException {
-        
-        final ImageIcon icon = new ImageIcon(file);
-        if (icon.getIconWidth() < 1 || icon.getIconHeight() < 1) {
-            throw new MacroException("Image could not be loaded: " + file);
-        }
-        final BufferedImage image = new BufferedImage(
-                icon.getIconWidth(),
-                icon.getIconHeight(),
-                BufferedImage.TYPE_INT_ARGB);
-        final Graphics g = image.getGraphics();
-        g.drawImage(icon.getImage(), 0, 0, null);
-        g.dispose();
-        return image;
     }
 
     private static BufferedImage createScreenCapture(final Robot robot) {
         final Dimension screenSize
             = Toolkit.getDefaultToolkit().getScreenSize();
         return robot.createScreenCapture(new Rectangle(screenSize));
-    }
-    
-    /**
-     * Returns an empty array if not found.
-     */
-    private static int[] findImageInCapture(
-            final BufferedImage image,
-            final BufferedImage capture,
-            final int occurrence) {
-        
-        int count = 0;
-        for (int x = 0; x < capture.getWidth() - image.getWidth(); x++) {
-            for (int y = 0;
-                    y < capture.getHeight() -  image.getHeight(); y++) {
-                if (isImageAt(image, capture, x, y)
-                        && ++count == occurrence) {
-                    return new int[] {x, y};
-                }
-            }
-        }
-        return new int[0];
-    }
-
-    private static boolean isImageAt(
-            final BufferedImage image,
-            final BufferedImage capture,
-            final int x,
-            final int y) {
-        
-        for (int x2 = 0; x2 < image.getWidth(); x2++) {
-            for (int y2 = 0; y2 < image.getHeight(); y2++) {
-                final int imageRGB = image.getRGB(x2, y2);
-                final int captureRGB = capture.getRGB(x + x2, y + y2);
-                if (imageRGB != captureRGB) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
 }

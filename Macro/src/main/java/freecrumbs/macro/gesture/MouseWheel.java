@@ -24,7 +24,8 @@ public class MouseWheel extends Command {
     protected Gesture getGesture(final String line, final String[] params)
             throws MacroException {
         
-        return (script, robot) -> robot.mouseWheel(script.getValue(params[0]));
+        return (script, robot)
+                -> robot.mouseWheel(script.variables().getValue(params[0]));
     }
 
 }

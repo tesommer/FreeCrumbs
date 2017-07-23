@@ -1,13 +1,7 @@
 package freecrumbs.macro;
 
-import static java.util.Objects.requireNonNull;
-
 import java.awt.Robot;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * A macro script.
@@ -15,81 +9,35 @@ import java.util.Set;
  * @author Tone Sommerland
  */
 public class Script {
-    
-    private final Map<String, Integer>
-    variables = new HashMap<String, Integer>();
-    
-    private final String location;
+    private final ScriptVariables variables;
+    private final ScriptImages images;
     private final Macro[] macros;
 
     /**
      * Creates a new macro script.
-     * @param location the location of the script file
+     * @param scriptFile the location of the script file
      * @param macros the macros in this script
      */
-    public Script(final String location, final Macro... macros) {
-        this.location = requireNonNull(location, "location");
+    public Script(final String scriptFile, final Macro... macros) {
+        this.variables = new ScriptVariables();
+        this.images = new ScriptImages(scriptFile);
         this.macros = macros.clone();
     }
     
     /**
-     * The location of the script file.
+     * Script variables.
      */
-    public String getLocation() {
-        return location;
+    public ScriptVariables variables() {
+        return variables;
     }
 
     /**
-     * The names of all variables stored in this script.
+     * Script images.
      */
-    public Set<String> getVariableNames() {
-        return Collections.unmodifiableSet(variables.keySet());
+    public ScriptImages images() {
+        return images;
     }
-    
-    /**
-     * Sets the value of a variable.
-     * Creates the variable if it doesn't exist.
-     * @param name the variable name
-     * @param value the variable value
-     */
-    public void setVariable(final String name, final int value) {
-        variables.put(name, value);
-    }
-    
-    /**
-     * Removes a variable if it exists.
-     * @param name the variable name
-     */
-    public void removeVariable(final String name) {
-        variables.remove(name);
-    }
-    
-    /**
-     * Returns the value of a variable.
-     * @param name the variable name
-     * @throws MacroException if the variable does not exist.
-     */
-    public int getVariable(final String name) throws MacroException {
-        if (variables.containsKey(name)) {
-            return variables.get(name);
-        }
-        throw new MacroException("No such variable: " + name);
-    }
-    
-    /**
-     * Returns the value of an integer literal or a stored variable.
-     * @param nameOrLiteral either an integer literal or a variable name
-     * @throws MacroException if it's neither
-     * a valid integer nor a stored variable.
-     */
-    public int getValue(final String nameOrLiteral) throws MacroException {
-        try {
-            return Integer.valueOf(nameOrLiteral);
-        } catch (final NumberFormatException ex) {
-            return getVariable(nameOrLiteral);
-        }
-    }
-    
+
     /**
      * Runs this script.
      * Plays the first macro, if any, a specified number of times.
@@ -116,7 +64,7 @@ public class Script {
     }
     
     private Macro getMacro(final String name) throws MacroException {
-        return Arrays.stream(macros)
+        return Stream.of(macros)
             .filter(m -> m.getName().equals(name))
             .findFirst()
             .orElseThrow(() -> new MacroException("No such macro: " + name));

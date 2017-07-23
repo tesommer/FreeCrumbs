@@ -38,7 +38,8 @@ public class Play extends Command {
         return (script, robot) -> {
             if (params.length != 5 || Macros.evaluateLogical(
                     script, params[2], params[3], params[4])) {
-                script.play(robot, script.getValue(times), macroName);
+                script.play(
+                        robot, script.variables().getValue(times), macroName);
             }
         };
     }

@@ -40,8 +40,8 @@ public class MacrosTest {
     @Test
     public void testEvaluateArithmetic() throws MacroException {
         final Script script = new Script("");
-        script.setVariable("x", 2);
-        script.setVariable("y", 3);
+        script.variables().set("x", 2);
+        script.variables().set("y", 3);
         Assert.assertEquals(
                 "x + y",
                 5,
@@ -91,8 +91,8 @@ public class MacrosTest {
     @Test
     public void testEvaluateLogical() throws MacroException {
         final Script script = new Script("");
-        script.setVariable("x", 7);
-        script.setVariable("y", 11);
+        script.variables().set("x", 7);
+        script.variables().set("y", 11);
         Assert.assertTrue(
                 "x == 7",
                 Macros.evaluateLogical(script, "x", "==", "7"));

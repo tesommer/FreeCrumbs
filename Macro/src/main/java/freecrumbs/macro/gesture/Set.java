@@ -31,10 +31,10 @@ public class Set extends Command {
             throw new MacroException("Syntax error: " + line);
         }
         if (params.length == 2) {
-            return (script, robot) -> script.setVariable(
-                    params[0], script.getValue(params[1]));
+            return (script, robot) -> script.variables().set(
+                    params[0], script.variables().getValue(params[1]));
         }
-        return (script, robot) -> script.setVariable(
+        return (script, robot) -> script.variables().set(
                 params[0],
                 Macros.evaluateArithmetic(
                         script, params[1], params[2], params[3]));

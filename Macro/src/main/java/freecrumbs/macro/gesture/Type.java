@@ -25,7 +25,7 @@ public class Type extends Command {
             throws MacroException {
         
         return (script, robot)
-                -> Macros.type(robot, script.getValue(params[0]));
+                -> Macros.type(robot, script.variables().getValue(params[0]));
     }
 
 }

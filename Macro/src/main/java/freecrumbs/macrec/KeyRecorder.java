@@ -53,9 +53,9 @@ public class KeyRecorder extends JFrame implements KeyListener {
     }
     
     private String getParameter(final int keyCode) {
-        for (final String name : script.getVariableNames()) {
+        for (final String name : script.variables().getNames()) {
             try {
-                if (script.getVariable(name) == keyCode) {
+                if (script.variables().get(name) == keyCode) {
                     return name;
                 }
             } catch (final MacroException ex) {

@@ -35,6 +35,21 @@ public abstract class Command implements GestureParser {
         this.minParams = minParams;
         this.maxParams = maxParams;
     }
+    
+    /**
+     * Convenience method that either returns a parameter,
+     * or a default value if the index is greater than the parameter array.
+     */
+    protected static String paramOrDefault(
+            final String[] params,
+            final int index,
+            final String defaultParam) {
+        
+        if (index < 0) {
+            throw new IllegalArgumentException("index < 0");
+        }
+        return index < params.length ? params[index] : defaultParam;
+    }
 
     @Override
     public boolean supports(final String line) {

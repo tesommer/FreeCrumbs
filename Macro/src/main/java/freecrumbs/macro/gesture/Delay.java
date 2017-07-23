@@ -31,9 +31,10 @@ public class Delay extends Command {
                 throw new MacroException(line);
             }
             return (script, robot) ->
-                robot.setAutoDelay(script.getValue(params[0]));
+                robot.setAutoDelay(script.variables().getValue(params[0]));
         }
-        return (script, robot) -> robot.delay(script.getValue(params[0]));
+        return (script, robot) ->
+            robot.delay(script.variables().getValue(params[0]));
     }
 
 }
