@@ -26,11 +26,12 @@ import freecrumbs.macro.gesture.MouseRelease;
 
 /**
  * This frame records mouse gestures to the receiver.
- * There are three modes activated by pressing K, P and C:
+ * There are four modes activated by pressing K, P, C and S:
  * <ul>
  * <li>P: record mouse button press/release</li>
  * <li>M: record mouse move</li>
  * <li>C: record screen capture</li>
+ * <li>S: show coordinates of mouse presses</li>
  * </ul>
  * When in the C mode,
  * one presses two points to select a sub-image,
@@ -71,7 +72,7 @@ public class MouseRecorder extends ScreenCaptureFrame {
     TEXT_LINE_HEIGHT = 32;
     
     private static final String
-    TEXT_FORMAT = "MODE: {0}\nSWITCH MODE: [P|M|C]\nEXIT: [Esc]";
+    TEXT_FORMAT = "MODE: {0}\nSWITCH MODE: [P|M|C|S]\nEXIT: [Esc]";
 
     private static final String
     CAPTURE_FILENAME_EXTENSION = "png";
@@ -83,6 +84,7 @@ public class MouseRecorder extends ScreenCaptureFrame {
         RECORDING_PRESS_RELEASE,
         RECORDING_MOVE,
         RECORDING_CAPTURE,
+        SHOWING_XY,
     }
 
     private final MarkLayer
@@ -121,6 +123,8 @@ public class MouseRecorder extends ScreenCaptureFrame {
             setState(State.RECORDING_MOVE);
         } else if (evt.getKeyCode() == KeyEvent.VK_C) {
             setState(State.RECORDING_CAPTURE);
+        } else if (evt.getKeyCode() == KeyEvent.VK_S) {
+            setState(State.SHOWING_XY);
         } else {
             textLayer.setText("");
         }
@@ -134,6 +138,8 @@ public class MouseRecorder extends ScreenCaptureFrame {
             recordMove(evt);
         } else if (state == State.RECORDING_CAPTURE) {
             recordCapture(evt);
+        } else if (state == State.SHOWING_XY) {
+            showXY(evt);
         }
     }
 
@@ -193,6 +199,11 @@ public class MouseRecorder extends ScreenCaptureFrame {
             }
             clearMarks();
         }
+    }
+    
+    private void showXY(final MouseEvent evt) {
+        textLayer.setText("(" + evt.getX() + ", " + evt.getY() + ")");
+        repaint();
     }
 
     private BufferedImage copyCapture(final Point point1, final Point point2) {
