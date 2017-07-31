@@ -9,14 +9,17 @@ import freecrumbs.macro.gesture.Exit;
 import freecrumbs.macro.gesture.ImageXY;
 import freecrumbs.macro.gesture.KeyPress;
 import freecrumbs.macro.gesture.KeyRelease;
+import freecrumbs.macro.gesture.Load;
 import freecrumbs.macro.gesture.MouseMove;
 import freecrumbs.macro.gesture.MousePress;
 import freecrumbs.macro.gesture.MouseRelease;
 import freecrumbs.macro.gesture.MouseWheel;
 import freecrumbs.macro.gesture.Play;
 import freecrumbs.macro.gesture.Print;
+import freecrumbs.macro.gesture.Screenshot;
 import freecrumbs.macro.gesture.Set;
 import freecrumbs.macro.gesture.Type;
+import freecrumbs.macro.gesture.WaitForImage;
 
 /**
  * The entry point to Macro.
@@ -42,14 +45,17 @@ public final class Main {
             new ImageXY(),
             new KeyPress(),
             new KeyRelease(),
+            new Load(),
             new MouseMove(),
             new MousePress(),
             new MouseRelease(),
             new MouseWheel(),
             new Play(),
             new Print(),
+            new Screenshot(),
             new Set(),
             new Type(),
+            new WaitForImage(),
         };
 
     private Main() {

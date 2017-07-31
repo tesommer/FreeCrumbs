@@ -23,7 +23,7 @@ import freecrumbs.macro.Util;
  *     image
  *      [occurrence=1,
  *       [delay=0,
- *        [time=1,
+ *        [times=1,
  *         [success-macro-name,
  *          [failure-macro-name]]]]]}.
  * Occurrences are counted from the top.
@@ -49,7 +49,7 @@ public class ImageXY extends Command {
     private static final class ImageXYParams {
         private final String xVariable;
         private final String yVariable;
-        private final String file;
+        private final String image;
         private final String occurrence;
         private final String delay;
         private final String times;
@@ -59,7 +59,7 @@ public class ImageXY extends Command {
         public ImageXYParams(final String[] params) {
             this.xVariable = params[0];
             this.yVariable = params[1];
-            this.file      = params[2];
+            this.image      = params[2];
             this.occurrence       = paramOrDefault(params, 3, "1");
             this.delay            = paramOrDefault(params, 4, "0");
             this.times            = paramOrDefault(params, 5, "1");
@@ -70,7 +70,7 @@ public class ImageXY extends Command {
         public BufferedImage getImage(final Script script)
                 throws MacroException {
             
-            return script.images().getOrLoad(file);
+            return script.images().getOrLoad(image);
         }
         
         public void playResultMacro(

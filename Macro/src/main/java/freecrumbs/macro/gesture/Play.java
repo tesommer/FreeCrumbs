@@ -34,7 +34,7 @@ public class Play extends Command {
             throw new MacroException("Syntax error: " + line);
         }
         final String macroName = params[0];
-        final String times = params.length >= 2 ? params[1] : "1";
+        final String times = paramOrDefault(params, 1, "1");
         return (script, robot) -> {
             if (params.length != 5 || Util.evaluateLogical(
                     script, params[2], params[3], params[4])) {

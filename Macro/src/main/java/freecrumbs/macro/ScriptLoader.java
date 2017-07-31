@@ -10,6 +10,6 @@ public interface ScriptLoader {
     /**
      * Loads the script file at the specified location.
      */
-    public abstract Script load(String location) throws MacroException;
+    public abstract Script load(String scriptFile) throws MacroException;
 
 }

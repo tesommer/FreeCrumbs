@@ -58,6 +58,15 @@ public class ScriptImages {
     }
     
     /**
+     * Loads an image from file.
+     * @param file the image file, may be relative to the script
+     * @throws MacroException if the image could not be loaded.
+     */
+    public BufferedImage load(final String file) throws MacroException {
+        return Util.loadImage(getScriptRelativeFile(file));
+    }
+    
+    /**
      * First tries to get the image with the given name,
      * and if that fails,
      * tries to load it from file.
@@ -70,7 +79,7 @@ public class ScriptImages {
         try {
             return get(nameOrFile);
         } catch (final MacroException ex) {
-            return Util.loadImage(getScriptRelativeFile(nameOrFile));
+            return load(nameOrFile);
         }
     }
     

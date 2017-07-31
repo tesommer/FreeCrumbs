@@ -22,10 +22,10 @@ public class StandardScriptLoader implements ScriptLoader {
     }
 
     @Override
-    public Script load(final String location) throws MacroException {
+    public Script load(final String scriptFile) throws MacroException {
         try (
             final BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(location)))
+                    new InputStreamReader(new FileInputStream(scriptFile)))
         ) {
             final Collection<Macro> macros = new ArrayList<>();
             final Collection<Gesture> gestures = new ArrayList<>();
@@ -47,7 +47,8 @@ public class StandardScriptLoader implements ScriptLoader {
                 line = reader.readLine();
             }
             addMacro(macros, gestures, macroName);
-            return new Script(location, macros.stream().toArray(Macro[]::new));
+            return new Script(
+                    scriptFile, macros.stream().toArray(Macro[]::new));
         } catch (final IOException ex) {
             throw new MacroException(ex);
         }
