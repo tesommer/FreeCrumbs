@@ -2,20 +2,20 @@ package freecrumbs.macro;
 
 import java.io.InputStream;
 
-import freecrumbs.macro.internal.DefaultMacroLoader;
+import freecrumbs.macro.internal.DefaultLoader;
 
 /**
- * Reads macros from an input stream.
+ * Loads macros from an input stream.
  * 
  * @author Tone Sommerland
  */
-public interface MacroLoader {
+public interface Loader {
     
     /**
      * Creates a default macro loader.
      */
-    public static MacroLoader getDefault(final GestureParser... parsers) {
-        return new DefaultMacroLoader(parsers);
+    public static Loader getDefault(final GestureParser... parsers) {
+        return new DefaultLoader(parsers);
     }
     
     /**

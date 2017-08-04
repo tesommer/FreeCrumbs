@@ -88,8 +88,8 @@ public final class Main {
     
     private static Script loadScript(final Args args) throws MacroException {
         return new Script(
-                MacroLoader.getDefault(GESTURE_PARSERS),
-                new ScriptFile(args.inputFile));
+                new ScriptFile(args.inputFile),
+                Loader.getDefault(GESTURE_PARSERS));
     }
     
     /**

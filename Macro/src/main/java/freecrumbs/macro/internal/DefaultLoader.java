@@ -12,10 +12,10 @@ import freecrumbs.macro.Gesture;
 import freecrumbs.macro.GestureParser;
 import freecrumbs.macro.Macro;
 import freecrumbs.macro.MacroException;
-import freecrumbs.macro.MacroLoader;
+import freecrumbs.macro.Loader;
 import freecrumbs.macro.Util;
 
-public class DefaultMacroLoader implements MacroLoader {
+public class DefaultLoader implements Loader {
     
     private static final int RECURSION_LIMIT = 20;
 
@@ -25,7 +25,7 @@ public class DefaultMacroLoader implements MacroLoader {
     
     private final GestureParser[] gestureParsers;
 
-    public DefaultMacroLoader(final GestureParser... gestureParsers) {
+    public DefaultLoader(final GestureParser... gestureParsers) {
         this.gestureParsers = gestureParsers.clone();
     }
 

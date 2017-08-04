@@ -97,7 +97,7 @@ public class Play extends Command {
                 return current;
             }
             return new Script(
-                    current.loader(), current.location().refer(scriptLocation));
+                    current.location().refer(scriptLocation), current.loader());
         }
     }
     

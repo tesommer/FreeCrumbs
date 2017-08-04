@@ -13,22 +13,22 @@ import java.util.stream.Stream;
  * @author Tone Sommerland
  */
 public class Script {
-    private final MacroLoader loader;
-    private final ScriptLocation location;
+    private final Location location;
+    private final Loader loader;
     private final ScriptVariables variables;
     private final ScriptImages images;
     private final Macro[] macros;
     
     /**
      * Creates a new macro script.
-     * @param loader the loader that loads macros
      * @param location the location to open
+     * @param loader the loader that loads macros
      */
-    public Script(final MacroLoader loader, final ScriptLocation location)
+    public Script(final Location location, final Loader loader)
             throws MacroException {
-        
-        this.loader = requireNonNull(loader, "loader");
+
         this.location = requireNonNull(location, "location");
+        this.loader = requireNonNull(loader, "loader");
         this.variables = new ScriptVariables();
         this.images = new ScriptImages(location);
         try (final InputStream in = location.open()) {
@@ -37,19 +37,19 @@ public class Script {
             throw new MacroException(ex);
         }
     }
-    
-    /**
-     * The loader that loaded the macros in script.
-     */
-    public MacroLoader loader() {
-        return loader;
-    }
 
     /**
      * The location of this script.
      */
-    public ScriptLocation location() {
+    public Location location() {
         return location;
+    }
+    
+    /**
+     * The loader of this script.
+     */
+    public Loader loader() {
+        return loader;
     }
 
     /**

@@ -7,7 +7,7 @@ import java.io.InputStream;
  * 
  * @author Tone Sommerland
  */
-public interface ScriptLocation {
+public interface Location {
     
     /**
      * The base location.
@@ -18,7 +18,7 @@ public interface ScriptLocation {
      * Returns an absolute location or one relative to this.
      * @param relative the location to refer to
      */
-    public abstract ScriptLocation refer(String relative) throws MacroException;
+    public abstract Location refer(String relative) throws MacroException;
     
     /**
      * Opens this location.

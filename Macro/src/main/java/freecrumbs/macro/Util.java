@@ -22,8 +22,8 @@ import javax.swing.ImageIcon;
  */
 public final class Util {
     
-    private static final ScriptLocation
-    UXO_SCRIPT_LOCATION = new ScriptLocation() {
+    private static final Location
+    UXO_LOCATION = new Location() {
 
         @Override
         public String getBase() {
@@ -31,9 +31,7 @@ public final class Util {
         }
 
         @Override
-        public ScriptLocation refer(final String relative)
-                throws MacroException {
-
+        public Location refer(final String relative) throws MacroException {
             throw new MacroException("UXO location just exploded!");
         }
 
@@ -44,7 +42,7 @@ public final class Util {
 
     };
     
-    private static final MacroLoader UXO_MACRO_LOADER = in -> new Macro[0];
+    private static final Loader UXO_LOADER = in -> new Macro[0];
 
     private Util() {
     }
@@ -289,7 +287,7 @@ public final class Util {
      */
     public static Script createEmptyScript() {
         try {
-            return new Script(UXO_MACRO_LOADER, UXO_SCRIPT_LOCATION);
+            return new Script(UXO_LOCATION, UXO_LOADER);
         } catch (final MacroException ex) {
             throw new AssertionError(ex);
         }

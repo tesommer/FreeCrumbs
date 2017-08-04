@@ -12,7 +12,7 @@ import java.io.InputStream;
  * 
  * @author Tone Sommerland
  */
-public class ScriptFile implements ScriptLocation {
+public class ScriptFile implements Location {
     private final String base;
 
     public ScriptFile(final String base) {
@@ -25,7 +25,7 @@ public class ScriptFile implements ScriptLocation {
     }
 
     @Override
-    public ScriptLocation refer(final String relative) throws MacroException {
+    public Location refer(final String relative) throws MacroException {
         final int index = base.lastIndexOf(File.separator);
         if (index >= 0) {
             final File relativeFile

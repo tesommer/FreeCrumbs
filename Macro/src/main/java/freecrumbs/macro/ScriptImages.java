@@ -15,9 +15,9 @@ import java.util.Set;
  */
 public class ScriptImages {
     private final Map<String, BufferedImage> images = new HashMap<>();
-    private final ScriptLocation location;
+    private final Location location;
 
-    public ScriptImages(final ScriptLocation location) {
+    public ScriptImages(final Location location) {
         this.location = requireNonNull(location, "location");
     }
     
