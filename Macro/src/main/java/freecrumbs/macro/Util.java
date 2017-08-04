@@ -18,28 +18,6 @@ import java.util.stream.IntStream;
  * @author Tone Sommerland
  */
 public final class Util {
-    
-    private static final Location
-    UXO_LOCATION = new Location() {
-
-        @Override
-        public String getBase() {
-            return "";
-        }
-
-        @Override
-        public Location refer(final String relative) throws MacroException {
-            throw new MacroException("UXO location just exploded!");
-        }
-
-        @Override
-        public InputStream open() throws MacroException {
-            return new ByteArrayInputStream(new byte[0]);
-        }
-
-    };
-    
-    private static final Loader UXO_LOADER = in -> new Macro[0];
 
     private Util() {
     }
@@ -111,31 +89,23 @@ public final class Util {
             final String operator,
             final String right) throws MacroException {
         
+        final int leftValue = script.getVariables().getValue(left);
+        final int rightValue = script.getVariables().getValue(right);
         if ("+".equals(operator)) {
-            return
-                    script.getVariables().getValue(left)
-                  + script.getVariables().getValue(right);
+            return leftValue + rightValue;
         } else if ("-".equals(operator)) {
-            return
-                    script.getVariables().getValue(left)
-                  - script.getVariables().getValue(right);
+            return leftValue - rightValue;
         } else if ("*".equals(operator)) {
-            return
-                    script.getVariables().getValue(left)
-                  * script.getVariables().getValue(right);
+            return leftValue * rightValue;
         } else if ("/".equals(operator)) {
             try {
-                return
-                        script.getVariables().getValue(left)
-                      / script.getVariables().getValue(right);
+                return leftValue / rightValue;
             } catch (final ArithmeticException ex) {
                 throw new MacroException(ex);
             }
         } else if ("%".equals(operator)) {
             try {
-                return
-                        script.getVariables().getValue(left)
-                      % script.getVariables().getValue(right);
+                return leftValue % rightValue;
             } catch (final ArithmeticException ex) {
                 throw new MacroException(ex);
             }
@@ -159,34 +129,25 @@ public final class Util {
             final String operator,
             final String right) throws MacroException {
         
-        if ("==".equals(operator)) {
-            return
-                    script.getVariables().getValue(left)
-                 == script.getVariables().getValue(right);
-        } else if ("!=".equals(operator)) {
-            return
-                    script.getVariables().getValue(left)
-                 != script.getVariables().getValue(right);
-        } else if ("<".equals(operator)) {
-            return
-                    script.getVariables().getValue(left)
-                  < script.getVariables().getValue(right);
-        } else if (">".equals(operator)) {
-            return
-                    script.getVariables().getValue(left)
-                  > script.getVariables().getValue(right);
-        } else if ("<=".equals(operator)) {
-            return
-                    script.getVariables().getValue(left)
-                 <= script.getVariables().getValue(right);
-        } else if (">=".equals(operator)) {
-            return
-                    script.getVariables().getValue(left)
-                 >= script.getVariables().getValue(right);
-        } else if ("isset".equals(operator)) {
+        if ("isset".equals(operator)) {
             final boolean existence
                 = script.getVariables().getValue(right) != 0;
             return script.getVariables().getNames().contains(left) == existence;
+        }
+        final int leftValue = script.getVariables().getValue(left);
+        final int rightValue = script.getVariables().getValue(right);
+        if ("==".equals(operator)) {
+            return leftValue == rightValue;
+        } else if ("!=".equals(operator)) {
+            return leftValue != rightValue;
+        } else if ("<".equals(operator)) {
+            return leftValue < rightValue;
+        } else if (">".equals(operator)) {
+            return leftValue > rightValue;
+        } else if ("<=".equals(operator)) {
+            return leftValue <= rightValue;
+        } else if (">=".equals(operator)) {
+            return leftValue >= rightValue;
         }
         throw new MacroException("Invalid operator: " + operator);
     }
@@ -258,6 +219,28 @@ public final class Util {
             = Toolkit.getDefaultToolkit().getScreenSize();
         return robot.createScreenCapture(new Rectangle(screenSize));
     }
+    
+    private static final Location
+    UXO_LOCATION = new Location() {
+
+        @Override
+        public String getBase() {
+            return "";
+        }
+
+        @Override
+        public Location refer(final String relative) throws MacroException {
+            throw new MacroException("UXO location just exploded!");
+        }
+
+        @Override
+        public InputStream open() throws MacroException {
+            return new ByteArrayInputStream(new byte[0]);
+        }
+
+    };
+    
+    private static final Loader UXO_LOADER = in -> new Macro[0];
     
     /**
      * Creates a dummy macro script.
