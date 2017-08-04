@@ -40,8 +40,8 @@ public class UtilTest {
     @Test
     public void testEvaluateArithmetic() throws MacroException {
         final Script script = Util.createEmptyScript();
-        script.variables().set("x", 2);
-        script.variables().set("y", 3);
+        script.getVariables().set("x", 2);
+        script.getVariables().set("y", 3);
         Assert.assertEquals(
                 "x + y",
                 5,
@@ -91,8 +91,8 @@ public class UtilTest {
     @Test
     public void testEvaluateLogical() throws MacroException {
         final Script script = Util.createEmptyScript();
-        script.variables().set("x", 7);
-        script.variables().set("y", 11);
+        script.getVariables().set("x", 7);
+        script.getVariables().set("y", 11);
         Assert.assertTrue(
                 "x == 7",
                 Util.evaluateLogical(script, "x", "==", "7"));

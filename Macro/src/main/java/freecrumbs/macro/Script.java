@@ -41,28 +41,28 @@ public class Script {
     /**
      * The location of this script.
      */
-    public Location location() {
+    public Location getLocation() {
         return location;
     }
     
     /**
      * The loader of this script.
      */
-    public Loader loader() {
+    public Loader getLoader() {
         return loader;
     }
 
     /**
      * Script variables.
      */
-    public ScriptVariables variables() {
+    public ScriptVariables getVariables() {
         return variables;
     }
 
     /**
      * Script images.
      */
-    public ScriptImages images() {
+    public ScriptImages getImages() {
         return images;
     }
 

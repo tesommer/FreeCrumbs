@@ -67,7 +67,7 @@ public class ImageXY extends Command {
         public BufferedImage getImage(final Script script)
                 throws MacroException {
             
-            return script.images().getOrLoad(image);
+            return script.getImages().getOrLoad(image);
         }
         
         public void playResultMacro(
@@ -94,8 +94,8 @@ public class ImageXY extends Command {
                 x = -1;
                 y = -1;
             }
-            script.variables().set(xVariable, x);
-            script.variables().set(yVariable, y);
+            script.getVariables().set(xVariable, x);
+            script.getVariables().set(yVariable, y);
         }
         
         public int[] lookForImageInCapture(
@@ -106,12 +106,12 @@ public class ImageXY extends Command {
             int[] xy = new int[0];
             int count = 0;
             while (xy.length == 0
-                    && count++ < script.variables().getValue(times)) {
-                robot.delay(script.variables().getValue(delay));
+                    && count++ < script.getVariables().getValue(times)) {
+                robot.delay(script.getVariables().getValue(delay));
                 xy = Util.xyOf(
                         image,
                         Util.createScreenCapture(robot),
-                        script.variables().getValue(occurrence));
+                        script.getVariables().getValue(occurrence));
             }
             return xy;
         }

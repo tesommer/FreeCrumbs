@@ -29,7 +29,7 @@ public class MousePress extends Command {
         
         int buttons = 0;
         for (int i = 0; i < params.length; i++) {
-            if (script.variables().getValue(params[i]) != 0) {
+            if (script.getVariables().getValue(params[i]) != 0) {
                 if (i == 0) {
                     buttons += InputEvent.BUTTON1_DOWN_MASK;
                 } else if (i == 1) {

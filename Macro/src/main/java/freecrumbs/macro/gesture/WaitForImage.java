@@ -42,7 +42,7 @@ public class WaitForImage extends Command {
             final Robot robot,
             final String[] params) throws MacroException {
         
-        final BufferedImage image = script.images().getOrLoad(params[0]);
+        final BufferedImage image = script.getImages().getOrLoad(params[0]);
         final boolean gone = getGone(script, params);
         final int millis = getMillis(script, params);
         waitLoop(robot, image, gone, millis);
@@ -51,14 +51,14 @@ public class WaitForImage extends Command {
     private static boolean getGone(final Script script, final String[] params)
             throws MacroException {
         
-        return script.variables().getValue(
+        return script.getVariables().getValue(
                 paramOrDefault(params, 1, DEFAULT_GONE)) != 0;
     }
     
     private static int getMillis(final Script script, final String[] params)
             throws MacroException {
         
-        return script.variables().getValue(
+        return script.getVariables().getValue(
                 paramOrDefault(params, 2, DEFAULT_MILLIS));
     }
 

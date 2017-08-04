@@ -24,8 +24,8 @@ public class MouseMove extends Command {
             throws MacroException {
         
         return (script, robot) -> robot.mouseMove(
-                script.variables().getValue(params[0]),
-                script.variables().getValue(params[1]));
+                script.getVariables().getValue(params[0]),
+                script.getVariables().getValue(params[1]));
     }
 
 }

@@ -89,7 +89,7 @@ public class Play extends Command {
             
             final Script script = getScript(current);
             script.play(
-                    robot, script.variables().getValue(times), macroName);
+                    robot, script.getVariables().getValue(times), macroName);
         }
         
         private Script getScript(final Script current) throws MacroException {
@@ -97,7 +97,8 @@ public class Play extends Command {
                 return current;
             }
             return new Script(
-                    current.location().refer(scriptLocation), current.loader());
+                    current.getLocation().refer(scriptLocation),
+                    current.getLoader());
         }
     }
     

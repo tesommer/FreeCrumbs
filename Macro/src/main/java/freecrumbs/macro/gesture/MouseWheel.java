@@ -25,7 +25,7 @@ public class MouseWheel extends Command {
             throws MacroException {
         
         return (script, robot)
-                -> robot.mouseWheel(script.variables().getValue(params[0]));
+                -> robot.mouseWheel(script.getVariables().getValue(params[0]));
     }
 
 }

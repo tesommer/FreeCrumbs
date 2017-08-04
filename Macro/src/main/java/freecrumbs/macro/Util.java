@@ -92,7 +92,7 @@ public final class Util {
                     && (field.getModifiers() & Modifier.PUBLIC) != 0
                     && (field.getModifiers() & Modifier.STATIC) != 0) {
                 try {
-                    script.variables()
+                    script.getVariables()
                         .set(field.getName(), field.getInt(null));
                 } catch (final IllegalAccessException ex) {
                     throw new AssertionError(ex);
@@ -116,29 +116,29 @@ public final class Util {
         
         if ("+".equals(operator)) {
             return
-                    script.variables().getValue(left)
-                  + script.variables().getValue(right);
+                    script.getVariables().getValue(left)
+                  + script.getVariables().getValue(right);
         } else if ("-".equals(operator)) {
             return
-                    script.variables().getValue(left)
-                  - script.variables().getValue(right);
+                    script.getVariables().getValue(left)
+                  - script.getVariables().getValue(right);
         } else if ("*".equals(operator)) {
             return
-                    script.variables().getValue(left)
-                  * script.variables().getValue(right);
+                    script.getVariables().getValue(left)
+                  * script.getVariables().getValue(right);
         } else if ("/".equals(operator)) {
             try {
                 return
-                        script.variables().getValue(left)
-                      / script.variables().getValue(right);
+                        script.getVariables().getValue(left)
+                      / script.getVariables().getValue(right);
             } catch (final ArithmeticException ex) {
                 throw new MacroException(ex);
             }
         } else if ("%".equals(operator)) {
             try {
                 return
-                        script.variables().getValue(left)
-                      % script.variables().getValue(right);
+                        script.getVariables().getValue(left)
+                      % script.getVariables().getValue(right);
             } catch (final ArithmeticException ex) {
                 throw new MacroException(ex);
             }
@@ -164,31 +164,32 @@ public final class Util {
         
         if ("==".equals(operator)) {
             return
-                    script.variables().getValue(left)
-                 == script.variables().getValue(right);
+                    script.getVariables().getValue(left)
+                 == script.getVariables().getValue(right);
         } else if ("!=".equals(operator)) {
             return
-                    script.variables().getValue(left)
-                 != script.variables().getValue(right);
+                    script.getVariables().getValue(left)
+                 != script.getVariables().getValue(right);
         } else if ("<".equals(operator)) {
             return
-                    script.variables().getValue(left)
-                  < script.variables().getValue(right);
+                    script.getVariables().getValue(left)
+                  < script.getVariables().getValue(right);
         } else if (">".equals(operator)) {
             return
-                    script.variables().getValue(left)
-                  > script.variables().getValue(right);
+                    script.getVariables().getValue(left)
+                  > script.getVariables().getValue(right);
         } else if ("<=".equals(operator)) {
             return
-                    script.variables().getValue(left)
-                 <= script.variables().getValue(right);
+                    script.getVariables().getValue(left)
+                 <= script.getVariables().getValue(right);
         } else if (">=".equals(operator)) {
             return
-                    script.variables().getValue(left)
-                 >= script.variables().getValue(right);
+                    script.getVariables().getValue(left)
+                 >= script.getVariables().getValue(right);
         } else if ("isset".equals(operator)) {
-            final boolean existence = script.variables().getValue(right) != 0;
-            return script.variables().getNames().contains(left) == existence;
+            final boolean existence
+                = script.getVariables().getValue(right) != 0;
+            return script.getVariables().getNames().contains(left) == existence;
         }
         throw new MacroException("Invalid operator: " + operator);
     }
