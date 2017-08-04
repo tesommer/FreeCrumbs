@@ -1,5 +1,7 @@
 package freecrumbs.macro;
 
+import java.io.InputStream;
+
 /**
  * A script location.
  * 
@@ -13,15 +15,14 @@ public interface ScriptLocation {
     public abstract String getBase();
     
     /**
-     * Returns a location relative to this one.
-     * @param relative an absolute or relative location
+     * Returns an absolute location or one relative to this.
+     * @param relative the location to refer to
      */
     public abstract ScriptLocation refer(String relative) throws MacroException;
     
     /**
-     * Loads the macro script at this location.
-     * @param loader the macro loader to use
+     * Opens this location.
      */
-    public abstract Script open(MacroLoader loader) throws MacroException;
+    public abstract InputStream open() throws MacroException;
 
 }

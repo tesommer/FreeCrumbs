@@ -13,23 +13,23 @@ import java.io.InputStream;
  * @author Tone Sommerland
  */
 public class ScriptFile implements ScriptLocation {
-    private final String file;
+    private final String base;
 
-    public ScriptFile(final String file) {
-        this.file = requireNonNull(file, "file");
+    public ScriptFile(final String base) {
+        this.base = requireNonNull(base, "base");
     }
 
     @Override
     public String getBase() {
-        return file;
+        return base;
     }
 
     @Override
     public ScriptLocation refer(final String relative) throws MacroException {
-        final int index = file.lastIndexOf(File.separator);
+        final int index = base.lastIndexOf(File.separator);
         if (index >= 0) {
             final File relativeFile
-                = new File(file.substring(0, index), relative);
+                = new File(base.substring(0, index), relative);
             if (relativeFile.isFile()) {
                 return new ScriptFile(relativeFile.getPath());
             }
@@ -38,9 +38,9 @@ public class ScriptFile implements ScriptLocation {
     }
 
     @Override
-    public Script open(final MacroLoader loader) throws MacroException {
-        try (final InputStream in = new FileInputStream(file)) {
-            return new Script(loader, this, loader.load(in));
+    public InputStream open() throws MacroException {
+        try {
+            return new FileInputStream(base);
         } catch (final IOException ex) {
             throw new MacroException(ex);
         }

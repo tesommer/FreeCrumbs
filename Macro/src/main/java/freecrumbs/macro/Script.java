@@ -3,6 +3,8 @@ package freecrumbs.macro;
 import static java.util.Objects.requireNonNull;
 
 import java.awt.Robot;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.stream.Stream;
 
 /**
@@ -16,23 +18,24 @@ public class Script {
     private final ScriptVariables variables;
     private final ScriptImages images;
     private final Macro[] macros;
-
+    
     /**
      * Creates a new macro script.
-     * @param loader the loader that loaded the macros
-     * @param location the location of this script
-     * @param macros the macros in this script
+     * @param loader the loader that loads macros
+     * @param location the location to open
      */
-    public Script(
-            final MacroLoader loader,
-            final ScriptLocation location,
-            final Macro... macros) {
+    public Script(final MacroLoader loader, final ScriptLocation location)
+            throws MacroException {
         
         this.loader = requireNonNull(loader, "loader");
         this.location = requireNonNull(location, "location");
         this.variables = new ScriptVariables();
         this.images = new ScriptImages(location);
-        this.macros = macros.clone();
+        try (final InputStream in = location.open()) {
+            this.macros = loader.load(in);
+        } catch (final IOException ex) {
+            throw new MacroException(ex);
+        }
     }
     
     /**

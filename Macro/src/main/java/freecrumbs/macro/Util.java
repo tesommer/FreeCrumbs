@@ -7,6 +7,8 @@ import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.stream.IntStream;
@@ -32,12 +34,12 @@ public final class Util {
         public ScriptLocation refer(final String relative)
                 throws MacroException {
 
-            return this;
+            throw new MacroException("UXO location just exploded!");
         }
 
         @Override
-        public Script open(final MacroLoader loader) throws MacroException {
-            return new Script(loader, this);
+        public InputStream open() throws MacroException {
+            return new ByteArrayInputStream(new byte[0]);
         }
 
     };
@@ -287,7 +289,7 @@ public final class Util {
      */
     public static Script createEmptyScript() {
         try {
-            return UXO_SCRIPT_LOCATION.open(UXO_MACRO_LOADER);
+            return new Script(UXO_MACRO_LOADER, UXO_SCRIPT_LOCATION);
         } catch (final MacroException ex) {
             throw new AssertionError(ex);
         }
