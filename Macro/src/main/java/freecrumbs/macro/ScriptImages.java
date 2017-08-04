@@ -3,7 +3,6 @@ package freecrumbs.macro;
 import static java.util.Objects.requireNonNull;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,10 +15,10 @@ import java.util.Set;
  */
 public class ScriptImages {
     private final Map<String, BufferedImage> images = new HashMap<>();
-    private final String scriptFile;
+    private final ScriptLocation location;
 
-    public ScriptImages(final String scriptFile) {
-        this.scriptFile = requireNonNull(scriptFile, "scriptFile");
+    public ScriptImages(final ScriptLocation location) {
+        this.location = requireNonNull(location, "location");
     }
     
     /**
@@ -63,7 +62,7 @@ public class ScriptImages {
      * @throws MacroException if the image could not be loaded.
      */
     public BufferedImage load(final String file) throws MacroException {
-        return Util.loadImage(getScriptRelativeFile(file));
+        return Util.loadImage(location.refer(file).getBase());
     }
     
     /**
@@ -81,18 +80,6 @@ public class ScriptImages {
         } catch (final MacroException ex) {
             return load(nameOrFile);
         }
-    }
-    
-    private String getScriptRelativeFile(final String file) {
-        final int index = scriptFile.lastIndexOf(File.separator);
-        if (index > -1) {
-            final File relative
-                = new File(scriptFile.substring(0, index), file);
-            if (relative.isFile()) {
-                return relative.getPath();
-            }
-        }
-        return file;
     }
 
 }

@@ -1,11 +1,15 @@
 package freecrumbs.macro;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.stream.IntStream;
 
 import javax.swing.ImageIcon;
 
@@ -15,6 +19,30 @@ import javax.swing.ImageIcon;
  * @author Tone Sommerland
  */
 public final class Util {
+    
+    private static final ScriptLocation
+    UXO_SCRIPT_LOCATION = new ScriptLocation() {
+
+        @Override
+        public String getBase() {
+            return "";
+        }
+
+        @Override
+        public ScriptLocation refer(final String relative)
+                throws MacroException {
+
+            return this;
+        }
+
+        @Override
+        public Script open(final MacroLoader loader) throws MacroException {
+            return new Script(loader, this);
+        }
+
+    };
+    
+    private static final MacroLoader UXO_MACRO_LOADER = in -> new Macro[0];
 
     private Util() {
     }
@@ -172,16 +200,18 @@ public final class Util {
      */
     public static void type(final Robot robot, final int value) {
         final String digits = String.valueOf(value);
-        for (int i = 0; i < digits.length(); i++) {
-            final char ch = digits.charAt(i);
-            final int codePoint = (int)ch;
-            robot.keyPress(codePoint);
-            robot.keyRelease(codePoint);
-        }
+        IntStream.iterate(0, index -> index + 1)
+            .limit(digits.length())
+            .map(digits::codePointAt)
+            .forEach(codePoint -> {
+                robot.keyPress(codePoint);
+                robot.keyRelease(codePoint);
+            });
     }
     
     /**
      * Loads an image from file.
+     * @throws MacroException if the image could not be loaded.
      */
     public static BufferedImage loadImage(final String file)
             throws MacroException {
@@ -241,6 +271,26 @@ public final class Util {
             }
         }
         return true;
+    }
+    
+    /**
+     * Creates a screenshot of the entire screen.
+     */
+    public static BufferedImage createScreenCapture(final Robot robot) {
+        final Dimension screenSize
+            = Toolkit.getDefaultToolkit().getScreenSize();
+        return robot.createScreenCapture(new Rectangle(screenSize));
+    }
+    
+    /**
+     * Creates a dummy macro script.
+     */
+    public static Script createEmptyScript() {
+        try {
+            return UXO_SCRIPT_LOCATION.open(UXO_MACRO_LOADER);
+        } catch (final MacroException ex) {
+            throw new AssertionError(ex);
+        }
     }
 
 }

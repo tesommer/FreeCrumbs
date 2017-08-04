@@ -1,13 +1,21 @@
-package freecrumbs.macro;
+package freecrumbs.macro.internal;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class StandardScriptLoader implements ScriptLoader {
+import freecrumbs.macro.AtomicRecursionGuard;
+import freecrumbs.macro.Gesture;
+import freecrumbs.macro.GestureParser;
+import freecrumbs.macro.Macro;
+import freecrumbs.macro.MacroException;
+import freecrumbs.macro.MacroLoader;
+import freecrumbs.macro.Util;
+
+public class DefaultMacroLoader implements MacroLoader {
     
     private static final int RECURSION_LIMIT = 20;
 
@@ -17,16 +25,15 @@ public class StandardScriptLoader implements ScriptLoader {
     
     private final GestureParser[] gestureParsers;
 
-    public StandardScriptLoader(final GestureParser... gestureParsers) {
+    public DefaultMacroLoader(final GestureParser... gestureParsers) {
         this.gestureParsers = gestureParsers.clone();
     }
 
     @Override
-    public Script load(final String scriptFile) throws MacroException {
-        try (
-            final BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(new FileInputStream(scriptFile)))
-        ) {
+    public Macro[] load(final InputStream in) throws MacroException {
+        final BufferedReader reader
+            = new BufferedReader(new InputStreamReader(in));
+        try {
             final Collection<Macro> macros = new ArrayList<>();
             final Collection<Gesture> gestures = new ArrayList<>();
             String macroName = null;
@@ -47,8 +54,7 @@ public class StandardScriptLoader implements ScriptLoader {
                 line = reader.readLine();
             }
             addMacro(macros, gestures, macroName);
-            return new Script(
-                    scriptFile, macros.stream().toArray(Macro[]::new));
+            return macros.stream().toArray(Macro[]::new);
         } catch (final IOException ex) {
             throw new MacroException(ex);
         }

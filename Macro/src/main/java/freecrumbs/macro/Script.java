@@ -1,5 +1,7 @@
 package freecrumbs.macro;
 
+import static java.util.Objects.requireNonNull;
+
 import java.awt.Robot;
 import java.util.stream.Stream;
 
@@ -9,21 +11,44 @@ import java.util.stream.Stream;
  * @author Tone Sommerland
  */
 public class Script {
+    private final MacroLoader loader;
+    private final ScriptLocation location;
     private final ScriptVariables variables;
     private final ScriptImages images;
     private final Macro[] macros;
 
     /**
      * Creates a new macro script.
-     * @param scriptFile the location of the script file
+     * @param loader the loader that loaded the macros
+     * @param location the location of this script
      * @param macros the macros in this script
      */
-    public Script(final String scriptFile, final Macro... macros) {
+    public Script(
+            final MacroLoader loader,
+            final ScriptLocation location,
+            final Macro... macros) {
+        
+        this.loader = requireNonNull(loader, "loader");
+        this.location = requireNonNull(location, "location");
         this.variables = new ScriptVariables();
-        this.images = new ScriptImages(scriptFile);
+        this.images = new ScriptImages(location);
         this.macros = macros.clone();
     }
     
+    /**
+     * The loader that loaded the macros in script.
+     */
+    public MacroLoader loader() {
+        return loader;
+    }
+
+    /**
+     * The location of this script.
+     */
+    public ScriptLocation location() {
+        return location;
+    }
+
     /**
      * Script variables.
      */

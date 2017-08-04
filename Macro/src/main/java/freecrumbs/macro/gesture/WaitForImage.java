@@ -1,9 +1,6 @@
 package freecrumbs.macro.gesture;
 
-import java.awt.Dimension;
-import java.awt.Rectangle;
 import java.awt.Robot;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 
 import freecrumbs.macro.Command;
@@ -45,14 +42,10 @@ public class WaitForImage extends Command {
             final Robot robot,
             final String[] params) throws MacroException {
         
-        final Dimension screenSize
-            = Toolkit.getDefaultToolkit().getScreenSize();
-        final BufferedImage capture
-            = robot.createScreenCapture(new Rectangle(screenSize));
         final BufferedImage image = script.images().getOrLoad(params[0]);
         final boolean gone = getGone(script, params);
         final int millis = getMillis(script, params);
-        waitLoop(robot, capture, image, gone, millis);
+        waitLoop(robot, image, gone, millis);
     }
     
     private static boolean getGone(final Script script, final String[] params)
@@ -71,13 +64,13 @@ public class WaitForImage extends Command {
 
     private static void waitLoop(
             final Robot robot,
-            final BufferedImage capture,
             final BufferedImage image,
             final boolean gone,
             final int millis) {
         
         while (true) {
-            final int[] xy = Util.xyOf(image, capture, 1);
+            final int[] xy
+                = Util.xyOf(image, Util.createScreenCapture(robot), 1);
             if (gone) {
                 if (xy.length == 0) {
                     break;

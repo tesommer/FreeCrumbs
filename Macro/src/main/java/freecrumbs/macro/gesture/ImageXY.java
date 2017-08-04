@@ -1,9 +1,6 @@
 package freecrumbs.macro.gesture;
 
-import java.awt.Dimension;
-import java.awt.Rectangle;
 import java.awt.Robot;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 
 import freecrumbs.macro.Command;
@@ -113,7 +110,7 @@ public class ImageXY extends Command {
                 robot.delay(script.variables().getValue(delay));
                 xy = Util.xyOf(
                         image,
-                        createScreenCapture(robot),
+                        Util.createScreenCapture(robot),
                         script.variables().getValue(occurrence));
             }
             return xy;
@@ -137,12 +134,6 @@ public class ImageXY extends Command {
             params.setXYVariables(script, xy);
             params.playResultMacro(script, robot, xy);
         }
-    }
-
-    private static BufferedImage createScreenCapture(final Robot robot) {
-        final Dimension screenSize
-            = Toolkit.getDefaultToolkit().getScreenSize();
-        return robot.createScreenCapture(new Rectangle(screenSize));
     }
 
 }

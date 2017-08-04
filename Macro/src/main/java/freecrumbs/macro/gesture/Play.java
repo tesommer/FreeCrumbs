@@ -1,26 +1,38 @@
 package freecrumbs.macro.gesture;
 
+import static java.util.Objects.requireNonNull;
+
+import java.awt.Robot;
+
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
 import freecrumbs.macro.MacroException;
+import freecrumbs.macro.Script;
 import freecrumbs.macro.Util;
 
 /**
  * Plays a named macro a certain number of times (default is one).
  * Syntax:
  * <ul>
- * <li>{@code play macro-name [times]}</li>
- * <li>{@code play macro-name [times left operator right]}:
+ * <li>{@code play macro [times]}</li>
+ * <li>{@code play macro [times left operator right]}:
  * Plays the macro if a logical expression is true,
  * e.g.: {@code play macro-name 1 x == y}.
  * Supported operators: {@code == != <= >= < >}</li>
  * </ul>
+ * The {@code macro} parameter
+ * may be the name of a macro in the current script,
+ * or a macro in another script.
+ * In the latter case, the parameter format is
+ * {@code script-file?macro-name}.
  * 
  * @author Tone Sommerland
  */
 public class Play extends Command {
     
     public static final String NAME = "play";
+    
+    private static final char SEPARATOR = '?';
     
     public Play() {
         super(NAME, 1, 5);
@@ -33,15 +45,70 @@ public class Play extends Command {
         if (params.length == 3 || params.length == 4) {
             throw new MacroException("Syntax error: " + line);
         }
-        final String macroName = params[0];
+        final MacroSpecifier macroSpecifier = getMacroSpecifier(params[0]);
         final String times = paramOrDefault(params, 1, "1");
         return (script, robot) -> {
             if (params.length != 5 || Util.evaluateLogical(
                     script, params[2], params[3], params[4])) {
-                script.play(
-                        robot, script.variables().getValue(times), macroName);
+                macroSpecifier.play(script, robot, times);
             }
         };
+    }
+    
+    /**
+     * Specifies a macro in the current script or another script.
+     */
+    private static final class MacroSpecifier {
+        private final String macroName;
+        private final String scriptLocation;
+        
+        /**
+         * Creates a specifier for a macro in another script.
+         * @param macroName the macro name
+         * @param scriptLocation the script location (nullable)
+         */
+        public MacroSpecifier(
+                final String macroName, final String scriptLocation) {
+            
+            this.macroName = requireNonNull(macroName, "macroName");
+            this.scriptLocation = scriptLocation;
+        }
+        
+        /**
+         * Creates a specifier for a macro in the current script.
+         * @param macroName the macro name
+         */
+        public MacroSpecifier(final String macroName) {
+            this(macroName, null);
+        }
+        
+        public void play(
+                final Script current,
+                final Robot robot,
+                final String times) throws MacroException {
+            
+            final Script script = getScript(current);
+            script.play(
+                    robot, script.variables().getValue(times), macroName);
+        }
+        
+        private Script getScript(final Script current) throws MacroException {
+            if (scriptLocation == null) {
+                return current;
+            }
+            return current.location().refer(scriptLocation)
+                    .open(current.loader());
+        }
+    }
+    
+    private static MacroSpecifier getMacroSpecifier(final String macroParam) {
+        final int sepIndex = macroParam.lastIndexOf(SEPARATOR);
+        if (sepIndex < 0) {
+            return new MacroSpecifier(macroParam);
+        }
+        final String scriptLocation = macroParam.substring(0, sepIndex);
+        final String macroName = macroParam.substring(sepIndex + 1);
+        return new MacroSpecifier(macroName, scriptLocation);
     }
 
 }
