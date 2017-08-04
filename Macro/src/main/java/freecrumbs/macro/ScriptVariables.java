@@ -15,7 +15,7 @@ import java.util.Set;
 public class ScriptVariables {
     private final Map<String, Integer> variables = new HashMap<>();
 
-    public ScriptVariables() {
+    ScriptVariables() {
     }
 
     /**

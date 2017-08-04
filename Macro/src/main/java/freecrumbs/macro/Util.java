@@ -1,7 +1,6 @@
 package freecrumbs.macro;
 
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
@@ -12,8 +11,6 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.stream.IntStream;
-
-import javax.swing.ImageIcon;
 
 /**
  * Utility methods.
@@ -208,27 +205,6 @@ public final class Util {
                 robot.keyPress(codePoint);
                 robot.keyRelease(codePoint);
             });
-    }
-    
-    /**
-     * Loads an image from file.
-     * @throws MacroException if the image could not be loaded.
-     */
-    public static BufferedImage loadImage(final String file)
-            throws MacroException {
-        
-        final ImageIcon icon = new ImageIcon(file);
-        if (icon.getIconWidth() < 1 || icon.getIconHeight() < 1) {
-            throw new MacroException("Image could not be loaded: " + file);
-        }
-        final BufferedImage image = new BufferedImage(
-                icon.getIconWidth(),
-                icon.getIconHeight(),
-                BufferedImage.TYPE_INT_ARGB);
-        final Graphics g = image.getGraphics();
-        g.drawImage(icon.getImage(), 0, 0, null);
-        g.dispose();
-        return image;
     }
     
     /**

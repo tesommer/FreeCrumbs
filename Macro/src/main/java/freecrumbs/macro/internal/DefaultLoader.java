@@ -10,9 +10,9 @@ import java.util.Collection;
 import freecrumbs.macro.AtomicRecursionGuard;
 import freecrumbs.macro.Gesture;
 import freecrumbs.macro.GestureParser;
+import freecrumbs.macro.Loader;
 import freecrumbs.macro.Macro;
 import freecrumbs.macro.MacroException;
-import freecrumbs.macro.Loader;
 import freecrumbs.macro.Util;
 
 public class DefaultLoader implements Loader {

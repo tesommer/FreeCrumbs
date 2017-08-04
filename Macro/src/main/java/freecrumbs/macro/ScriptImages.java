@@ -3,10 +3,14 @@ package freecrumbs.macro;
 import static java.util.Objects.requireNonNull;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import javax.imageio.ImageIO;
 
 /**
  * Script images.
@@ -17,7 +21,7 @@ public class ScriptImages {
     private final Map<String, BufferedImage> images = new HashMap<>();
     private final Location location;
 
-    public ScriptImages(final Location location) {
+    ScriptImages(final Location location) {
         this.location = requireNonNull(location, "location");
     }
     
@@ -57,28 +61,33 @@ public class ScriptImages {
     }
     
     /**
-     * Loads an image from file.
-     * @param file the image file, may be relative to the script
+     * Loads an image.
+     * @param imageLocation the location of the image
      * @throws MacroException if the image could not be loaded.
      */
-    public BufferedImage load(final String file) throws MacroException {
-        return Util.loadImage(location.refer(file).getBase());
+    public BufferedImage load(final String imageLocation)
+            throws MacroException {
+        
+        try (final InputStream in = location.refer(imageLocation).open()) {
+            return ImageIO.read(in);
+        } catch (final IOException ex) {
+            throw new MacroException(ex);
+        }
     }
     
     /**
      * First tries to get the image with the given name,
-     * and if that fails,
-     * tries to load it from file.
-     * @param nameOrFile either an image name or file path.
+     * and if that fails, tries to load it.
+     * @param nameOrLocation either an image name or location.
      * @throws MacroException if not found.
      */
-    public BufferedImage getOrLoad(final String nameOrFile)
+    public BufferedImage getOrLoad(final String nameOrLocation)
             throws MacroException {
         
         try {
-            return get(nameOrFile);
+            return get(nameOrLocation);
         } catch (final MacroException ex) {
-            return load(nameOrFile);
+            return load(nameOrLocation);
         }
     }
 
