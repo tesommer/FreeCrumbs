@@ -14,8 +14,8 @@ import freecrumbs.macro.Util;
  * Plays a named macro a certain number of times (default is one).
  * Syntax:
  * <ul>
- * <li>{@code play macro [times]}</li>
- * <li>{@code play macro [times left operator right]}:
+ * <li>{@code play macro [times=1]}</li>
+ * <li>{@code play macro [times=1 left operator right]}:
  * Plays the macro if a logical expression is true,
  * e.g.: {@code play macro-name 1 x == y}.
  * Supported operators: {@code == != <= >= < >}</li>
@@ -89,7 +89,7 @@ public class Play extends Command {
             
             final Script script = getScript(current);
             script.play(
-                    robot, script.getVariables().valueOf(times), macroName);
+                    robot, current.getVariables().valueOf(times), macroName);
         }
         
         private Script getScript(final Script current) throws MacroException {
