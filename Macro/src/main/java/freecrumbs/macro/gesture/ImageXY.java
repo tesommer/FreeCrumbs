@@ -106,12 +106,12 @@ public class ImageXY extends Command {
             int[] xy = new int[0];
             int count = 0;
             while (xy.length == 0
-                    && count++ < script.getVariables().getValue(times)) {
-                robot.delay(script.getVariables().getValue(delay));
+                    && count++ < script.getVariables().valueOf(times)) {
+                robot.delay(script.getVariables().valueOf(delay));
                 xy = Util.xyOf(
                         image,
                         Util.createScreenCapture(robot),
-                        script.getVariables().getValue(occurrence));
+                        script.getVariables().valueOf(occurrence));
             }
             return xy;
         }

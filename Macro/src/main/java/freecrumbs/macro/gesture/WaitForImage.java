@@ -51,14 +51,14 @@ public class WaitForImage extends Command {
     private static boolean getGone(final Script script, final String[] params)
             throws MacroException {
         
-        return script.getVariables().getValue(
+        return script.getVariables().valueOf(
                 paramOrDefault(params, 1, DEFAULT_GONE)) != 0;
     }
     
     private static int getMillis(final Script script, final String[] params)
             throws MacroException {
         
-        return script.getVariables().getValue(
+        return script.getVariables().valueOf(
                 paramOrDefault(params, 2, DEFAULT_MILLIS));
     }
 

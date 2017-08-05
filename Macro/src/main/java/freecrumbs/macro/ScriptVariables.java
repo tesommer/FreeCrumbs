@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Script variables.
+ * Script integer variables.
  * 
  * @author Tone Sommerland
  */
@@ -61,7 +61,7 @@ public class ScriptVariables {
      * @throws MacroException if it's neither
      * a valid integer nor a stored variable.
      */
-    public int getValue(final String nameOrLiteral) throws MacroException {
+    public int valueOf(final String nameOrLiteral) throws MacroException {
         try {
             return Integer.valueOf(nameOrLiteral);
         } catch (final NumberFormatException ex) {

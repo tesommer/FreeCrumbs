@@ -61,7 +61,7 @@ public class Screenshot extends Command {
             final int index,
             final int defaultValue) throws MacroException {
         
-        return script.getVariables().getValue(
+        return script.getVariables().valueOf(
                 paramOrDefault(params, index, String.valueOf(defaultValue)));
     }
 

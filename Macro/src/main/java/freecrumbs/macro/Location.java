@@ -10,15 +10,15 @@ import java.io.InputStream;
 public interface Location {
     
     /**
-     * The base location.
+     * The string specifying this location.
      */
     public abstract String getBase();
     
     /**
-     * Returns an absolute location or one relative to this.
-     * @param relative the location to refer to
+     * Returns a location that points to the given target.
+     * @param target the absolute or relative location to refer to
      */
-    public abstract Location refer(String relative) throws MacroException;
+    public abstract Location refer(String target) throws MacroException;
     
     /**
      * Opens this location.

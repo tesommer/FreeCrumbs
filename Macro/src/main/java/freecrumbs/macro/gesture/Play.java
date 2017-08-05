@@ -89,7 +89,7 @@ public class Play extends Command {
             
             final Script script = getScript(current);
             script.play(
-                    robot, script.getVariables().getValue(times), macroName);
+                    robot, script.getVariables().valueOf(times), macroName);
         }
         
         private Script getScript(final Script current) throws MacroException {

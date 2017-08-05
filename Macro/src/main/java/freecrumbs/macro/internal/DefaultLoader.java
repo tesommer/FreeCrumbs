@@ -18,9 +18,7 @@ import freecrumbs.macro.Util;
 public class DefaultLoader implements Loader {
     
     private static final int RECURSION_LIMIT = 20;
-
     private static final String NAME_PREFIX = "name";
-    
     private static final String COMMENT_PREFIX = "#";
     
     private final GestureParser[] gestureParsers;

@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * Utility methods.
@@ -61,18 +62,25 @@ public final class Util {
      * @see java.awt.event.KeyEvent
      */
     public static void addKeyCodeVariables(final Script script) {
-        for (final Field field : KeyEvent.class.getDeclaredFields()) {
-            if (
+        Stream.of(KeyEvent.class.getDeclaredFields())
+            .filter(Util::isKeyCodeConstant)
+            .forEach(field -> addKeyCodeVariable(script, field));
+    }
+    
+    private static boolean isKeyCodeConstant(final Field field) {
+        return
                     field.getName().startsWith("VK_")
-                    && (field.getModifiers() & Modifier.PUBLIC) != 0
-                    && (field.getModifiers() & Modifier.STATIC) != 0) {
-                try {
-                    script.getVariables()
-                        .set(field.getName(), field.getInt(null));
-                } catch (final IllegalAccessException ex) {
-                    throw new AssertionError(ex);
-                }
-            }
+                && (field.getModifiers() & Modifier.PUBLIC) != 0
+                && (field.getModifiers() & Modifier.STATIC) != 0;
+    }
+
+    private static void addKeyCodeVariable(
+            final Script script, final Field field) {
+        
+        try {
+            script.getVariables().set(field.getName(), field.getInt(null));
+        } catch (final IllegalAccessException ex) {
+            throw new AssertionError(ex);
         }
     }
     
@@ -89,8 +97,8 @@ public final class Util {
             final String operator,
             final String right) throws MacroException {
         
-        final int leftValue = script.getVariables().getValue(left);
-        final int rightValue = script.getVariables().getValue(right);
+        final int leftValue = script.getVariables().valueOf(left);
+        final int rightValue = script.getVariables().valueOf(right);
         if ("+".equals(operator)) {
             return leftValue + rightValue;
         } else if ("-".equals(operator)) {
@@ -131,11 +139,11 @@ public final class Util {
         
         if ("isset".equals(operator)) {
             final boolean existence
-                = script.getVariables().getValue(right) != 0;
+                = script.getVariables().valueOf(right) != 0;
             return script.getVariables().getNames().contains(left) == existence;
         }
-        final int leftValue = script.getVariables().getValue(left);
-        final int rightValue = script.getVariables().getValue(right);
+        final int leftValue = script.getVariables().valueOf(left);
+        final int rightValue = script.getVariables().valueOf(right);
         if ("==".equals(operator)) {
             return leftValue == rightValue;
         } else if ("!=".equals(operator)) {
@@ -229,7 +237,7 @@ public final class Util {
         }
 
         @Override
-        public Location refer(final String relative) throws MacroException {
+        public Location refer(final String target) throws MacroException {
             throw new MacroException("UXO location just exploded!");
         }
 
@@ -244,6 +252,7 @@ public final class Util {
     
     /**
      * Creates a dummy macro script.
+     * The returned script contains no macros.
      */
     public static Script createEmptyScript() {
         try {

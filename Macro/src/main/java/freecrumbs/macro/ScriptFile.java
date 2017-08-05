@@ -25,16 +25,15 @@ public class ScriptFile implements Location {
     }
 
     @Override
-    public Location refer(final String relative) throws MacroException {
+    public Location refer(final String target) throws MacroException {
         final int index = base.lastIndexOf(File.separator);
         if (index >= 0) {
-            final File relativeFile
-                = new File(base.substring(0, index), relative);
-            if (relativeFile.isFile()) {
-                return new ScriptFile(relativeFile.getPath());
+            final File relative = new File(base.substring(0, index), target);
+            if (relative.isFile()) {
+                return new ScriptFile(relative.getPath());
             }
         }
-        return new ScriptFile(relative);
+        return new ScriptFile(target);
     }
 
     @Override

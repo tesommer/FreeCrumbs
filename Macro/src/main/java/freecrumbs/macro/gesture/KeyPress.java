@@ -24,7 +24,7 @@ public class KeyPress extends Command {
             throws MacroException {
         
         return (script, robot)
-                -> robot.keyPress(script.getVariables().getValue(params[0]));
+                -> robot.keyPress(script.getVariables().valueOf(params[0]));
     }
 
 }

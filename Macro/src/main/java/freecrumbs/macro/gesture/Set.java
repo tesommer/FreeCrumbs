@@ -32,7 +32,7 @@ public class Set extends Command {
         }
         if (params.length == 2) {
             return (script, robot) -> script.getVariables().set(
-                    params[0], script.getVariables().getValue(params[1]));
+                    params[0], script.getVariables().valueOf(params[1]));
         }
         return (script, robot) -> script.getVariables().set(
                 params[0],

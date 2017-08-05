@@ -24,7 +24,7 @@ public class KeyRelease extends Command {
             throws MacroException {
         
         return (script, robot)
-                -> robot.keyRelease(script.getVariables().getValue(params[0]));
+                -> robot.keyRelease(script.getVariables().valueOf(params[0]));
     }
 
 }
