@@ -60,9 +60,21 @@ public class Macro {
         
         recursionGuard.increment();
         for (final Gesture gesture : gestures) {
-            gesture.play(script, robot);
+            play(script, robot, gesture);
         }
         recursionGuard.decrement();
+    }
+    
+    private static void play(
+            final Script script,
+            final Robot robot,
+            final Gesture gesture) throws MacroException {
+        
+        try {
+            gesture.play(script, robot);
+        } catch (final IllegalArgumentException|SecurityException ex) {
+            throw new MacroException(ex);
+        }
     }
 
 }
