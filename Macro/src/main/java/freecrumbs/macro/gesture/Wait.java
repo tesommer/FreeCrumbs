@@ -13,7 +13,7 @@ import freecrumbs.macro.Util;
  * Wait for an image within the current screen capture
  * to either appear or disappear.
  * Syntax:
- * {@code wait image [gone [millis]]}
+ * {@code wait image [gone=0 [millis=100]]}
  * {@code gone} is non-zero to wait until the image is no longer there.
  * {@code millis} is the delay in milliseconds between checks.
  * 
@@ -71,11 +71,7 @@ public class Wait extends Command {
         while (true) {
             final int[] xy
                 = Util.xyOf(image, Util.createScreenCapture(robot), 1);
-            if (gone) {
-                if (xy.length == 0) {
-                    break;
-                }
-            } else if (xy.length > 0) {
+            if (gone == (xy.length == 0)) {
                 break;
             }
             robot.delay(millis);

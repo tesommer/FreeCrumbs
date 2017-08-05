@@ -29,21 +29,20 @@ public class Screenshot extends Command {
     protected Gesture getGesture(final String line, final String[] params)
             throws MacroException {
         
-        return (script, robot) -> takeScreenshot(script, robot, line, params);
+        return (script, robot) -> takeScreenshot(script, robot, params);
     }
     
     private static void takeScreenshot(
             final Script script,
             final Robot robot,
-            final String line,
             final String[] params) throws MacroException {
         
         script.getImages().set(
                 params[0],
-                robot.createScreenCapture(getScreenRect(script, params)));
+                robot.createScreenCapture(getRectangle(script, params)));
     }
     
-    private static Rectangle getScreenRect(
+    private static Rectangle getRectangle(
             final Script script, final String[] params) throws MacroException {
         
         final Dimension screenSize

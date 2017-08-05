@@ -8,7 +8,7 @@ import freecrumbs.macro.MacroException;
  * Moves the mouse wheel.
  * Syntax:
  * {@code mouse_wheel steps}.
- * Negate steps means scrolling up/away from user.
+ * Negative steps means scrolling up/away from user.
  * 
  * @author Tone Sommerland
  */

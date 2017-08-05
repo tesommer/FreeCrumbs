@@ -5,9 +5,9 @@ import freecrumbs.macro.Gesture;
 import freecrumbs.macro.MacroException;
 
 /**
- * Loads an image from file and stores in the script.
+ * Loads an image and stores it in the script.
  * Syntax:
- * {@code load variable image-file}.
+ * {@code load variable location}.
  * 
  * @author Tone Sommerland
  */
