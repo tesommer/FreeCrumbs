@@ -98,15 +98,15 @@ public class ImageXY extends Command {
             script.getVariables().set(yVariable, y);
         }
         
-        public int[] lookForImageInCapture(
+        public int[] scanScreenForImage(
                 final Script script,
                 final Robot robot,
                 final BufferedImage image) throws MacroException {
             
             int[] xy = new int[0];
-            int count = 0;
+            int time = 0;
             while (xy.length == 0
-                    && count++ < script.getVariables().valueOf(times)) {
+                    && time++ < script.getVariables().valueOf(times)) {
                 robot.delay(script.getVariables().valueOf(delay));
                 xy = Util.xyOf(
                         image,
@@ -130,7 +130,7 @@ public class ImageXY extends Command {
                 throws MacroException {
 
             final BufferedImage image = params.getImage(script);
-            final int[] xy = params.lookForImageInCapture(script, robot, image);
+            final int[] xy = params.scanScreenForImage(script, robot, image);
             params.setXYVariables(script, xy);
             params.playResultMacro(script, robot, xy);
         }
