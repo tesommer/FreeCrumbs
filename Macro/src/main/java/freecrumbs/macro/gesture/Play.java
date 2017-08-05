@@ -32,7 +32,7 @@ public class Play extends Command {
     
     public static final String NAME = "play";
     
-    private static final char SEPARATOR = '?';
+    private static final String SEPARATOR = "->";
     
     public Play() {
         super(NAME, 1, 5);
@@ -103,12 +103,12 @@ public class Play extends Command {
     }
     
     private static MacroSpecifier getMacroSpecifier(final String macroParam) {
-        final int sepIndex = macroParam.lastIndexOf(SEPARATOR);
-        if (sepIndex < 0) {
+        final int index = macroParam.lastIndexOf(SEPARATOR);
+        if (index < 0) {
             return new MacroSpecifier(macroParam);
         }
-        final String scriptLocation = macroParam.substring(0, sepIndex);
-        final String macroName = macroParam.substring(sepIndex + 1);
+        final String scriptLocation = macroParam.substring(0, index);
+        final String macroName = macroParam.substring(index + 1);
         return new MacroSpecifier(macroName, scriptLocation);
     }
 
