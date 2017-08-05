@@ -1,5 +1,7 @@
 package freecrumbs.macro;
 
+import java.util.stream.Stream;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -131,6 +133,16 @@ public class UtilTest {
         Assert.assertTrue(
                 "t isset 0",
                 Util.evaluateLogical(script, "t", "isset", "0"));
+    }
+    
+    @Test
+    public void testAddKeyCodeVariables() {
+        final Script script = Util.createEmptyScript();
+        Util.addKeyCodeVariables(script);
+        Stream.of("VK_A", "VK_B", "VK_T")
+            .forEach(s -> Assert.assertTrue(
+                    "Missing variable: " + s,
+                    script.getVariables().getNames().contains(s)));
     }
     
     private static void assertSplit(

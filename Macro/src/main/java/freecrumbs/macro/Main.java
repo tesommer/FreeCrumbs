@@ -19,7 +19,7 @@ import freecrumbs.macro.gesture.Print;
 import freecrumbs.macro.gesture.Screenshot;
 import freecrumbs.macro.gesture.Set;
 import freecrumbs.macro.gesture.Type;
-import freecrumbs.macro.gesture.WaitForImage;
+import freecrumbs.macro.gesture.Wait;
 
 /**
  * The entry point to Macro.
@@ -55,7 +55,7 @@ public final class Main {
             new Screenshot(),
             new Set(),
             new Type(),
-            new WaitForImage(),
+            new Wait(),
         };
 
     private Main() {

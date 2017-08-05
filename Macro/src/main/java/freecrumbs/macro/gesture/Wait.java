@@ -13,20 +13,20 @@ import freecrumbs.macro.Util;
  * Wait for an image within the current screen capture
  * to either appear or disappear.
  * Syntax:
- * {@code wait_for_image image [gone [millis]]}
+ * {@code wait image [gone [millis]]}
  * {@code gone} is non-zero to wait until the image is no longer there.
  * {@code millis} is the delay in milliseconds between checks.
  * 
  * @author Tone Sommerland
  */
-public class WaitForImage extends Command {
+public class Wait extends Command {
     
-    public static final String NAME = "wait_for_image";
+    public static final String NAME = "wait";
 
     private static final String DEFAULT_GONE = "0";
     private static final String DEFAULT_MILLIS = "100";
     
-    public WaitForImage() {
+    public Wait() {
         super(NAME, 1, 3);
     }
 
