@@ -89,7 +89,7 @@ public final class Finf {
      * Whether or not the file filter of the given configuration
      * accepts the file specified.
      */
-    public static boolean acceptsInput(final File file, final Config config) {
+    public static boolean acceptsInput(final Config config, final File file) {
         return config.getFileFilter().map(ff -> ff.accept(file)).orElse(true);
     }
 

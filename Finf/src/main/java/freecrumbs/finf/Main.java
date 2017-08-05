@@ -53,7 +53,7 @@ public final class Main {
         
         if (file.isDirectory()) {
             processDir(file, infoList, config);
-        } else if (Finf.acceptsInput(file, config)) {
+        } else if (Finf.acceptsInput(config, file)) {
             processFile(file, infoList, config);
         }
     }
