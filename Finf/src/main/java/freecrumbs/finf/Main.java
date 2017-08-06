@@ -41,38 +41,38 @@ public final class Main {
         final Config config = loadConfig(parsedArgs, Locale.getDefault());
         final List<Info> infoList = new ArrayList<>();
         for (final String inputFile : parsedArgs.inputFiles) {
-            process(new File(inputFile), infoList, config);
+            process(infoList, config, new File(inputFile));
         }
         Finf.output(infoList, config, System.out);
     }
     
     private static void process(
-        final File file,
         final Collection<Info> infoList,
-        final Config config) throws IOException {
+        final Config config,
+        final File file) throws IOException {
         
         if (file.isDirectory()) {
-            processDir(file, infoList, config);
+            processDir(infoList, config, file);
         } else if (Finf.acceptsInput(config, file)) {
-            processFile(file, infoList, config);
+            processFile(infoList, config, file);
         }
     }
     
     private static void processFile(
-        final File file,
         final Collection<Info> infoList,
-        final Config config) throws IOException {
+        final Config config,
+        final File file) throws IOException {
         
-        infoList.add(Finf.getInfo(file, config));
+        infoList.add(Finf.getInfo(config, file));
     }
     
     private static void processDir(
-        final File dir,
         final Collection<Info> infoList,
-        final Config config) throws IOException {
+        final Config config,
+        final File dir) throws IOException {
         
         for (final File file : dir.listFiles()) {
-            process(file, infoList, config);
+            process(infoList, config, file);
         }
     }
     

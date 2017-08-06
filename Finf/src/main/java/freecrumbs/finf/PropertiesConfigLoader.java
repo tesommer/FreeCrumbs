@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
 
 /**
  * Loads configuration from a properties file.
@@ -262,8 +263,9 @@ public class PropertiesConfigLoader implements ConfigLoader {
         public OrderSpecInfoSorter(
             final Collection<? extends OrderSpec> orderSpecs) {
             
-            this.orderSpecs = new ArrayList<>(orderSpecs);
-            this.orderSpecs.sort(OrderSpecComparator.INSTANCE);
+            this.orderSpecs = orderSpecs.stream()
+                    .sorted(OrderSpecComparator.INSTANCE)
+                    .collect(Collectors.toList());
         }
         
         @Override

@@ -33,26 +33,31 @@ public final class Finf {
             final Config config,
             final PrintStream out) {
         
-        final List<? extends Info> sorted;
-        if (config.getOrder().isPresent()) {
-            sorted = infoList.stream()
-                    .sorted(config.getOrder().get())
-                    .collect(Collectors.toList());
-        } else {
-            sorted = infoList;
-        }
+        final List<? extends Info> ordered = config.getOrder()
+                .map(order -> infoList.stream()
+                        .sorted(order)
+                        .collect(Collectors.toList()))
+                .orElseGet(() -> infoList);
+        outputOrdered(ordered, config, out);
+    }
+
+    private static void outputOrdered(
+            final List<? extends Info> infoList,
+            final Config config,
+            final PrintStream out) {
+        
         for (int i = 0; (config.getCount() < 0 || i < config.getCount())
-                && i < sorted.size(); i++) {
-            out.println(config.getInfoFormat().toString(sorted.get(i)));
+                && i < infoList.size(); i++) {
+            out.println(config.getInfoFormat().toString(infoList.get(i)));
         }
     }
     
     /**
      * Gets the file info for a file.
-     * @param file the file to get info of
      * @param config configuration
+     * @param file the file to get info of
      */
-    public static Info getInfo(final File file, final Config config)
+    public static Info getInfo(final Config config, final File file)
             throws IOException {
         
         final String path;
@@ -65,12 +70,12 @@ public final class Finf {
             path = file.getPath().substring(0, lastSep + 1);
             filename = file.getPath().substring(lastSep + 1);
         }
-        final String hash = getHash(file, config);
+        final String hash = getHash(config, file);
         return new Info(
                 path, filename, file.length(), file.lastModified(), hash);
     }
     
-    private static String getHash(final File file, final Config config)
+    private static String getHash(final Config config, final File file)
             throws IOException {
 
         if (config.isHashUnused()) {
@@ -87,7 +92,7 @@ public final class Finf {
     
     /**
      * Whether or not the file filter of the given configuration
-     * accepts the file specified.
+     * accepts the given file.
      */
     public static boolean acceptsInput(final Config config, final File file) {
         return config.getFileFilter().map(ff -> ff.accept(file)).orElse(true);
