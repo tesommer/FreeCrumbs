@@ -6,6 +6,7 @@ import java.awt.Robot;
 import freecrumbs.macro.gesture.AddKeyCodeVariables;
 import freecrumbs.macro.gesture.Delay;
 import freecrumbs.macro.gesture.Exit;
+import freecrumbs.macro.gesture.Idle;
 import freecrumbs.macro.gesture.ImageXY;
 import freecrumbs.macro.gesture.KeyPress;
 import freecrumbs.macro.gesture.KeyRelease;
@@ -14,6 +15,7 @@ import freecrumbs.macro.gesture.MouseMove;
 import freecrumbs.macro.gesture.MousePress;
 import freecrumbs.macro.gesture.MouseRelease;
 import freecrumbs.macro.gesture.MouseWheel;
+import freecrumbs.macro.gesture.Pixel;
 import freecrumbs.macro.gesture.Play;
 import freecrumbs.macro.gesture.Print;
 import freecrumbs.macro.gesture.Screenshot;
@@ -42,6 +44,7 @@ public final class Main {
             new AddKeyCodeVariables(),
             new Delay(),
             new Exit(),
+            new Idle(),
             new ImageXY(),
             new KeyPress(),
             new KeyRelease(),
@@ -50,6 +53,7 @@ public final class Main {
             new MousePress(),
             new MouseRelease(),
             new MouseWheel(),
+            new Pixel(),
             new Play(),
             new Print(),
             new Screenshot(),
@@ -61,14 +65,22 @@ public final class Main {
     private Main() {
     }
     
-    public static void main(final String[] args) throws MacroException {
-        final Args parsedArgs = parseArgs(args);
-        if (parsedArgs == null) {
-            System.out.println(HELP);
-            return;
+    public static void main(final String[] args) {
+        try {
+            final Args parsedArgs = parseArgs(args);
+            if (parsedArgs == null) {
+                System.out.println(HELP);
+                return;
+            }
+            final Script script = loadScript(parsedArgs);
+            play(script, parsedArgs);
+        } catch (final MacroException ex) {
+            handle(ex);
         }
-        final Script script = loadScript(parsedArgs);
-        play(script, parsedArgs);
+    }
+
+    private static void handle(final MacroException ex) {
+        System.err.println(ex.toString());
     }
     
     private static void play(final Script script, final Args args)

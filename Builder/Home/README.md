@@ -304,7 +304,7 @@ equals and a value denotes a default value for the parameter.
   idle. ``onOffToggle`` is zero to turn auto wait for idle off, greater than
   zero to turn it on and less than zero to toggle.
 
-* ``image_xy x-variable y-variable image-file [<occurrence>=1 [<delay>=0
+* ``image_xy x-variable y-variable <image> [<occurrence>=1 [<delay>=0
   [<times>=1 [success-macro-name [failure-macro-name]]]]]``: Stores the
   coordinates of an image within the current screen capture to script variables.
   The image file may be relative to the script's location. If the image is not

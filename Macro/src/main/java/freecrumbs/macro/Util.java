@@ -248,7 +248,19 @@ public final class Util {
 
     };
     
-    private static final Loader UXO_LOADER = in -> new Macro[0];
+    private static final Loader UXO_LOADER = new Loader() {
+
+        @Override
+        public Macro[] load(final InputStream in) throws MacroException {
+            return new Macro[0];
+        }
+
+        @Override
+        public RecursionGuard getRecursionGuard() {
+            return new AtomicRecursionGuard(0);
+        }
+        
+    };
     
     /**
      * Creates a dummy macro script.

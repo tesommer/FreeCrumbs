@@ -88,8 +88,12 @@ public class Play extends Command {
                 final String times) throws MacroException {
             
             final Script script = getScript(current);
-            script.play(
-                    robot, current.getVariables().valueOf(times), macroName);
+            if (macroName.isEmpty()) {
+                script.play(robot, current.getVariables().valueOf(times));
+            } else {
+                script.play(robot, current.getVariables().valueOf(times),
+                        macroName);
+            }
         }
         
         private Script getScript(final Script current) throws MacroException {
@@ -107,8 +111,9 @@ public class Play extends Command {
         if (index < 0) {
             return new MacroSpecifier(macroParam);
         }
+        final String macroName
+            = macroParam.substring(index + SEPARATOR.length());
         final String scriptLocation = macroParam.substring(0, index);
-        final String macroName = macroParam.substring(index + 1);
         return new MacroSpecifier(macroName, scriptLocation);
     }
 

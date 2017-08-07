@@ -101,8 +101,13 @@ public class Script {
     private void play(final Macro macro, final Robot robot, final int times)
             throws MacroException {
         
-        for (int i = 0; i < times; i++) {
-            macro.play(this, robot);
+        try {
+            loader.getRecursionGuard().increment();
+            for (int i = 0; i < times; i++) {
+                macro.play(this, robot);
+            }
+        } finally {
+            loader.getRecursionGuard().decrement();
         }
     }
 

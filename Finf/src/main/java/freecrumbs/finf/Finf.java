@@ -65,7 +65,7 @@ public final class Finf {
         
         final String path;
         final String filename;
-        final int lastSep = file.getPath().lastIndexOf(File.separator);
+        final int lastSep = file.getPath().lastIndexOf(File.separatorChar);
         if (lastSep < 0) {
             path = "";
             filename = file.getName();

@@ -13,13 +13,18 @@ import freecrumbs.macro.GestureParser;
 import freecrumbs.macro.Loader;
 import freecrumbs.macro.Macro;
 import freecrumbs.macro.MacroException;
+import freecrumbs.macro.RecursionGuard;
 import freecrumbs.macro.Util;
 
 public class DefaultLoader implements Loader {
     
-    private static final int RECURSION_LIMIT = 20;
+    private static final int RECURSION_LIMIT = 21;
+    
     private static final String NAME_PREFIX = "name";
     private static final String COMMENT_PREFIX = "#";
+    
+    private final RecursionGuard
+    recursionGuard = new AtomicRecursionGuard(RECURSION_LIMIT);
     
     private final GestureParser[] gestureParsers;
 
@@ -58,6 +63,11 @@ public class DefaultLoader implements Loader {
         }
     }
     
+    @Override
+    public RecursionGuard getRecursionGuard() {
+        return recursionGuard;
+    }
+
     /**
      * Returns null if the given line does not specify the macro name.
      */
@@ -105,11 +115,9 @@ public class DefaultLoader implements Loader {
         }
         if (macroName == null) {
             macros.add(new Macro(
-                    new AtomicRecursionGuard(RECURSION_LIMIT),
                     gestures.stream().toArray(Gesture[]::new)));
         } else {
             macros.add(new Macro(
-                    new AtomicRecursionGuard(RECURSION_LIMIT),
                     macroName,
                     gestures.stream().toArray(Gesture[]::new)));
         }

@@ -22,5 +22,11 @@ public interface Loader {
      * Loads macros from the specified input stream.
      */
     public abstract Macro[] load(InputStream in) throws MacroException;
+    
+    /**
+     * The recursion guard instance to use
+     * by all scripts produced by this loader.
+     */
+    public abstract RecursionGuard getRecursionGuard();
 
 }

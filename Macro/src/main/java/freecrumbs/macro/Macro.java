@@ -11,35 +11,25 @@ import java.awt.Robot;
  * @author Tone Sommerland
  */
 public class Macro {
-    private final RecursionGuard recursionGuard;
     private final String name;
     private final Gesture[] gestures;
 
     /**
      * Creates a macro.
-     * @param recursionGuard guards against infinite recursion
      * @param name the name of this macro
      * @param gestures the gestures that this macro performs
      */
-    public Macro(
-            final RecursionGuard recursionGuard,
-            final String name,
-            final Gesture... gestures) {
-        
-        this.recursionGuard = requireNonNull(recursionGuard, "recursionGuard");
+    public Macro(final String name, final Gesture... gestures) {
         this.name = requireNonNull(name, "name");
         this.gestures = gestures.clone();
     }
     
     /**
      * Creates a nameless macro.
-     * @param recursionGuard guards against infinite recursion
      * @param gestures the gestures that this macro performs
      */
-    public Macro(
-            final RecursionGuard recursionGuard, final Gesture... gestures) {
-        
-        this(recursionGuard, "", gestures);
+    public Macro(final Gesture... gestures) {
+        this("", gestures);
     }
 
     /**
@@ -58,11 +48,9 @@ public class Macro {
     public void play(final Script script, final Robot robot)
             throws MacroException {
         
-        recursionGuard.increment();
         for (final Gesture gesture : gestures) {
             play(script, robot, gesture);
         }
-        recursionGuard.decrement();
     }
     
     private static void play(
