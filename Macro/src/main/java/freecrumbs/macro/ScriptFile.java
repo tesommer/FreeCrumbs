@@ -19,8 +19,16 @@ public class ScriptFile implements Location {
     
     private final String base;
 
-    public ScriptFile(final String base) {
+    private ScriptFile(final String base) {
         this.base = requireNonNull(base, "base");
+    }
+    
+    /**
+     * Returns a script file referencing a file.
+     * @param file platform dependent path to the file.
+     */
+    public static ScriptFile fromFilePath(final String file) {
+        return new ScriptFile(neutral(file));
     }
 
     @Override
@@ -33,11 +41,10 @@ public class ScriptFile implements Location {
         final int index = base.lastIndexOf(SEPARATOR);
         if (index >= 0) {
             final File relative = new File(
-                    systemDependent(base.substring(0, index)),
-                    systemDependent(target));
+                    dependent(base.substring(0, index)),
+                    dependent(target));
             if (relative.isFile()) {
-                return new ScriptFile(
-                        systemIndependent(relative.getPath()));
+                return new ScriptFile(neutral(relative.getPath()));
             }
         }
         return new ScriptFile(target);
@@ -46,17 +53,17 @@ public class ScriptFile implements Location {
     @Override
     public InputStream open() throws MacroException {
         try {
-            return new FileInputStream(systemDependent(base));
+            return new FileInputStream(dependent(base));
         } catch (final IOException ex) {
             throw new MacroException(ex);
         }
     }
     
-    private static String systemDependent(final String file) {
+    private static String dependent(final String file) {
         return file.replace(SEPARATOR, File.separatorChar);
     }
     
-    private static String systemIndependent(final String file) {
+    private static String neutral(final String file) {
         return file.replace(File.separatorChar, SEPARATOR);
     }
 
