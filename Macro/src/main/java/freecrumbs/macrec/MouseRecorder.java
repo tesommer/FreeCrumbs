@@ -202,7 +202,9 @@ public class MouseRecorder extends ScreenCaptureFrame {
     }
     
     private void showXY(final MouseEvent evt) {
-        textLayer.setText("(" + evt.getX() + ", " + evt.getY() + ")");
+        final String coordinates = "(" + evt.getX() + ", " + evt.getY() + ")";
+        receiver.accept(coordinates);
+        textLayer.setText(coordinates);
         repaint();
     }
 

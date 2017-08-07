@@ -405,4 +405,5 @@ have three modes that are activated by pressing the following keys:
 * M: Click in the screen capture to records mouse movement.
 * C: Click on two points in the screen capture to select a portion of it. The
   selection is saved as PNG to the current directory.
+* S: Click a point to get the coordinates of that point.
 * Escape: Exit.
