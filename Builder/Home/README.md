@@ -266,8 +266,7 @@ If a macro name is not specified, the first macro in the script is played.
 
 A script may contain an arbitrary number of macros. A macro is terminated by a
 blank line or the end-of-file. Comments are lines that start with ``#``. The
-macro name is specified like this: ``name MyMacro``. A script may contain two
-kinds of variables: integers and images. They have different namespaces.
+macro name is specified like this: ``name MyMacro``.
 
 This is a sample macro script:
 
@@ -282,6 +281,17 @@ This is a sample macro script:
 **Warning:**
 *A key press must have a corresponding key release. Similarly, a mouse button
 press must be paired with a release of the button.*
+
+#### Variables
+
+A script may contain two kinds of variables: integers and images. They have
+separate namespaces. The variables created in a script only persist during the
+given run of the script, regardless of which macros are played.
+
+#### Script and image locations
+
+Locations referencing external scripts and images use forward slash (/). They
+may be relative to the executing script.
 
 #### Macro script reference
 
@@ -341,7 +351,8 @@ equals and a value denotes a default value for the parameter.
 * ``play macro [<times>=1]``: Plays a macro a certain number of times (default
   is one). ``macro`` specifies a macro in the current script, or a macro in an
   external script. In the latter case, the format of the parameter is
-  ``script-location->macro-name``. This command supports an optional logical
+  ``script-location->macro-name`` (the macro name may be omitted to play the
+  first macro in the script). This command supports an optional logical
   expression, e.g.:  
   ``play WTAB 1 x > -1``. The macro will be played if the condition is true. The
   following logical operators are supported:
