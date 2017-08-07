@@ -320,16 +320,6 @@ equals and a value denotes a default value for the parameter.
   auto wait for idle off, greater than zero to turn it on and less than zero to
   toggle.
 
-* ``image_xy x-variable y-variable <image> [<occurrence>=1 [<delay>=0
-  [<times>=1 [success-macro-name [failure-macro-name]]]]]``:
-  Stores the coordinates of an image within the current screen capture to script
-  variables. The image file may be relative to the script's location. If the
-  image is not located, both variables will be set to -1. Occurrences are
-  counted from the top. This command will wait ``delay`` milliseconds, take a
-  screen shot and search for the image. It will do this ``times`` times. If the
-  image was found, ``success-macro-name`` will be played if specified.
-  Otherwise, ``failure-macro-name`` will be played if specified.
-
 * ``key_press <key-code>``:
   Generates a key press event.
 
@@ -381,6 +371,16 @@ equals and a value denotes a default value for the parameter.
 * ``print output``:
   Prints output to STDOUT. Script variables may be referenced by precedeing them
   with $ in the output.
+
+* ``scan x-variable y-variable <image> [<occurrence>=1 [<delay>=0
+  [<times>=1 [success-macro-name [failure-macro-name]]]]]``:
+  Stores the coordinates of an image within the current screen capture to script
+  variables. The image file may be relative to the script's location. If the
+  image is not located, both variables will be set to -1. Occurrences are
+  counted from the top. This command will wait ``delay`` milliseconds, take a
+  screen shot and search for the image. It will do this ``times`` times. If the
+  image was found, ``success-macro-name`` will be played if specified.
+  Otherwise, ``failure-macro-name`` will be played if specified.
 
 * ``screenshot variable [<x> [<y> [<width> [<height>]]]]``:
   Takes a screenshot of the current screen and stores it as an image variable.

@@ -14,7 +14,7 @@ import freecrumbs.macro.Util;
  * to script variables.
  * Syntax:
  * {@code
- *  image_xy
+ *  scan
  *   x-variable
  *    y-variable
  *     image
@@ -28,11 +28,11 @@ import freecrumbs.macro.Util;
  * 
  * @author Tone Sommerland
  */
-public class ImageXY extends Command {
+public class Scan extends Command {
     
-    public static final String NAME = "image_xy";
+    public static final String NAME = "scan";
 
-    public ImageXY() {
+    public Scan() {
         super(NAME, 3, 8);
     }
     

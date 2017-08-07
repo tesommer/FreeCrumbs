@@ -8,7 +8,6 @@ import freecrumbs.macro.gesture.Beep;
 import freecrumbs.macro.gesture.Delay;
 import freecrumbs.macro.gesture.Exit;
 import freecrumbs.macro.gesture.Idle;
-import freecrumbs.macro.gesture.ImageXY;
 import freecrumbs.macro.gesture.KeyPress;
 import freecrumbs.macro.gesture.KeyRelease;
 import freecrumbs.macro.gesture.Load;
@@ -19,6 +18,7 @@ import freecrumbs.macro.gesture.MouseWheel;
 import freecrumbs.macro.gesture.Pixel;
 import freecrumbs.macro.gesture.Play;
 import freecrumbs.macro.gesture.Print;
+import freecrumbs.macro.gesture.Scan;
 import freecrumbs.macro.gesture.Screenshot;
 import freecrumbs.macro.gesture.Set;
 import freecrumbs.macro.gesture.Type;
@@ -47,7 +47,6 @@ public final class Main {
             new Delay(),
             new Exit(),
             new Idle(),
-            new ImageXY(),
             new KeyPress(),
             new KeyRelease(),
             new Load(),
@@ -58,6 +57,7 @@ public final class Main {
             new Pixel(),
             new Play(),
             new Print(),
+            new Scan(),
             new Screenshot(),
             new Set(),
             new Type(),
