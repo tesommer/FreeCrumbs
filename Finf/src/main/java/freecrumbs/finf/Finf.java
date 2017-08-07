@@ -33,11 +33,14 @@ public final class Finf {
             final Config config,
             final PrintStream out) {
         
-        final List<? extends Info> ordered = config.getOrder()
-                .map(order -> infoList.stream()
-                        .sorted(order)
-                        .collect(Collectors.toList()))
-                .orElseGet(() -> infoList);
+        final List<? extends Info> ordered;
+        if (config.getOrder().isPresent()) {
+            ordered = infoList.stream()
+                    .sorted(config.getOrder().get())
+                    .collect(Collectors.toList());
+        } else {
+            ordered = infoList;
+        }
         outputOrdered(ordered, config, out);
     }
 
