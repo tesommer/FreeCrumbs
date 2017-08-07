@@ -266,9 +266,10 @@ If a macro name is not specified, the first macro in the script is played.
 
 A script may contain an arbitrary number of macros. A macro is terminated by a
 blank line or the end-of-file. Comments are lines that start with ``#``. The
-macro name is specified like this: ``name MyMacro``.
+macro name is specified like this: ``name MyMacro``. A script may contain two
+kinds of variables: integers and images. They have different namespaces.
 
-This is an example macro script:
+This is a sample macro script:
 
     # This macro tabs between windows.
     name WTAB
@@ -284,9 +285,11 @@ press must be paired with a release of the button.*
 
 #### Macro script reference
 
-This is a list of macro script commands. A script allows integer-variable
-declarations. For any parameter written in &lt;angles&gt;, either an integer
-literal or script variable may be used.
+This is a list of macro script commands. For any integer parameter written in
+&lt;angles&gt;, either an integer literal or variable name may be used. For any
+image parameter in angles, either an image variable or location may be used.
+Optional parameters are surrounded by [square brackets]. A parameter followed by
+equals and a value denotes a default value for the parameter.
 
 * ``add_key_code_variables``:
   Creates script variables corresponding to constants in
@@ -297,8 +300,12 @@ literal or script variable may be used.
 
 * ``exit``: Exits the script.
 
-* ``image_xy x-variable y-variable image-file[ <occurrence=1>[ <delay=0>[
-    <times=1>[ success-macro-name[ failure-macro-name]]]]]``: Stores the
+* ``idle [auto [<onOffToggle>=1]]``: Waits for idle or sets the auto wait for
+  idle. ``onOffToggle`` is zero to turn auto wait for idle off, greater than
+  zero to turn it on and less than zero to toggle.
+
+* ``image_xy x-variable y-variable image-file [<occurrence>=1 [<delay>=0
+  [<times>=1 [success-macro-name [failure-macro-name]]]]]``: Stores the
   coordinates of an image within the current screen capture to script variables.
   The image file may be relative to the script's location. If the image is not
   located, both variables will be set to -1. Occurrences are counted from the
@@ -310,6 +317,9 @@ literal or script variable may be used.
 * ``key_press <key-code>``: Generates a key press event.
 
 * ``key_release <key-code>``: Generates a key release event.
+
+* ``load variable location``: Loads an image from the specified location and
+  stores it as a script image with the given name.
 
 * ``mouse_move <x> <y>``: Moves the mouse to specified x-y coordinates.
 
@@ -325,10 +335,16 @@ literal or script variable may be used.
 * ``mouse_wheel <steps>``: Moves the mouse wheel. Negative steps means up/away
   from user.
 
-* ``play macro-name [<times=1>]``: Plays the macro with the given name a certain
-  number of times (default is one time). This command supports an optional
-  logical expression, e.g.: ``play WTAB 1 x > -1``. The macro will be played if
-  the condition is true. The following logical operators are supported:
+* ``pixel variable <x> <y>``: Samples a pixel at ``x`` and ``y``, and stores its
+  RGB value in the given variable.
+
+* ``play macro [<times>=1]``: Plays a macro a certain number of times (default
+  is one). ``macro`` specifies a macro in the current script, or a macro in an
+  external script. In the latter case, the format of the parameter is
+  ``script-location->macro-name``. This command supports an optional logical
+  expression, e.g.:  
+  ``play WTAB 1 x > -1``. The macro will be played if the condition is true. The
+  following logical operators are supported:
     * ``==``: equals
     * ``!=``: not equals
     * ``<``: less than
@@ -342,6 +358,10 @@ literal or script variable may be used.
 * ``print output``: Prints output to STDOUT. Script variables may be referenced
   by precedeing them with $ in the output.
 
+* ``screenshot variable [<x> [<y> [<width> [<height>]]]]``: Takes a screenshot
+  of the current screen and stores it as an image variable. The parameters
+  default to the screen dimensions.
+
 * ``set variable <value>``: Sets or creates a script variable. The variable may
   be assigned an arithmetic expression, e.g.: ``set xysum x + y``. Supported
   operators are:
@@ -353,6 +373,11 @@ literal or script variable may be used.
 
 * ``type <value>``: Generates key presses and key releases that types the given
   value.
+
+* ``wait <image> [<gone>=0 [<millis>=100]]``: Wait for an image within the
+  current screen capture to either appear or disappear. ``gone`` is non-zero to
+  wait until the image is no longer there. ``millis`` is the delay in
+  milliseconds between checks.
 
 ### <a name="macrec"></a>Macrec
 
