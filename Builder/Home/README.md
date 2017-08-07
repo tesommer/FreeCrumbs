@@ -305,55 +305,67 @@ equals and a value denotes a default value for the parameter.
   Creates script variables corresponding to constants in
   *java.awt.event.KeyEvent* (VK_A, VK_ALT, VK_SPACE, …).
 
-* ``delay <millis> [auto]``: Delays further execution a specified number of
-  milliseconds or sets the auto delay.
+* ``beep``:
+  Creates an audible alert.
 
-* ``exit``: Exits the script.
+* ``delay <millis> [auto]``:
+  Delays further execution a specified number of milliseconds or sets the auto
+  delay.
 
-* ``idle [auto [<onOffToggle>=1]]``: Waits for idle or sets the auto wait for
-  idle. ``onOffToggle`` is zero to turn auto wait for idle off, greater than
-  zero to turn it on and less than zero to toggle.
+* ``exit``:
+  Exits the script.
+
+* ``idle [auto [<onOffToggle>=1]]``:
+  Waits for idle or sets the auto wait for idle. ``onOffToggle`` is zero to turn
+  auto wait for idle off, greater than zero to turn it on and less than zero to
+  toggle.
 
 * ``image_xy x-variable y-variable <image> [<occurrence>=1 [<delay>=0
-  [<times>=1 [success-macro-name [failure-macro-name]]]]]``: Stores the
-  coordinates of an image within the current screen capture to script variables.
-  The image file may be relative to the script's location. If the image is not
-  located, both variables will be set to -1. Occurrences are counted from the
-  top. This command will wait ``delay`` milliseconds, take a screen shot and
-  search for the image. It will do this ``times`` times. If the image was found,
-  ``success-macro-name`` will be played if specified. Otherwise,
-  ``failure-macro-name`` will be played if specified.
+  [<times>=1 [success-macro-name [failure-macro-name]]]]]``:
+  Stores the coordinates of an image within the current screen capture to script
+  variables. The image file may be relative to the script's location. If the
+  image is not located, both variables will be set to -1. Occurrences are
+  counted from the top. This command will wait ``delay`` milliseconds, take a
+  screen shot and search for the image. It will do this ``times`` times. If the
+  image was found, ``success-macro-name`` will be played if specified.
+  Otherwise, ``failure-macro-name`` will be played if specified.
 
-* ``key_press <key-code>``: Generates a key press event.
+* ``key_press <key-code>``:
+  Generates a key press event.
 
-* ``key_release <key-code>``: Generates a key release event.
+* ``key_release <key-code>``:
+  Generates a key release event.
 
-* ``load variable location``: Loads an image from the specified location and
-  stores it as a script image with the given name.
+* ``load variable location``:
+  Loads an image from the specified location and stores it as a script image
+  with the given name.
 
-* ``mouse_move <x> <y>``: Moves the mouse to specified x-y coordinates.
+* ``mouse_move <x> <y>``:
+  Moves the mouse to specified x-y coordinates.
 
-* ``mouse_press <button1> [<button2> [<button3>]]``: Generates a mouse press
-  event. A button is an integer where nonzero is pressed and zero is not.
-  Buttons are numbered left to right. In other words, to press the middle
-  button: ``mouse_press 0 1``. Mouse buttons must be released with the
-  ``mouse_release`` command.
+* ``mouse_press <button1> [<button2> [<button3>]]``:
+  Generates a mouse press event. A button is an integer where nonzero is pressed
+  and zero is not. Buttons are numbered left to right. In other words, to press
+  the middle button:  
+  ``mouse_press 0 1``. Mouse buttons must be released with the ``mouse_release``
+  command.
 
-* ``mouse_release <button1> [<button2> [<button3>]]``: The release analogue to
-  ``mouse_press``.
+* ``mouse_release <button1> [<button2> [<button3>]]``:
+  The release analogue to ``mouse_press``.
 
-* ``mouse_wheel <steps>``: Moves the mouse wheel. Negative steps means up/away
-  from user.
+* ``mouse_wheel <steps>``:
+  Moves the mouse wheel. Negative steps means up/away from user.
 
-* ``pixel variable <x> <y>``: Samples a pixel at ``x`` and ``y``, and stores its
-  RGB value in the given variable.
+* ``pixel variable <x> <y>``:
+  Samples a pixel at ``x`` and ``y``, and stores its RGB value in the given
+  variable.
 
-* ``play macro [<times>=1]``: Plays a macro a certain number of times (default
-  is one). ``macro`` specifies a macro in the current script, or a macro in an
-  external script. In the latter case, the format of the parameter is
-  ``script-location->macro-name`` (the macro name may be omitted to play the
-  first macro in the script). This command supports an optional logical
-  expression, e.g.:  
+* ``play macro [<times>=1]``:
+  Plays a macro a certain number of times (default is one). ``macro`` specifies
+  a macro in the current script, or a macro in an external script. In the latter
+  case, the format of the parameter is ``script-location->macro-name`` (the
+  macro name may be omitted to play the first macro in the script). This command
+  supports an optional logical expression, e.g.:  
   ``play WTAB 1 x > -1``. The macro will be played if the condition is true. The
   following logical operators are supported:
     * ``==``: equals
@@ -366,29 +378,30 @@ equals and a value denotes a default value for the parameter.
       ``var isset 1`` is true if ``var`` has been set.
       ``var isset 0`` is true if ``var`` has not been set yet.
 
-* ``print output``: Prints output to STDOUT. Script variables may be referenced
-  by precedeing them with $ in the output.
+* ``print output``:
+  Prints output to STDOUT. Script variables may be referenced by precedeing them
+  with $ in the output.
 
-* ``screenshot variable [<x> [<y> [<width> [<height>]]]]``: Takes a screenshot
-  of the current screen and stores it as an image variable. The parameters
-  default to the screen dimensions.
+* ``screenshot variable [<x> [<y> [<width> [<height>]]]]``:
+  Takes a screenshot of the current screen and stores it as an image variable.
+  The parameters default to the screen dimensions.
 
-* ``set variable <value>``: Sets or creates a script variable. The variable may
-  be assigned an arithmetic expression, e.g.: ``set xysum x + y``. Supported
-  operators are:
+* ``set variable <value>``:
+  Sets or creates a script variable. The variable may be assigned an arithmetic
+  expression, e.g.: ``set xysum x + y``. Supported operators are:
     * ``+``: addition
     * ``-``: subtraction
     * ``*``: multiplication
     * ``/``: division
     * ``%``: modulus (remainder of integer division)
 
-* ``type <value>``: Generates key presses and key releases that types the given
-  value.
+* ``type <value>``:
+  Generates key presses and key releases that types the given value.
 
-* ``wait <image> [<gone>=0 [<millis>=100]]``: Wait for an image within the
-  current screen capture to either appear or disappear. ``gone`` is non-zero to
-  wait until the image is no longer there. ``millis`` is the delay in
-  milliseconds between checks.
+* ``wait <image> [<gone>=0 [<millis>=100]]``:
+  Wait for an image within the current screen capture to either appear or
+  disappear. ``gone`` is non-zero to wait until the image is no longer there.
+  ``millis`` is the delay in milliseconds between checks.
 
 ### <a name="macrec"></a>Macrec
 

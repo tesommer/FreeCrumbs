@@ -4,6 +4,7 @@ import java.awt.AWTException;
 import java.awt.Robot;
 
 import freecrumbs.macro.gesture.AddKeyCodeVariables;
+import freecrumbs.macro.gesture.Beep;
 import freecrumbs.macro.gesture.Delay;
 import freecrumbs.macro.gesture.Exit;
 import freecrumbs.macro.gesture.Idle;
@@ -42,6 +43,7 @@ public final class Main {
     GESTURE_PARSERS
         = new GestureParser[] {
             new AddKeyCodeVariables(),
+            new Beep(),
             new Delay(),
             new Exit(),
             new Idle(),
