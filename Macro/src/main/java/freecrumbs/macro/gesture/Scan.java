@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
 import freecrumbs.macro.MacroException;
+import freecrumbs.macro.Scanner;
 import freecrumbs.macro.Script;
 import freecrumbs.macro.Util;
 
@@ -108,10 +109,8 @@ public class Scan extends Command {
             while (xy.length == 0
                     && time++ < script.getVariables().valueOf(times)) {
                 robot.delay(script.getVariables().valueOf(delay));
-                xy = Util.xyOf(
-                        image,
-                        Util.createScreenCapture(robot),
-                        script.getVariables().valueOf(occurrence));
+                xy = new Scanner(Util.createScreenCapture(robot))
+                    .xyOf(image, script.getVariables().valueOf(occurrence));
             }
             return xy;
         }

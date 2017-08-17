@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
 import freecrumbs.macro.MacroException;
+import freecrumbs.macro.Scanner;
 import freecrumbs.macro.Script;
 import freecrumbs.macro.Util;
 
@@ -69,8 +70,8 @@ public class Wait extends Command {
             final int millis) {
         
         while (true) {
-            final int[] xy
-                = Util.xyOf(image, Util.createScreenCapture(robot), 1);
+            final int[] xy = new Scanner(Util.createScreenCapture(robot))
+                .xyOf(image, 1);
             if (gone == (xy.length == 0)) {
                 break;
             }

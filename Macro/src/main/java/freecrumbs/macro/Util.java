@@ -177,49 +177,6 @@ public final class Util {
     }
     
     /**
-     * Finds the x-y coordinates of an image within another image.
-     * Starts looking at the top left of {@code scanImage}.
-     * @param occurrence the occurrence to find
-     * (the first occurrence has number one).
-     * @return an empty array if not found.
-     */
-    public static int[] xyOf(
-            final BufferedImage findImage,
-            final BufferedImage scanImage,
-            final int occurrence) {
-        
-        int count = 0;
-        for (int x = 0; x < scanImage.getWidth() - findImage.getWidth(); x++) {
-            for (int y = 0;
-                    y < scanImage.getHeight() -  findImage.getHeight(); y++) {
-                if (isImageAt(findImage, scanImage, x, y)
-                        && ++count == occurrence) {
-                    return new int[] {x, y};
-                }
-            }
-        }
-        return new int[0];
-    }
-
-    private static boolean isImageAt(
-            final BufferedImage findImage,
-            final BufferedImage scanImage,
-            final int x,
-            final int y) {
-        
-        for (int x2 = 0; x2 < findImage.getWidth(); x2++) {
-            for (int y2 = 0; y2 < findImage.getHeight(); y2++) {
-                final int rgb = findImage.getRGB(x2, y2);
-                final int rgb2 = scanImage.getRGB(x + x2, y + y2);
-                if (rgb != rgb2) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-    
-    /**
      * Creates a screenshot of the entire screen.
      */
     public static BufferedImage createScreenCapture(final Robot robot) {
