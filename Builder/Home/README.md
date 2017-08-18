@@ -372,15 +372,19 @@ equals and a value denotes a default value for the parameter.
   Prints output to STDOUT. Script variables may be referenced by precedeing them
   with $ in the output.
 
-* ``scan x-variable y-variable <image> [<occurrence>=1 [<delay>=0
-  [<times>=1 [success-macro-name [failure-macro-name]]]]]``:
-  Stores the coordinates of an image within the current screen capture to script
-  variables. The image file may be relative to the script's location. If the
-  image is not located, both variables will be set to -1. Occurrences are
-  counted from the top. This command will wait ``delay`` milliseconds, take a
-  screen shot and search for the image. It will do this ``times`` times. If the
-  image was found, ``success-macro-name`` will be played if specified.
-  Otherwise, ``failure-macro-name`` will be played if specified.
+* ``scan <from-x> <from-y> <to-x> <to-y> x-variable y-variable <image>
+  [<occurrence>=1 [<delay>=0 [<times>=1 [success-macro-name
+  [failure-macro-name]]]]]``:
+  Scans the current screen capture for an image. Stores the coordinates of the
+  image to script variables. If the image is not located, both variables will be
+  set to -1. Occurrences are counted from the top. This command will wait
+  ``delay`` milliseconds, take a screen shot and search for the image. It will
+  do this ``times`` times. If the image was found, ``success-macro-name`` will
+  be played, if specified. Otherwise, ``failure-macro-name`` will be played, if
+  specified. The from/to parameters limits the region being scanned. A value of
+  -1 for any of the from/to parameters disregards the limitation of the
+  parameter. If any of the from/to parameters are out of bounds, it is
+  restricted automatically.
 
 * ``screenshot variable [<x> [<y> [<width> [<height>]]]]``:
   Takes a screenshot of the current screen and stores it as an image variable.
