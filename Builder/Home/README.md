@@ -402,10 +402,11 @@ equals and a value denotes a default value for the parameter.
 * ``type <value>``:
   Generates key presses and key releases that types the given value.
 
-* ``wait <image> [<gone>=0 [<millis>=100]]``:
+* ``wait <from-x> <from-y> <to-x> <to-y> <image> [<gone>=0 [<millis>=100]]``:
   Wait for an image within the current screen capture to either appear or
   disappear. ``gone`` is non-zero to wait until the image is no longer there.
-  ``millis`` is the delay in milliseconds between checks.
+  ``millis`` is the delay in milliseconds between checks. The from/to parameters
+  limit the area being searched. They work the same way as with ``scan``.
 
 ### <a name="macrec"></a>Macrec
 
