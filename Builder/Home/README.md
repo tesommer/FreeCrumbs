@@ -353,8 +353,11 @@ equals and a value denotes a default value for the parameter.
 * ``play macro [<times>=1]``:
   Plays a macro a certain number of times (default is one). ``macro`` specifies
   a macro in the current script, or a macro in an external script. In the latter
-  case, the format of the parameter is ``script-location->macro-name`` (the
-  macro name may be omitted to play the first macro in the script). This command
+  case, the format of the parameter is ``script-location->macro-name``. The
+  macro name may be omitted to play the first macro in the script. Input can be
+  passed to the external script like this:  
+  ``script-location:variable1=<value1>:variable2=<value2>->macro-name``.  
+  The variable-value pairs will be set in the external script. This command
   supports an optional logical expression, e.g.:  
   ``play WTAB 1 x > -1``. The macro will be played if the condition is true. The
   following logical operators are supported:
