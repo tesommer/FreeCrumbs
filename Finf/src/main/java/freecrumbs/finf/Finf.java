@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,7 +15,7 @@ import com.calclipse.lib.util.EncodingUtil;
 import com.calclipse.lib.util.IOUtil;
 
 /**
- * Utility methods.
+ * Generates and prints file info.
  * 
  * @author Tone Sommerland
  */
@@ -23,17 +25,18 @@ public final class Finf {
     }
     
     /**
-     * Outputs a list of file info units.
-     * @param infoList the file info units
-     * @param config configuration
+     * Generates and prints file info.
+     * @param files the input files
+     * @param config the configuration
      * @param out the output destination
      */
     public static void output(
-            final List<? extends Info> infoList,
+            final Collection<? extends File> files,
             final Config config,
-            final PrintStream out) {
+            final PrintStream out) throws IOException {
         
-        final List<? extends Info> ordered;
+        final List<Info> infoList = getInfo(files, config);
+        final List<Info> ordered;
         if (config.getOrder().isPresent()) {
             ordered = infoList.stream()
                     .sorted(config.getOrder().get())
@@ -54,13 +57,21 @@ public final class Finf {
             out.println(config.getInfoFormat().toString(infoList.get(i)));
         }
     }
+
+    private static List<Info> getInfo(
+            final Collection<? extends File> files,
+            final Config config) throws IOException {
+        
+        final List<Info> infoList = new ArrayList<>();
+        for (final File file : files) {
+            if (acceptsInput(file, config)) {
+                infoList.add(getInfo(file, config));
+            }
+        }
+        return infoList;
+    }
     
-    /**
-     * Gets the file info for a file.
-     * @param config configuration
-     * @param file the file to get info of
-     */
-    public static Info getInfo(final Config config, final File file)
+    private static Info getInfo(final File file, final Config config)
             throws IOException {
         
         final String path;
@@ -73,12 +84,12 @@ public final class Finf {
             path = file.getPath().substring(0, lastSep + 1);
             filename = file.getPath().substring(lastSep + 1);
         }
-        final String hash = getHash(config, file);
+        final String hash = getHash(file, config);
         return new Info(
                 path, filename, file.length(), file.lastModified(), hash);
     }
     
-    private static String getHash(final Config config, final File file)
+    private static String getHash(final File file, final Config config)
             throws IOException {
 
         if (config.isHashUnused()) {
@@ -97,7 +108,7 @@ public final class Finf {
      * Whether or not the file filter of the given configuration
      * accepts the given file.
      */
-    public static boolean acceptsInput(final Config config, final File file) {
+    private static boolean acceptsInput(final File file, final Config config) {
         return config.getFileFilter().map(ff -> ff.accept(file)).orElse(true);
     }
 

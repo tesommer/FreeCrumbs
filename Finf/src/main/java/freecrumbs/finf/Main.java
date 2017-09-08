@@ -38,41 +38,34 @@ public final class Main {
             System.out.println(HELP);
             return;
         }
+        final List<File> inputFiles = getInputFiles(parsedArgs);
         final Config config = loadConfig(parsedArgs, Locale.getDefault());
-        final List<Info> infoList = new ArrayList<>();
+        Finf.output(inputFiles, config, System.out);
+    }
+
+    private static List<File> getInputFiles(final Args parsedArgs) {
+        final List<File> inputFiles = new ArrayList<>();
         for (final String inputFile : parsedArgs.inputFiles) {
-            process(infoList, config, new File(inputFile));
+            process(inputFiles, new File(inputFile));
         }
-        Finf.output(infoList, config, System.out);
+        return inputFiles;
     }
     
     private static void process(
-        final Collection<Info> infoList,
-        final Config config,
-        final File file) throws IOException {
+            final Collection<File> inputFiles, final File file) {
         
         if (file.isDirectory()) {
-            processDir(infoList, config, file);
-        } else if (Finf.acceptsInput(config, file)) {
-            processFile(infoList, config, file);
+            processDir(inputFiles, file);
+        } else {
+            inputFiles.add(file);
         }
     }
     
-    private static void processFile(
-        final Collection<Info> infoList,
-        final Config config,
-        final File file) throws IOException {
-        
-        infoList.add(Finf.getInfo(config, file));
-    }
-    
     private static void processDir(
-        final Collection<Info> infoList,
-        final Config config,
-        final File dir) throws IOException {
+            final Collection<File> inputFiles, final File dir) {
         
         for (final File file : dir.listFiles()) {
-            process(infoList, config, file);
+            process(inputFiles, file);
         }
     }
     
