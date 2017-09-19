@@ -5,17 +5,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.calclipse.lib.util.EncodingUtil;
-import com.calclipse.lib.util.IOUtil;
 
 /**
- * Generates and prints file info.
+ * Generates and prints
+ * {@link freecrumbs.finf.Info file info}.
  * 
  * @author Tone Sommerland
  */
@@ -76,13 +75,13 @@ public final class Finf {
         
         final String path;
         final String filename;
-        final int lastSep = file.getPath().lastIndexOf(File.separatorChar);
-        if (lastSep < 0) {
+        final int index = file.getPath().lastIndexOf(File.separatorChar);
+        if (index < 0) {
             path = "";
             filename = file.getName();
         } else {
-            path = file.getPath().substring(0, lastSep + 1);
-            filename = file.getPath().substring(lastSep + 1);
+            path = file.getPath().substring(0, index + 1);
+            filename = file.getPath().substring(index + 1);
         }
         final String hash = getHash(file, config);
         return new Info(
@@ -92,22 +91,14 @@ public final class Finf {
     private static String getHash(final File file, final Config config)
             throws IOException {
 
-        if (config.isHashUnused()) {
-            return "";
-        }
         try (
             final InputStream in = new FileInputStream(file);
         ) {
-            final MessageDigest msgDigest = config.getMessageDigest();
-            msgDigest.update(IOUtil.readAll(in));
-            return EncodingUtil.bytesToHex(false, msgDigest.digest());
+            return EncodingUtil.bytesToHex(
+                    false, config.getHashGenerator().digest(in));
         }
     }
     
-    /**
-     * Whether or not the file filter of the given configuration
-     * accepts the given file.
-     */
     private static boolean acceptsInput(final File file, final Config config) {
         return config.getFileFilter().map(ff -> ff.accept(file)).orElse(true);
     }

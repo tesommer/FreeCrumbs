@@ -11,8 +11,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * The entry point to Finf.
@@ -39,7 +39,7 @@ public final class Main {
             return;
         }
         final List<File> inputFiles = getInputFiles(parsedArgs);
-        final Config config = loadConfig(parsedArgs, Locale.getDefault());
+        final Config config = loadConfig(parsedArgs);
         Finf.output(inputFiles, config, System.out);
     }
 
@@ -55,25 +55,16 @@ public final class Main {
             final Collection<File> inputFiles, final File file) {
         
         if (file.isDirectory()) {
-            processDir(inputFiles, file);
+            Stream.of(file.listFiles())
+                .forEach(child -> process(inputFiles, child));
         } else {
             inputFiles.add(file);
         }
     }
     
-    private static void processDir(
-            final Collection<File> inputFiles, final File dir) {
-        
-        for (final File file : dir.listFiles()) {
-            process(inputFiles, file);
-        }
-    }
-    
-    private static Config loadConfig(final Args args, final Locale locale)
-            throws IOException {
-        
+    private static Config loadConfig(final Args args) throws IOException {
         final ConfigLoader loader
-            = new PropertiesConfigLoader(locale, getConfigOverrides(args));
+            = ConfigLoader.getDefault(getConfigOverrides(args));
         if (args.configFile == null) {
             return loader.loadConfig(new StringReader(""));
         } else if ("-".equals(args.configFile)) {

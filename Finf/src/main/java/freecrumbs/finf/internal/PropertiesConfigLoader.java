@@ -1,4 +1,4 @@
-package freecrumbs.finf;
+package freecrumbs.finf.internal;
 
 import static java.util.Objects.requireNonNull;
 
@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.Reader;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,6 +20,13 @@ import java.util.Properties;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
+
+import freecrumbs.finf.Config;
+import freecrumbs.finf.ConfigLoader;
+import freecrumbs.finf.HashGenerator;
+import freecrumbs.finf.Info;
+import freecrumbs.finf.InfoField;
+import freecrumbs.finf.InfoFormat;
 
 /**
  * Loads configuration from a properties file.
@@ -84,18 +89,22 @@ public class PropertiesConfigLoader implements ConfigLoader {
     @Override
     public Config loadConfig(final Reader reader) throws IOException {
         final Properties props = getProperties(reader);
-        final MessageDigest messageDigest = getMessageDigest(props);
         final TokenInfoFormat infoFormat = getInfoFormat(props);
+        final HashGenerator hashGenerator;
+        if (infoFormat.isHashUnused()) {
+            hashGenerator = in -> new byte[] {};
+        } else {
+            hashGenerator = getHashGenerator(props);
+        }
         final FileFilter fileFilter = getFileFilter(props);
         final Comparator<Info> order = getOrder(props);
         final int count = getCount(props);
         return new Config(
-                messageDigest,
+                hashGenerator,
                 infoFormat,
                 fileFilter,
                 order,
-                count,
-                infoFormat.isHashUnused());
+                count);
     }
 
     private Properties getProperties(final Reader reader) throws IOException {
@@ -107,15 +116,9 @@ public class PropertiesConfigLoader implements ConfigLoader {
         return props;
     }
 
-    private static MessageDigest getMessageDigest(final Properties props)
-            throws IOException {
-        
-        try {
-            return MessageDigest.getInstance(props.getProperty(
-                HASH_ALGORITHM_KEY, DEFAULT_HASH_ALGORITHM));
-        } catch (final NoSuchAlgorithmException ex) {
-            throw new IOException(ex);
-        }
+    private static HashGenerator getHashGenerator(final Properties props) {
+        return new MessageDigestHashGenerator(
+                props.getProperty(HASH_ALGORITHM_KEY, DEFAULT_HASH_ALGORITHM));
     }
 
     private TokenInfoFormat getInfoFormat(final Properties props)

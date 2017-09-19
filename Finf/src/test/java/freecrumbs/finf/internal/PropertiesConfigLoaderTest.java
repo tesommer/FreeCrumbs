@@ -1,5 +1,6 @@
-package freecrumbs.finf;
+package freecrumbs.finf.internal;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
@@ -16,15 +17,45 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
+import freecrumbs.finf.Config;
+import freecrumbs.finf.Info;
+import freecrumbstesting.TestUtil;
+
 public class PropertiesConfigLoaderTest {
     
     private static final Locale LOCALE = Locale.getDefault();
-    private static final String MD5 = "md5";
     private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm";
     
     private static final Info I1 = new Info("p1", "f1", 1, 100, "h1");
     private static final Info I2 = new Info("p1", "f1", 2, 102, "h2");
     private static final Info I3 = new Info("p1", "f2", 3, 102, "h3");
+    
+    private static final byte[] HASH_INPUT = new byte[] {'T'};
+    
+    private static final byte[]
+    HASH_MD5 = new byte[] {
+        (byte)0xb9, (byte)0xec, (byte)0xe1, (byte)0x8c, (byte)0x95, (byte)0x0a,
+        (byte)0xfb, (byte)0xfa, (byte)0x6b, (byte)0x0f, (byte)0xdb, (byte)0xfa,
+        (byte)0x4f, (byte)0xf7, (byte)0x31, (byte)0xd3
+    };
+    
+    /*private static final byte[]
+    HASH_SHA1 = new byte[] {
+        (byte)0xc2, (byte)0xc5, (byte)0x3d, (byte)0x66, (byte)0x94, (byte)0x82,
+        (byte)0x14, (byte)0x25, (byte)0x8a, (byte)0x26, (byte)0xca, (byte)0x9c,
+        (byte)0xa8, (byte)0x45, (byte)0xd7, (byte)0xac, (byte)0x0c, (byte)0x17,
+        (byte)0xf8, (byte)0xe7
+    };*/
+    
+    private static final byte[]
+    HASH_SHA256 = new byte[] {
+        (byte)0xe6, (byte)0x32, (byte)0xb7, (byte)0x09, (byte)0x5b, (byte)0x0b,
+        (byte)0xf3, (byte)0x2c, (byte)0x26, (byte)0x0f, (byte)0xa4, (byte)0xc5,
+        (byte)0x39, (byte)0xe9, (byte)0xfd, (byte)0x7b, (byte)0x85, (byte)0x2d,
+        (byte)0x0d, (byte)0xe4, (byte)0x54, (byte)0xe9, (byte)0xbe, (byte)0x26,
+        (byte)0xf2, (byte)0x4d, (byte)0x0d, (byte)0x6f, (byte)0x91, (byte)0xd0,
+        (byte)0x69, (byte)0xd3
+    };
 
     public PropertiesConfigLoaderTest() {
     }
@@ -32,7 +63,7 @@ public class PropertiesConfigLoaderTest {
     @Test
     public void testEmptyConfig() throws IOException {
         final Config config = getConfig("");
-        assertConfig(config, MD5, false, -1, true);
+        assertConfig(config, false, -1);
         assertInfoFormat(config, "f1", I1, DEFAULT_DATE_FORMAT);
     }
     
@@ -40,33 +71,43 @@ public class PropertiesConfigLoaderTest {
     public void testOrder() throws IOException {
         final String prop = "order=path filename desc size asc";
         final Config config = getConfig(prop);
-        assertConfig(config, MD5, false, -1, true, I3, I1, I2);
+        assertConfig(config, false, -1, I3, I1, I2);
         final String prop2 = "order=modified hash desc";
         final Config config2 = getConfig(prop2);
-        assertConfig(config2, MD5, false, -1, true, I1, I3, I2);
+        assertConfig(config2, false, -1, I1, I3, I2);
     }
     
     @Test
     public void testInvalidOrder() throws IOException {
         final Config config = getConfig("order=wtf hash");
-        assertConfig(config, MD5, false, -1, true, I1, I2, I3);
+        assertConfig(config, false, -1, I1, I2, I3);
     }
     
     @Test
-    public void testHashAlgorithm() throws IOException {
-        final Config config = getConfig("hash.algorithm=sha-256");
-        assertConfig(config, "sha-256", false, -1, true);
+    public void testHashGenerator() throws IOException {
+        final Config config = getConfig(
+                "hash.algorithm=sha-256\ninfo.format=${hash}");
+        assertHashGenerator(config, HASH_SHA256, HASH_INPUT);
     }
     
-    @Test(expected = IOException.class)
+    @Test
+    public void testUnusedHash() throws IOException {
+        final Config config = getConfig("hash.algorithm=sha-256");
+        assertHashGenerator(config, new byte[0], HASH_INPUT);
+    }
+    
+    @Test
     public void testInvalidHashAlgorithm() throws IOException {
-        getConfig("hash.algorithm=Wee-d4U");
+        final Config config = getConfig("hash.algorithm=Wee-d4U\ninfo.format=${hash}");
+        TestUtil.assertThrows(
+                IOException.class,
+                () -> assertHashGenerator(config, HASH_MD5, HASH_INPUT));
     }
     
     @Test
     public void testCount() throws IOException {
         final Config config = getConfig("count = 2");
-        assertConfig(config, MD5, false, 2, true);
+        assertConfig(config, false, 2);
     }
     
     @Test(expected = IOException.class)
@@ -78,7 +119,7 @@ public class PropertiesConfigLoaderTest {
     public void testFileFilter() throws IOException {
         final String prop = "file.filter= a\\\\d*";
         final Config config = getConfig(prop);
-        assertConfig(config, MD5, true, -1, true);
+        assertConfig(config, true, -1);
         final File exclude = new File("abc");
         final File include = new File("a23");
         Assert.assertFalse(
@@ -97,7 +138,7 @@ public class PropertiesConfigLoaderTest {
     @Test
     public void testInvalidProperty() throws IOException {
         final Config config = getConfig("count=22\nabc=xyz");
-        assertConfig(config, MD5, false, 22, true);
+        assertConfig(config, false, 22);
     }
     
     @Test
@@ -105,7 +146,7 @@ public class PropertiesConfigLoaderTest {
         final String prop
             = "info.format= ${size}|${path}${hash}§${modified}$${filename}";
         final Config config = getConfig(prop);
-        assertConfig(config, MD5, false, -1, false);
+        assertConfig(config, false, -1);
         assertInfoFormat(
                 config, "2|p1h2§${modified}$f1", I2, DEFAULT_DATE_FORMAT);
     }
@@ -118,10 +159,9 @@ public class PropertiesConfigLoaderTest {
     @Test
     public void testOverride() throws IOException {
         final Map<String, String> overrides = new HashMap<>();
-        overrides.put("hash.algorithm", "SHa-512");
-        overrides.put("count", "22");
-        final Config config = getConfig("hash.algorithm=shA-256", overrides);
-        assertConfig(config, "SHA-512", false, 22, true);
+        overrides.put("count", "21");
+        final Config config = getConfig("count=22", overrides);
+        assertConfig(config, false, 21);
     }
     
     private static Config getConfig(
@@ -144,16 +184,10 @@ public class PropertiesConfigLoaderTest {
      */
     private static void assertConfig(
             final Config actual,
-            final String hashAlgorithm,
             final boolean fileFilterPresent,
             final int count,
-            final boolean hashUnused,
             final Info... order) {
         
-        Assert.assertEquals(
-                "Hash algorithm",
-                hashAlgorithm.toLowerCase(LOCALE),
-                actual.getMessageDigest().getAlgorithm().toLowerCase(LOCALE));
         if (fileFilterPresent) {
             Assert.assertTrue(
                     "Assert file filter present",
@@ -164,15 +198,6 @@ public class PropertiesConfigLoaderTest {
                     actual.getFileFilter().isPresent());
         }
         Assert.assertEquals("Count", count, actual.getCount());
-        if (hashUnused) {
-            Assert.assertTrue(
-                    "Assert hashUnused is true",
-                    actual.isHashUnused());
-        } else {
-            Assert.assertFalse(
-                    "Assert hashUnused is false",
-                    actual.isHashUnused());
-        }
         if (order.length == 0) {
             Assert.assertFalse(
                     "Assert order is not present",
@@ -193,7 +218,7 @@ public class PropertiesConfigLoaderTest {
         actualOrder.sort(actual.getOrder().get());
         for (int i = 0; i < expected.length; i++) {
             Assert.assertSame(
-                    "Oder: index " + i, expected[i], actualOrder.get(i));
+                    "Order: index " + i, expected[i], actualOrder.get(i));
         }
     }
     
@@ -215,6 +240,16 @@ public class PropertiesConfigLoaderTest {
                 "Info format",
                 expectedWithModified,
                 actual.getInfoFormat().toString(info));
+    }
+    
+    private static void assertHashGenerator(
+            final Config actual,
+            final byte[] expectedHash,
+            final byte[] input) throws IOException {
+        
+        final byte[] actualHash = actual.getHashGenerator().digest(
+                new ByteArrayInputStream(input));
+        Assert.assertArrayEquals("hash", expectedHash, actualHash);
     }
 
 }

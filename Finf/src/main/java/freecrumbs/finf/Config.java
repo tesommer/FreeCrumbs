@@ -3,7 +3,6 @@ package freecrumbs.finf;
 import static java.util.Objects.requireNonNull;
 
 import java.io.FileFilter;
-import java.security.MessageDigest;
 import java.util.Comparator;
 import java.util.Optional;
 
@@ -11,52 +10,46 @@ import java.util.Optional;
  * Finf config.
  * Contains the following properties:
  * <ul>
- *  <li>{@code messageDigest}: for generating file hashes</li>
+ *  <li>{@code hashGenerator}: for generating file hashes</li>
  *  <li>{@code infoFormat}: format of the file info units</li>
  *  <li>{@code fileFilter}: filters input files (optional)</li>
  *  <li>{@code order}: sort order of the info units (optional)</li>
  *  <li>{@code count}: max lines to output (-1 = all)</li>
- *  <li>{@code hashUnused}: a flag signaling that hash generation is unnecessary
- *  because it's not part of the output</li>
  * </ul>
  *
  * @author Tone Sommerland
  */
 public class Config {
-    private final MessageDigest messageDigest;
+    private final HashGenerator hashGenerator;
     private final InfoFormat infoFormat;
     private final FileFilter fileFilter;
     private final Comparator<Info> order;
     private final int count;
-    private final boolean hashUnused;
     
     /**
      * Creates a new configuration.
-     * @param messageDigest the hash generator
+     * @param hashGenerator the hash generator
      * @param infoFormat the file info format
      * @param fileFilter the file filter (nullable)
      * @param order the file info sorter (nullable)
      * @param count max lines to output (-1 = all)
-     * @param hashUnused allows hash generation to be skipped if true
      */
     public Config(
-        final MessageDigest messageDigest,
+        final HashGenerator hashGenerator,
         final InfoFormat infoFormat,
         final FileFilter fileFilter,
         final Comparator<Info> order,
-        final int count,
-        final boolean hashUnused) {
+        final int count) {
         
-        this.messageDigest = requireNonNull(messageDigest, "messageDigest");
+        this.hashGenerator = requireNonNull(hashGenerator, "hashGenerator");
         this.infoFormat = requireNonNull(infoFormat, "infoFormat");
         this.fileFilter = fileFilter;
         this.order = order;
         this.count = count;
-        this.hashUnused = hashUnused;
     }
     
-    public MessageDigest getMessageDigest() {
-        return messageDigest;
+    public HashGenerator getHashGenerator() {
+        return hashGenerator;
     }
     
     public InfoFormat getInfoFormat() {
@@ -73,10 +66,6 @@ public class Config {
     
     public int getCount() {
         return count;
-    }
-
-    public boolean isHashUnused() {
-        return hashUnused;
     }
     
 }
