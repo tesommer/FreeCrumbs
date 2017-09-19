@@ -25,7 +25,6 @@ import freecrumbs.finf.Config;
 import freecrumbs.finf.ConfigLoader;
 import freecrumbs.finf.HashGenerator;
 import freecrumbs.finf.Info;
-import freecrumbs.finf.InfoField;
 import freecrumbs.finf.InfoFormat;
 
 /**

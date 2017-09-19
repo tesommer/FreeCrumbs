@@ -1,4 +1,4 @@
-package freecrumbs.finf;
+package freecrumbs.finf.internal;
 
 /**
  * Fields in a file info unit.
