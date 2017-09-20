@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -38,27 +37,24 @@ public final class Main {
             System.out.println(HELP);
             return;
         }
-        final List<File> inputFiles = getInputFiles(parsedArgs);
+        final Collection<File> inputFiles = getInputFiles(parsedArgs);
         final Config config = loadConfig(parsedArgs);
         Finf.output(inputFiles, config, System.out);
     }
 
-    private static List<File> getInputFiles(final Args parsedArgs) {
-        final List<File> inputFiles = new ArrayList<>();
-        for (final String inputFile : parsedArgs.inputFiles) {
-            process(inputFiles, new File(inputFile));
-        }
+    private static Collection<File> getInputFiles(final Args parsedArgs) {
+        final Collection<File> inputFiles = new ArrayList<>();
+        parsedArgs.inputFiles.stream()
+            .map(File::new)
+            .forEach(file -> addTree(inputFiles, file));
         return inputFiles;
     }
     
-    private static void process(
-            final Collection<File> inputFiles, final File file) {
-        
+    private static void addTree(final Collection<File> files, final File file) {
         if (file.isDirectory()) {
-            Stream.of(file.listFiles())
-                .forEach(child -> process(inputFiles, child));
+            Stream.of(file.listFiles()).forEach(child -> addTree(files, child));
         } else {
-            inputFiles.add(file);
+            files.add(file);
         }
     }
     
