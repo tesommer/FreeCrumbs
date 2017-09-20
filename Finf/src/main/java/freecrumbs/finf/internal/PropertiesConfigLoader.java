@@ -2,30 +2,21 @@ package freecrumbs.finf.internal;
 
 import static java.util.Objects.requireNonNull;
 
-import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.Reader;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-import java.util.stream.Collectors;
 
 import freecrumbs.finf.Config;
 import freecrumbs.finf.ConfigLoader;
 import freecrumbs.finf.HashGenerator;
 import freecrumbs.finf.Info;
-import freecrumbs.finf.InfoFormat;
 
 /**
  * Loads configuration from a properties file.
@@ -55,12 +46,6 @@ public class PropertiesConfigLoader implements ConfigLoader {
     private static final String DEFAULT_HASH_ALGORITHM = "MD5";
     private static final String DEFAULT_INFO_FORMAT = "${filename}";
     private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm";
-
-    private static final String PATH_TOKEN = "${path}";
-    private static final String FILENAME_TOKEN = "${filename}";
-    private static final String SIZE_TOKEN = "${size}";
-    private static final String MODIFIED_TOKEN = "${modified}";
-    private static final String HASH_TOKEN = "${hash}";
     
     private static final int REGEX_FLAGS = 0;
     
@@ -90,10 +75,10 @@ public class PropertiesConfigLoader implements ConfigLoader {
         final Properties props = getProperties(reader);
         final TokenInfoFormat infoFormat = getInfoFormat(props);
         final HashGenerator hashGenerator;
-        if (infoFormat.isHashUnused()) {
-            hashGenerator = in -> new byte[] {};
-        } else {
+        if (infoFormat.containsHash()) {
             hashGenerator = getHashGenerator(props);
+        } else {
+            hashGenerator = in -> new byte[] {};
         }
         final FileFilter fileFilter = getFileFilter(props);
         final Comparator<Info> order = getOrder(props);
@@ -155,11 +140,11 @@ public class PropertiesConfigLoader implements ConfigLoader {
         }
     }
     
-    private static List<OrderSpec> getOrderSpecs(
+    private static OrderSpec[] getOrderSpecs(
             final String order, final Locale locale) {
         
         final String orderTLC = order.toLowerCase(locale);
-        final List<OrderSpec> orderSpecs
+        final Collection<OrderSpec> orderSpecs
             = new ArrayList<>(InfoField.values().length);
         for (final InfoField field : InfoField.values()) {
             boolean desc = false;
@@ -177,146 +162,7 @@ public class PropertiesConfigLoader implements ConfigLoader {
                 orderSpecs.add(new OrderSpec(field, precedence, desc));
             }
         }
-        return orderSpecs;
+        return orderSpecs.stream().toArray(OrderSpec[]::new);
     }
     
-    private static final class TokenInfoFormat implements InfoFormat {
-        private final String infoFormat;
-        private final DateFormat dateFormat;
-    
-        public TokenInfoFormat(
-            final String infoFormat,
-            final String dateFormat,
-            final Locale locale) throws IOException {
-            
-            this.infoFormat = infoFormat;
-            try {
-                this.dateFormat = new SimpleDateFormat(dateFormat, locale);
-            } catch (final IllegalArgumentException ex) {
-                throw new IOException(ex);
-            }
-        }
-        
-        public boolean isHashUnused() {
-            return !infoFormat.contains(HASH_TOKEN);
-        }
-        
-        @Override
-        public String toString(final Info info) {
-            final String modified
-                = dateFormat.format(new Date(info.getModified()));
-            return infoFormat
-                .replace(PATH_TOKEN, info.getPath())
-                .replace(FILENAME_TOKEN, info.getFilename())
-                .replace(SIZE_TOKEN, String.valueOf(info.getSize()))
-                .replace(MODIFIED_TOKEN, modified)
-                .replace(HASH_TOKEN, info.getHash());
-        }
-    }
-    
-    private static final class RegexFileFilter implements FileFilter {
-        private final Pattern pattern;
-        
-        public RegexFileFilter(final String regex, final int flags)
-            throws IOException {
-            
-            try {
-                this.pattern = Pattern.compile(regex, flags);
-            } catch (final PatternSyntaxException ex) {
-                throw new IOException(ex);
-            }
-        }
-        
-        @Override
-        public boolean accept(final File file) {
-            return pattern.matcher(file.getName()).matches();
-        }
-    }
-    
-    private static final class OrderSpec {
-        private final InfoField field;
-        private final int precedence;
-        private final boolean desc;
-        
-        public OrderSpec(
-            final InfoField field, final int precedence, final boolean desc) {
-            
-            this.field = field;
-            this.precedence = precedence;
-            this.desc = desc;
-        }
-        
-        public InfoField getField() {
-            return field;
-        }
-        
-        public int getPrecedence() {
-            return precedence;
-        }
-        
-        public boolean isDesc() {
-            return desc;
-        }
-    }
-    
-    private static final class OrderSpecInfoSorter implements Comparator<Info> {
-        private final List<OrderSpec> orderSpecs;
-        
-        public OrderSpecInfoSorter(
-            final Collection<? extends OrderSpec> orderSpecs) {
-            
-            this.orderSpecs = orderSpecs.stream()
-                    .sorted(OrderSpecComparator.INSTANCE)
-                    .collect(Collectors.toList());
-        }
-        
-        @Override
-        public int compare(final Info info1, final Info info2) {
-            int order = 0;
-            for (final OrderSpec orderSpec : orderSpecs) {
-                switch (orderSpec.getField()) {
-                case PATH:
-                    order = info1.getPath().compareTo(info2.getPath());
-                    break;
-                case FILENAME:
-                    order = info1.getFilename().compareTo(info2.getFilename());
-                    break;
-                case SIZE:
-                    order = Long.valueOf(info1.getSize()).compareTo(
-                        Long.valueOf(info2.getSize()));
-                    break;
-                case MODIFIED:
-                    order = Long.valueOf(info1.getModified()).compareTo(
-                        Long.valueOf(info2.getModified()));
-                    break;
-                case HASH:
-                default:
-                    order = info1.getHash().compareTo(info2.getHash());
-                }
-                if (order != 0) {
-                    if (orderSpec.isDesc()) {
-                        order = -order;
-                    }
-                    break;
-                }
-            }
-            return order;
-        }
-    }
-    
-    private static final class OrderSpecComparator
-        implements Comparator<OrderSpec> {
-        
-        public static final Comparator<OrderSpec>
-        INSTANCE = new OrderSpecComparator();
-    
-        private OrderSpecComparator() {
-        }
-        
-        @Override
-        public int compare(final OrderSpec os1, final OrderSpec os2) {
-            return Integer.valueOf(os1.getPrecedence())
-                .compareTo(Integer.valueOf(os2.getPrecedence()));
-        }
-    }
 }

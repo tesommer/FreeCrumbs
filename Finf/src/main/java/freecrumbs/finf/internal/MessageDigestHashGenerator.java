@@ -9,6 +9,11 @@ import java.security.NoSuchAlgorithmException;
 
 import freecrumbs.finf.HashGenerator;
 
+/**
+ * A hash generator implemented using a {@code MessageDigest}.
+ * 
+ * @author Tone Sommerland
+ */
 public class MessageDigestHashGenerator implements HashGenerator {
     
     private static final int DEFAULT_BUFFER_SIZE = 2048;
