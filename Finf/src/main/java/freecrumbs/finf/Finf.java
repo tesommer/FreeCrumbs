@@ -34,40 +34,54 @@ public final class Finf {
             final Config config,
             final PrintStream out) throws IOException {
         
-        final List<Info> infoList = getInfo(files, config);
-        final List<Info> ordered;
         if (config.getOrder().isPresent()) {
-            ordered = infoList.stream()
-                    .sorted(config.getOrder().get())
-                    .collect(Collectors.toList());
+            final List<Info> items = filterAndSort(files, config);
+            output(items, info -> info, config, out);
         } else {
-            ordered = infoList;
-        }
-        outputOrdered(ordered, config, out);
-    }
-
-    private static void outputOrdered(
-            final List<? extends Info> infoList,
-            final Config config,
-            final PrintStream out) {
-        
-        for (int i = 0; (config.getCount() < 0 || i < config.getCount())
-                && i < infoList.size(); i++) {
-            out.println(config.getInfoFormat().toString(infoList.get(i)));
+            final List<File> items = filter(files, config);
+            output(items, file -> getInfo(file, config), config, out);
         }
     }
-
-    private static List<Info> getInfo(
+    
+    private static List<Info> filterAndSort(
             final Collection<? extends File> files,
             final Config config) throws IOException {
         
-        final List<Info> infoList = new ArrayList<>();
+        final List<Info> items = new ArrayList<>(files.size());
         for (final File file : files) {
             if (acceptsInput(file, config)) {
-                infoList.add(getInfo(file, config));
+                items.add(getInfo(file, config));
             }
         }
-        return infoList;
+        return items.stream()
+                .sorted(config.getOrder().get())
+                .collect(Collectors.toList());
+    }
+
+    private static List<File> filter(
+            final Collection<? extends File> files, final Config config) {
+        
+        return files.stream()
+                .filter(file -> acceptsInput(file, config))
+                .collect(Collectors.toList());
+    }
+    
+    @FunctionalInterface
+    private interface Informer<T> {
+        public abstract Info provide(T item) throws IOException;
+    }
+
+    private static <T> void output(
+            final List<T> items,
+            final Informer<? super T> informer,
+            final Config config,
+            final PrintStream out) throws IOException {
+        
+        for (int i = 0; (config.getCount() < 0 || i < config.getCount())
+                && i < items.size(); i++) {
+            final Info info = informer.provide(items.get(i));
+            out.println(config.getInfoFormat().toString(info));
+        }
     }
     
     private static Info getInfo(final File file, final Config config)
