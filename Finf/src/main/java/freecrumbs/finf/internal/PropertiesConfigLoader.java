@@ -55,6 +55,7 @@ public class PropertiesConfigLoader implements ConfigLoader {
     /**
      * Creates a properties config loader.
      * @param overrides overrides keys in the properties file
+     * (a null value means default)
      */
     public PropertiesConfigLoader(
             final Locale locale, final Map<String, String> overrides) {
@@ -95,7 +96,12 @@ public class PropertiesConfigLoader implements ConfigLoader {
         final Properties props = new Properties();
         props.load(reader);
         for (final String key : overrides.keySet()) {
-            props.put(key, overrides.get(key));
+            final String value = overrides.get(key);
+            if (value == null) {
+                props.remove(key);
+            } else {
+                props.put(key, value);
+            }
         }
         return props;
     }

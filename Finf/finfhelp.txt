@@ -11,6 +11,9 @@
 + "  -o    override config setting\n"
 + "  -h    print this help message\n"
 + "\n"
++ "The command-line argument following -o has the format key=value (to set the\n"
++ "setting) or key (to unset the setting).\n"
++ "\n"
 + "If a config file is not specified, default settings will be used.\n"
 + "\n"
 + "Config file format\n"
@@ -55,4 +58,7 @@
 + "finf -o \"info.format=${hash}\" file\n"
 + "\n"
 + "Example 3: read config from standard in:\n"
-+ "finf -c - file1 file2...\n
++ "finf -c - file1 file2...\n"
++ "\n"
++ "Example 4: unset a config setting:\n"
++ "finf -c myconfig.properties -o order file1 file2...\n

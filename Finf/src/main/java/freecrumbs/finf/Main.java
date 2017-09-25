@@ -74,20 +74,31 @@ public final class Main {
         }
     }
     
-    private static Map<String, String> getConfigOverrides(final Args args)
-            throws IOException {
-        
+    private static Map<String, String> getConfigOverrides(final Args args) {
         final Map<String, String> overrides = new HashMap<>();
-        for (final String override : args.configOverrides) {
-            final int indexOfEquals = override.indexOf('=');
-            if (indexOfEquals < 0) {
-                throw new IOException(override);
-            }
-            final String key = override.substring(0, indexOfEquals);
-            final String value = override.substring(indexOfEquals + 1);
-            overrides.put(key, value);
-        }
+        args.configOverrides.forEach(
+                override -> updateOverrides(overrides, override));
         return overrides;
+    }
+
+    /**
+     * If the override argument does not contain equals,
+     * it's used as a key to remove from the overrides.
+     */
+    private static void updateOverrides(
+            final Map<String, String> overrides, final String override) {
+        
+        final String key;
+        final String value;
+        final int indexOfEquals = override.indexOf('=');
+        if (indexOfEquals < 0) {
+            key = override;
+            value = null;
+        } else {
+            key = override.substring(0, indexOfEquals);
+            value = override.substring(indexOfEquals + 1);
+        }
+        overrides.put(key, value);
     }
     
     /**

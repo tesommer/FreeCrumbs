@@ -184,6 +184,10 @@ config file was given. But if the ``-c`` option is used, a setting given with
 ``-o`` trumps the same setting in the config file. The example above prints the
 SHA-1 checksum for **hypotheticalfile.zip**.
 
+Omitting `=value` unsets the setting (and thus reverts to the default):
+
+    finf -c csv-list.properties -o order
+
 <a name="dups"></a>Dups
 -----------------------
 
