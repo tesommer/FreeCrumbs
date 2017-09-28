@@ -104,11 +104,9 @@ public class PropertiesConfigLoader implements ConfigLoader {
     private static HashGenerator getHashGenerator(
             final Properties props, final TokenInfoFormat infoFormat) {
         
-        if (infoFormat.containsHash()) {
-            return new MessageDigestHashGenerator(props.getProperty(
-                    HASH_ALGORITHM_KEY, DEFAULT_HASH_ALGORITHM));
-        }
-        return HashGenerator.DUMMY;
+        return MessageDigestHashGenerator.getInstance(
+                props.getProperty(HASH_ALGORITHM_KEY, DEFAULT_HASH_ALGORITHM),
+                infoFormat);
     }
 
     private TokenInfoFormat getInfoFormat(final Properties props)

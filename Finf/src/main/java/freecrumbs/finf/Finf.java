@@ -1,9 +1,7 @@
 package freecrumbs.finf;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -65,7 +63,8 @@ public final class Finf {
             path = file.getPath().substring(0, index + 1);
             filename = file.getPath().substring(index + 1);
         }
-        final String hash = getHash(file, hashGenerator);
+        final String hash
+            = EncodingUtil.bytesToHex(false, hashGenerator.digest(file));
         return new Info(
                 path, filename, file.length(), file.lastModified(), hash);
     }
@@ -108,17 +107,6 @@ public final class Finf {
                 && i < items.size(); i++) {
             final Info info = informer.provide(items.get(i));
             out.println(config.getInfoFormat().toString(info));
-        }
-    }
-    
-    private static String getHash(
-            final File file,
-            final HashGenerator hashGenerator) throws IOException {
-        
-        try (
-            final InputStream in = new FileInputStream(file);
-        ) {
-            return EncodingUtil.bytesToHex(false, hashGenerator.digest(in));
         }
     }
     

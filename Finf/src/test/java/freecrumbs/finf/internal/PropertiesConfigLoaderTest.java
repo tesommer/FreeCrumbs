@@ -1,6 +1,5 @@
 package freecrumbs.finf.internal;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
@@ -19,7 +18,6 @@ import org.junit.Test;
 
 import freecrumbs.finf.Config;
 import freecrumbs.finf.Info;
-import freecrumbstesting.TestUtil;
 
 public class PropertiesConfigLoaderTest {
     
@@ -29,33 +27,6 @@ public class PropertiesConfigLoaderTest {
     private static final Info I1 = new Info("p1", "f1", 1, 100, "h1");
     private static final Info I2 = new Info("p1", "f1", 2, 102, "h2");
     private static final Info I3 = new Info("p1", "f2", 3, 102, "h3");
-    
-    private static final byte[] HASH_INPUT = new byte[] {'T'};
-    
-    private static final byte[]
-    HASH_MD5 = new byte[] {
-        (byte)0xb9, (byte)0xec, (byte)0xe1, (byte)0x8c, (byte)0x95, (byte)0x0a,
-        (byte)0xfb, (byte)0xfa, (byte)0x6b, (byte)0x0f, (byte)0xdb, (byte)0xfa,
-        (byte)0x4f, (byte)0xf7, (byte)0x31, (byte)0xd3
-    };
-    
-    /*private static final byte[]
-    HASH_SHA1 = new byte[] {
-        (byte)0xc2, (byte)0xc5, (byte)0x3d, (byte)0x66, (byte)0x94, (byte)0x82,
-        (byte)0x14, (byte)0x25, (byte)0x8a, (byte)0x26, (byte)0xca, (byte)0x9c,
-        (byte)0xa8, (byte)0x45, (byte)0xd7, (byte)0xac, (byte)0x0c, (byte)0x17,
-        (byte)0xf8, (byte)0xe7
-    };*/
-    
-    private static final byte[]
-    HASH_SHA256 = new byte[] {
-        (byte)0xe6, (byte)0x32, (byte)0xb7, (byte)0x09, (byte)0x5b, (byte)0x0b,
-        (byte)0xf3, (byte)0x2c, (byte)0x26, (byte)0x0f, (byte)0xa4, (byte)0xc5,
-        (byte)0x39, (byte)0xe9, (byte)0xfd, (byte)0x7b, (byte)0x85, (byte)0x2d,
-        (byte)0x0d, (byte)0xe4, (byte)0x54, (byte)0xe9, (byte)0xbe, (byte)0x26,
-        (byte)0xf2, (byte)0x4d, (byte)0x0d, (byte)0x6f, (byte)0x91, (byte)0xd0,
-        (byte)0x69, (byte)0xd3
-    };
 
     public PropertiesConfigLoaderTest() {
     }
@@ -84,24 +55,10 @@ public class PropertiesConfigLoaderTest {
     }
     
     @Test
-    public void testHashGenerator() throws IOException {
-        final Config config = getConfig(
-                "hash.algorithm=sha-256\ninfo.format=${hash}");
-        assertHashGenerator(config, HASH_SHA256, HASH_INPUT);
-    }
-    
-    @Test
     public void testUnusedHash() throws IOException {
         final Config config = getConfig("hash.algorithm=sha-256");
-        assertHashGenerator(config, new byte[0], HASH_INPUT);
-    }
-    
-    @Test
-    public void testInvalidHashAlgorithm() throws IOException {
-        final Config config = getConfig("hash.algorithm=Wee-d4U\ninfo.format=${hash}");
-        TestUtil.assertThrows(
-                IOException.class,
-                () -> assertHashGenerator(config, HASH_MD5, HASH_INPUT));
+        final byte[] actual = config.getHashGenerator().digest(new File(""));
+        Assert.assertArrayEquals("Assert empty hash", new byte[0], actual);
     }
     
     @Test
@@ -129,11 +86,7 @@ public class PropertiesConfigLoaderTest {
         getConfig("file.filter=.{@,");
     }
     
-    // -----------------------------------------------------------
-    // Testing format pattern file filter requires existing files.
-    // -----------------------------------------------------------
-    
-//    @Test
+    @Test
     public void testFormatPatternFileFilter() throws IOException {
         final String prop
             = "file.filter="
@@ -151,7 +104,7 @@ public class PropertiesConfigLoaderTest {
         assertFileFilter(config, new File("index.htm"),       false);
     }
     
-//    @Test
+    @Test
     public void testFormatPatternFileFilter_EmptyFormat() throws IOException {
         final File file1 = new File("element115.txt");
         final File file2 = new File("");
@@ -163,18 +116,17 @@ public class PropertiesConfigLoaderTest {
         assertFileFilter(config2, file2, false);
     }
     
-//    @Test
+    @Test
     public void testFormatPatternFileFilter_PatternWithTrailingDelimChar()
             throws IOException {
         
         final String prop = "file.filter=${filename}++\\\\d+++\\\\w+";
         final Config config = getConfig(prop);
-        assertFileFilter(config, new File("123.txt"), true);
-        assertFileFilter(config, new File("abc.txt"), true);
-        assertFileFilter(config, new File("@"), false);
+        assertFileFilter(config, new File("123"), true);
+        assertFileFilter(config, new File("abc"), false);
     }
     
-//    @Test(expected = IOException.class)
+    @Test(expected = IOException.class)
     public void testInvalidFormatPatternFileFilter() throws IOException {
         getConfig("file.filter=${filename}++.{@,");
     }
@@ -292,16 +244,6 @@ public class PropertiesConfigLoaderTest {
                 "Info format",
                 expectedWithModified,
                 actual.getInfoFormat().toString(info));
-    }
-    
-    private static void assertHashGenerator(
-            final Config actual,
-            final byte[] expectedHash,
-            final byte[] input) throws IOException {
-        
-        final byte[] actualHash = actual.getHashGenerator().digest(
-                new ByteArrayInputStream(input));
-        Assert.assertArrayEquals("hash", expectedHash, actualHash);
     }
     
     private static void assertFileFilter(

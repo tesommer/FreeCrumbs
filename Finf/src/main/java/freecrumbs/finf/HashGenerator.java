@@ -1,7 +1,7 @@
 package freecrumbs.finf;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * File checksum generator.
@@ -11,11 +11,6 @@ import java.io.InputStream;
 @FunctionalInterface
 public interface HashGenerator {
     
-    /**
-     * Always returns an empty array.
-     */
-    public static final HashGenerator DUMMY = in -> new byte[] {};
-    
-    public abstract byte[] digest(InputStream in) throws IOException;
+    public abstract byte[] digest(File file) throws IOException;
 
 }
