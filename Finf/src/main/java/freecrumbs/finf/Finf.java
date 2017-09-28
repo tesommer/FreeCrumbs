@@ -39,8 +39,35 @@ public final class Finf {
             output(items, info -> info, config, out);
         } else {
             final List<File> items = filter(files, config);
-            output(items, file -> getInfo(file, config), config, out);
+            output(
+                    items,
+                    file -> getInfo(file, config.getHashGenerator()),
+                    config,
+                    out);
         }
+    }
+    
+    /**
+     * Returns the file info of a single file.
+     * @throws IOException if the hash generator does.
+     */
+    public static Info getInfo(
+            final File file,
+            final HashGenerator hashGenerator) throws IOException {
+        
+        final String path;
+        final String filename;
+        final int index = file.getPath().lastIndexOf(File.separatorChar);
+        if (index < 0) {
+            path = "";
+            filename = file.getName();
+        } else {
+            path = file.getPath().substring(0, index + 1);
+            filename = file.getPath().substring(index + 1);
+        }
+        final String hash = getHash(file, hashGenerator);
+        return new Info(
+                path, filename, file.length(), file.lastModified(), hash);
     }
     
     private static List<Info> filterAndSort(
@@ -50,7 +77,7 @@ public final class Finf {
         final List<Info> items = new ArrayList<>(files.size());
         for (final File file : files) {
             if (acceptsInput(file, config)) {
-                items.add(getInfo(file, config));
+                items.add(getInfo(file, config.getHashGenerator()));
             }
         }
         return items.stream()
@@ -84,32 +111,14 @@ public final class Finf {
         }
     }
     
-    private static Info getInfo(final File file, final Config config)
-            throws IOException {
+    private static String getHash(
+            final File file,
+            final HashGenerator hashGenerator) throws IOException {
         
-        final String path;
-        final String filename;
-        final int index = file.getPath().lastIndexOf(File.separatorChar);
-        if (index < 0) {
-            path = "";
-            filename = file.getName();
-        } else {
-            path = file.getPath().substring(0, index + 1);
-            filename = file.getPath().substring(index + 1);
-        }
-        final String hash = getHash(file, config);
-        return new Info(
-                path, filename, file.length(), file.lastModified(), hash);
-    }
-    
-    private static String getHash(final File file, final Config config)
-            throws IOException {
-
         try (
             final InputStream in = new FileInputStream(file);
         ) {
-            return EncodingUtil.bytesToHex(
-                    false, config.getHashGenerator().digest(in));
+            return EncodingUtil.bytesToHex(false, hashGenerator.digest(in));
         }
     }
     

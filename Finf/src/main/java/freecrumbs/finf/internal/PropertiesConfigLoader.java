@@ -75,12 +75,7 @@ public class PropertiesConfigLoader implements ConfigLoader {
     public Config loadConfig(final Reader reader) throws IOException {
         final Properties props = getProperties(reader);
         final TokenInfoFormat infoFormat = getInfoFormat(props);
-        final HashGenerator hashGenerator;
-        if (infoFormat.containsHash()) {
-            hashGenerator = getHashGenerator(props);
-        } else {
-            hashGenerator = in -> new byte[] {};
-        }
+        final HashGenerator hashGenerator = getHashGenerator(props, infoFormat);
         final FileFilter fileFilter = getFileFilter(props);
         final Comparator<Info> order = getOrder(props);
         final int count = getCount(props);
@@ -106,9 +101,14 @@ public class PropertiesConfigLoader implements ConfigLoader {
         return props;
     }
 
-    private static HashGenerator getHashGenerator(final Properties props) {
-        return new MessageDigestHashGenerator(
-                props.getProperty(HASH_ALGORITHM_KEY, DEFAULT_HASH_ALGORITHM));
+    private static HashGenerator getHashGenerator(
+            final Properties props, final TokenInfoFormat infoFormat) {
+        
+        if (infoFormat.containsHash()) {
+            return new MessageDigestHashGenerator(props.getProperty(
+                    HASH_ALGORITHM_KEY, DEFAULT_HASH_ALGORITHM));
+        }
+        return HashGenerator.DUMMY;
     }
 
     private TokenInfoFormat getInfoFormat(final Properties props)
@@ -120,22 +120,22 @@ public class PropertiesConfigLoader implements ConfigLoader {
                 locale);
     }
 
-    private static FileFilter getFileFilter(final Properties props)
+    private FileFilter getFileFilter(final Properties props)
             throws IOException {
         
-        final String regex = props.getProperty(FILE_FILTER_KEY);
-        if (regex == null) {
+        final String setting = props.getProperty(FILE_FILTER_KEY);
+        if (setting == null) {
             return null;
         }
-        return new RegexFileFilter(regex, REGEX_FLAGS);
+        return getFileFilterParser(props, locale).parse(setting);
     }
 
     private Comparator<Info> getOrder(final Properties props) {
-        final String orderProp = props.getProperty(ORDER_KEY);
-        if (orderProp == null) {
+        final String setting = props.getProperty(ORDER_KEY);
+        if (setting == null) {
             return null;
         }
-        return new OrderSpecInfoSorter(getOrderSpecs(orderProp, locale));
+        return new OrderSpecInfoSorter(getOrderSpecs(setting, locale));
     }
 
     private static int getCount(final Properties props) throws IOException {
@@ -146,10 +146,20 @@ public class PropertiesConfigLoader implements ConfigLoader {
         }
     }
     
-    private static OrderSpec[] getOrderSpecs(
-            final String order, final Locale locale) {
+    private static FileFilterParser getFileFilterParser(
+            final Properties props, final Locale locale) {
         
-        final String orderTLC = order.toLowerCase(locale);
+        return new FileFilterParser(
+                props.getProperty(DATE_FORMAT_KEY, DEFAULT_DATE_FORMAT),
+                locale,
+                props.getProperty(HASH_ALGORITHM_KEY, DEFAULT_HASH_ALGORITHM),
+                REGEX_FLAGS);
+    }
+    
+    private static OrderSpec[] getOrderSpecs(
+            final String orderSetting, final Locale locale) {
+        
+        final String orderTLC = orderSetting.toLowerCase(locale);
         final Collection<OrderSpec> orderSpecs
             = new ArrayList<>(InfoField.values().length);
         for (final InfoField field : InfoField.values()) {

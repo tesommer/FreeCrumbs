@@ -116,23 +116,67 @@ public class PropertiesConfigLoaderTest {
     }
     
     @Test
-    public void testFileFilter() throws IOException {
+    public void testRegexFileFilter() throws IOException {
         final String prop = "file.filter= a\\\\d*";
         final Config config = getConfig(prop);
         assertConfig(config, true, -1);
-        final File exclude = new File("abc");
-        final File include = new File("a23");
-        Assert.assertFalse(
-                "Assert filter excludes file",
-                config.getFileFilter().get().accept(exclude));
-        Assert.assertTrue(
-                "Assert filter includes file",
-                config.getFileFilter().get().accept(include));
+        assertFileFilter(config, new File("abc"), false);
+        assertFileFilter(config, new File("a23"), true);
     }
     
     @Test(expected = IOException.class)
-    public void testInvalidFileFilter() throws IOException {
+    public void testInvalidRegexFileFilter() throws IOException {
         getConfig("file.filter=.{@,");
+    }
+    
+    // -----------------------------------------------------------
+    // Testing format pattern file filter requires existing files.
+    // -----------------------------------------------------------
+    
+//    @Test
+    public void testFormatPatternFileFilter() throws IOException {
+        final String prop
+            = "file.filter="
+            + "${filename}"
+            + "--^.{14,}$++(.*\\\\.html?$|.*\\\\.php$)--^index\\\\..{3,4}$";
+        final Config config = getConfig(prop);
+        assertConfig(config, true, -1);
+        assertFileFilter(config, new File("ununpentium.txt"), false);
+        assertFileFilter(config, new File("moscovium.txt"),   false);
+        assertFileFilter(config, new File("index.html"),      false);
+        assertFileFilter(config, new File("index.php"),       false);
+        assertFileFilter(config, new File("download.html"),   true);
+        assertFileFilter(config, new File("download.php"),    true);
+        assertFileFilter(config, new File("download.htm"),    true);
+        assertFileFilter(config, new File("index.htm"),       false);
+    }
+    
+//    @Test
+    public void testFormatPatternFileFilter_EmptyFormat() throws IOException {
+        final File file1 = new File("element115.txt");
+        final File file2 = new File("");
+        final Config config = getConfig("file.filter=++.*");
+        final Config config2 = getConfig("file.filter=++.+");
+        assertFileFilter(config, file1, true);
+        assertFileFilter(config, file2, true);
+        assertFileFilter(config2, file1, false);
+        assertFileFilter(config2, file2, false);
+    }
+    
+//    @Test
+    public void testFormatPatternFileFilter_PatternWithTrailingDelimChar()
+            throws IOException {
+        
+        final String prop = "file.filter=${filename}++\\\\d+++\\\\w+";
+        final Config config = getConfig(prop);
+        assertFileFilter(config, new File("123.txt"), true);
+        assertFileFilter(config, new File("abc.txt"), true);
+        assertFileFilter(config, new File("@"), false);
+    }
+    
+//    @Test(expected = IOException.class)
+    public void testInvalidFormatPatternFileFilter() throws IOException {
+        getConfig("file.filter=${filename}++.{@,");
     }
     
     @Test
@@ -162,6 +206,14 @@ public class PropertiesConfigLoaderTest {
         overrides.put("count", "21");
         final Config config = getConfig("count=22", overrides);
         assertConfig(config, false, 21);
+    }
+    
+    @Test
+    public void testOverrideToDefault() throws IOException {
+        final Map<String, String> overrides = new HashMap<>();
+        overrides.put("count", null);
+        final Config config = getConfig("count=22", overrides);
+        assertConfig(config, false, -1);
     }
     
     private static Config getConfig(
@@ -250,6 +302,20 @@ public class PropertiesConfigLoaderTest {
         final byte[] actualHash = actual.getHashGenerator().digest(
                 new ByteArrayInputStream(input));
         Assert.assertArrayEquals("hash", expectedHash, actualHash);
+    }
+    
+    private static void assertFileFilter(
+            final Config actual, final File file, final boolean includes) {
+        
+        if (includes) {
+            Assert.assertTrue(
+                    "Assert file filter includes " + file.getName(),
+                    actual.getFileFilter().get().accept(file));
+        } else {
+            Assert.assertFalse(
+                    "Assert file filter excludes " + file.getName(),
+                    actual.getFileFilter().get().accept(file));
+        }
     }
 
 }
