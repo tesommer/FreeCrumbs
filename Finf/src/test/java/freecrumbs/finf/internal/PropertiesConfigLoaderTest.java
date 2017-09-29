@@ -132,6 +132,16 @@ public class PropertiesConfigLoaderTest {
     }
     
     @Test
+    public void testFormatPatternFileFilter_TrailingEmptyPattern()
+            throws IOException {
+        
+        final String prop = "file.filter=${filename}++.?++";
+        final Config config = getConfig(prop);
+        assertFileFilter(config, new File(""), true);
+        assertFileFilter(config, new File("a"), false);
+    }
+    
+    @Test
     public void testInvalidProperty() throws IOException {
         final Config config = getConfig("count=22\nabc=xyz");
         assertConfig(config, false, 22);
