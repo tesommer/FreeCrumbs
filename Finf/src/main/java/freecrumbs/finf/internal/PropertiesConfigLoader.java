@@ -5,8 +5,6 @@ import static java.util.Objects.requireNonNull;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
@@ -133,7 +131,7 @@ public class PropertiesConfigLoader implements ConfigLoader {
         if (setting == null) {
             return null;
         }
-        return new OrderSpecInfoSorter(getOrderSpecs(setting, locale));
+        return new OrderParser(locale).parse(setting);
     }
 
     private static int getCount(final Properties props) throws IOException {
@@ -152,31 +150,6 @@ public class PropertiesConfigLoader implements ConfigLoader {
                 props.getProperty(DATE_FORMAT_KEY, DEFAULT_DATE_FORMAT),
                 locale,
                 REGEX_FLAGS);
-    }
-    
-    private static OrderSpec[] getOrderSpecs(
-            final String orderSetting, final Locale locale) {
-        
-        final String orderTLC = orderSetting.toLowerCase(locale);
-        final Collection<OrderSpec> orderSpecs
-            = new ArrayList<>(InfoField.values().length);
-        for (final InfoField field : InfoField.values()) {
-            boolean desc = false;
-            final String name = field.name().toLowerCase(locale);
-            int precedence = orderTLC.indexOf(name + " asc");
-            if (precedence < 0) {
-                precedence = orderTLC.indexOf(name + " desc");
-                if (precedence > -1) {
-                    desc = true;
-                } else {
-                    precedence = orderTLC.indexOf(name);
-                }
-            }
-            if (precedence > -1) {
-                orderSpecs.add(new OrderSpec(field, precedence, desc));
-            }
-        }
-        return orderSpecs.stream().toArray(OrderSpec[]::new);
     }
     
 }
