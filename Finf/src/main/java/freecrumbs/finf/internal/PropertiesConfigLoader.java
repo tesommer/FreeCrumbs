@@ -148,9 +148,9 @@ public class PropertiesConfigLoader implements ConfigLoader {
             final Properties props, final Locale locale) {
         
         return new FileFilterParser(
+                props.getProperty(HASH_ALGORITHM_KEY, DEFAULT_HASH_ALGORITHM),
                 props.getProperty(DATE_FORMAT_KEY, DEFAULT_DATE_FORMAT),
                 locale,
-                props.getProperty(HASH_ALGORITHM_KEY, DEFAULT_HASH_ALGORITHM),
                 REGEX_FLAGS);
     }
     
