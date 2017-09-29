@@ -29,6 +29,13 @@ import freecrumbs.finf.Info;
  * count=100
  * }
  * </pre>
+ * Example format pattern file filter:
+ * <pre>
+ * {@code
+ * file.filter=${filename}++.+\.html--index\..{3,4}
+ * }
+ * </pre>
+ * ({@code ++} precedes inclusion patterns and {@code --} exclusion patterns.)
  * 
  * @author Tone Sommerland
  */

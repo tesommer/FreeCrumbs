@@ -159,8 +159,14 @@ file is a text file on the Java *properties* format. Here's a sample file:
 * ``date.format`` specifies the format of the modified timstamp in the output.
   See *java.txt.SimpleDateFormat* for details.
 
-* ``file.filter`` is a regex that matches the filenames to include as input. If
-  absent, all files are included.
+* ``file.filter`` filters input files. If absent, all files are included. This setting may be on one of two forms:
+  * _regex_: a regex pattern that matches the filenames to include as input
+  * _format pattern_: an info format followed by one or more regex patterns,
+    each preceded by either ``++`` to include matches or ``--`` to exclude
+    matches. The format is applied to the file info, and the result is matched
+    against the patterns. For example, the format pattern  
+  ``${filename}++.+\.html?--index\..{3,4}``  
+  includes files with extension _htm_ and _html_, but not index files.
 
 * ``order`` specifies a sort order of the output lines. It has the fields to
   order by (path, filename, etc), with space in between. Each field may be
