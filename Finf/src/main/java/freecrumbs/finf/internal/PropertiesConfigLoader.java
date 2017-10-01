@@ -14,6 +14,7 @@ import java.util.Properties;
 import freecrumbs.finf.Config;
 import freecrumbs.finf.ConfigLoader;
 import freecrumbs.finf.Info;
+import freecrumbs.finf.InfoFormat;
 import freecrumbs.finf.InfoGenerator;
 
 /**
@@ -79,7 +80,7 @@ public class PropertiesConfigLoader implements ConfigLoader {
     @Override
     public Config loadConfig(final Reader reader) throws IOException {
         final Properties props = getProperties(reader);
-        final TokenInfoFormat infoFormat = getInfoFormat(props);
+        final InfoFormat infoFormat = getInfoFormat(props);
         final InfoGenerator infoGenerator = getInfoGenerator(props, infoFormat);
         final FileFilter fileFilter = getFileFilter(props, infoGenerator);
         final Comparator<Info> order = getOrder(props);
@@ -107,15 +108,15 @@ public class PropertiesConfigLoader implements ConfigLoader {
     }
 
     private static InfoGenerator getInfoGenerator(
-            final Properties props, final TokenInfoFormat infoFormat) {
+            final Properties props, final InfoFormat infoFormat) {
         
         final String hashAlgorithm
             = props.getProperty(HASH_ALGORITHM_KEY, DEFAULT_HASH_ALGORITHM);
         return MessageDigestHashGenerator.with(
-                hashAlgorithm, infoFormat, new CachingInfoGenerator());
+                hashAlgorithm, new CachingInfoGenerator(), infoFormat);
     }
 
-    private TokenInfoFormat getInfoFormat(final Properties props)
+    private InfoFormat getInfoFormat(final Properties props)
             throws IOException {
         
         return new TokenInfoFormat(

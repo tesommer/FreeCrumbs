@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import freecrumbs.finf.InfoFormat;
 import freecrumbs.finf.InfoGenerator;
 
 /**
@@ -75,9 +76,9 @@ public class FileFilterParser {
             final Matcher delimiter,
             final Part formatPart) throws IOException {
         
-        final TokenInfoFormat infoFormat = getInfoFormat(formatPart);
+        final InfoFormat infoFormat = getInfoFormat(formatPart);
         final InfoGenerator optimizedInfoGenerator
-            = getOptimizedInfoGenerator(infoFormat);
+            = optimizeInfoGenerator(infoFormat);
         final Collection<FormatPattern> formatPatterns = new ArrayList<>();
         Part part = formatPart;
         do {
@@ -89,17 +90,13 @@ public class FileFilterParser {
                 formatPatterns.stream().toArray(FormatPattern[]::new));
     }
 
-    private TokenInfoFormat getInfoFormat(final Part formatPart)
-            throws IOException {
-        
+    private InfoFormat getInfoFormat(final Part formatPart) throws IOException {
         return new TokenInfoFormat(formatPart.payload, dateFormat, locale);
     }
 
-    private InfoGenerator getOptimizedInfoGenerator(
-            final TokenInfoFormat infoFormat) {
-        
+    private InfoGenerator optimizeInfoGenerator(final InfoFormat infoFormat) {
         return MessageDigestHashGenerator.with(
-                hashAlgorithm, infoFormat, infoGenerator);
+                hashAlgorithm, infoGenerator, infoFormat);
     }
     
     private static FormatPattern getFormatPattern(

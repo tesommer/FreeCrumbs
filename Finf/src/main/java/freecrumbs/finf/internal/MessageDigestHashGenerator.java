@@ -10,6 +10,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import freecrumbs.finf.HashGenerator;
+import freecrumbs.finf.InfoFormat;
 import freecrumbs.finf.InfoGenerator;
 
 /**
@@ -36,18 +37,20 @@ public final class MessageDigestHashGenerator implements HashGenerator {
     }
     
     /**
-     * Makes the given info generator use an instance of this class
-     * if the info format contains hash.
+     * If the info format requires hash,
+     * this method returns the info generator using
+     * an instance of this class with the given algorithm.
+     * Otherwise it just returns the info generator.
      */
     public static InfoGenerator with(
             final String hashAlgorithm,
-            final TokenInfoFormat infoFormat,
-            final InfoGenerator infoGenerator) {
+            final InfoGenerator infoGenerator,
+            final InfoFormat infoFormat) {
         
         requireNonNull(hashAlgorithm, "hashAlgorithm");
-        requireNonNull(infoFormat, "infoFormat");
         requireNonNull(infoGenerator, "infoGenerator");
-        if (infoFormat.containsHash()) {
+        requireNonNull(infoFormat, "infoFormat");
+        if (infoFormat.requiresHash()) {
             return infoGenerator.use(
                     new MessageDigestHashGenerator(hashAlgorithm));
         }

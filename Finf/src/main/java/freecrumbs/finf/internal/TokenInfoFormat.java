@@ -47,10 +47,6 @@ public class TokenInfoFormat implements InfoFormat {
         }
     }
     
-    public boolean containsHash() {
-        return infoFormat.contains(HASH_TOKEN);
-    }
-    
     @Override
     public String toString(final Info info) {
         final String modified
@@ -61,5 +57,10 @@ public class TokenInfoFormat implements InfoFormat {
             .replace(SIZE_TOKEN, String.valueOf(info.getSize()))
             .replace(MODIFIED_TOKEN, modified)
             .replace(HASH_TOKEN, info.getHash());
+    }
+
+    @Override
+    public boolean requiresHash() {
+        return infoFormat.contains(HASH_TOKEN);
     }
 }
