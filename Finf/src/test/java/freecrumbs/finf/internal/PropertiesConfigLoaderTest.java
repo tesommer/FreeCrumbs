@@ -57,7 +57,8 @@ public class PropertiesConfigLoaderTest {
     @Test
     public void testUnusedHash() throws IOException {
         final Config config = getConfig("hash.algorithm=sha-256");
-        final byte[] actual = config.getHashGenerator().digest(new File(""));
+        final byte[] actual = config.getInfoGenerator()
+                .getHashGenerator().digest(new File(""));
         Assert.assertArrayEquals("Assert empty hash", new byte[0], actual);
     }
     

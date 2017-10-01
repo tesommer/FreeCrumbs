@@ -77,15 +77,11 @@ public final class Main {
     private static Map<String, String> getConfigOverrides(final Args args) {
         final Map<String, String> overrides = new HashMap<>();
         args.configOverrides.forEach(
-                override -> updateOverrides(overrides, override));
+                override -> addOverride(overrides, override));
         return overrides;
     }
 
-    /**
-     * If the override argument does not contain equals,
-     * it's used as a key to remove from the overrides.
-     */
-    private static void updateOverrides(
+    private static void addOverride(
             final Map<String, String> overrides, final String override) {
         
         final String key;

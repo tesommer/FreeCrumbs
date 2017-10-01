@@ -10,7 +10,7 @@ import java.util.Optional;
  * Finf config.
  * Contains the following properties:
  * <ul>
- *  <li>{@code hashGenerator}: for generating file hashes</li>
+ *  <li>{@code infoGenerator}: for generating file info</li>
  *  <li>{@code infoFormat}: format of the file info units</li>
  *  <li>{@code fileFilter}: filters input files (optional)</li>
  *  <li>{@code order}: sort order of the info units (optional)</li>
@@ -20,7 +20,7 @@ import java.util.Optional;
  * @author Tone Sommerland
  */
 public class Config {
-    private final HashGenerator hashGenerator;
+    private final InfoGenerator infoGenerator;
     private final InfoFormat infoFormat;
     private final FileFilter fileFilter;
     private final Comparator<Info> order;
@@ -28,28 +28,28 @@ public class Config {
     
     /**
      * Creates a new configuration.
-     * @param hashGenerator the hash generator
+     * @param infoGenerator the file info generator
      * @param infoFormat the file info format
      * @param fileFilter the file filter (nullable)
      * @param order the file info sorter (nullable)
      * @param count max lines to output (-1 = all)
      */
     public Config(
-        final HashGenerator hashGenerator,
+        final InfoGenerator infoGenerator,
         final InfoFormat infoFormat,
         final FileFilter fileFilter,
         final Comparator<Info> order,
         final int count) {
         
-        this.hashGenerator = requireNonNull(hashGenerator, "hashGenerator");
+        this.infoGenerator = requireNonNull(infoGenerator, "infoGenerator");
         this.infoFormat = requireNonNull(infoFormat, "infoFormat");
         this.fileFilter = fileFilter;
         this.order = order;
         this.count = count;
     }
     
-    public HashGenerator getHashGenerator() {
-        return hashGenerator;
+    public InfoGenerator getInfoGenerator() {
+        return infoGenerator;
     }
     
     public InfoFormat getInfoFormat() {

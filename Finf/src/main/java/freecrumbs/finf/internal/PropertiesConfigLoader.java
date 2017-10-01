@@ -13,8 +13,8 @@ import java.util.Properties;
 
 import freecrumbs.finf.Config;
 import freecrumbs.finf.ConfigLoader;
-import freecrumbs.finf.HashGenerator;
 import freecrumbs.finf.Info;
+import freecrumbs.finf.InfoGenerator;
 
 /**
  * Loads configuration from a properties file.
@@ -60,7 +60,7 @@ public class PropertiesConfigLoader implements ConfigLoader {
     /**
      * Creates a properties config loader.
      * @param overrides overrides keys in the properties file
-     * (a null value means default)
+     * (a key with a value of null means default)
      */
     public PropertiesConfigLoader(
             final Locale locale, final Map<String, String> overrides) {
@@ -80,12 +80,12 @@ public class PropertiesConfigLoader implements ConfigLoader {
     public Config loadConfig(final Reader reader) throws IOException {
         final Properties props = getProperties(reader);
         final TokenInfoFormat infoFormat = getInfoFormat(props);
-        final HashGenerator hashGenerator = getHashGenerator(props, infoFormat);
-        final FileFilter fileFilter = getFileFilter(props);
+        final InfoGenerator infoGenerator = getInfoGenerator(props, infoFormat);
+        final FileFilter fileFilter = getFileFilter(props, infoGenerator);
         final Comparator<Info> order = getOrder(props);
         final int count = getCount(props);
         return new Config(
-                hashGenerator,
+                infoGenerator,
                 infoFormat,
                 fileFilter,
                 order,
@@ -106,12 +106,13 @@ public class PropertiesConfigLoader implements ConfigLoader {
         return props;
     }
 
-    private static HashGenerator getHashGenerator(
+    private static InfoGenerator getInfoGenerator(
             final Properties props, final TokenInfoFormat infoFormat) {
         
-        return MessageDigestHashGenerator.getInstance(
-                props.getProperty(HASH_ALGORITHM_KEY, DEFAULT_HASH_ALGORITHM),
-                infoFormat);
+        final String hashAlgorithm
+            = props.getProperty(HASH_ALGORITHM_KEY, DEFAULT_HASH_ALGORITHM);
+        return MessageDigestHashGenerator.with(
+                hashAlgorithm, infoFormat, new CachingInfoGenerator());
     }
 
     private TokenInfoFormat getInfoFormat(final Properties props)
@@ -123,14 +124,15 @@ public class PropertiesConfigLoader implements ConfigLoader {
                 locale);
     }
 
-    private FileFilter getFileFilter(final Properties props)
-            throws IOException {
+    private FileFilter getFileFilter(
+            final Properties props,
+            final InfoGenerator infoGenerator) throws IOException {
         
         final String setting = props.getProperty(FILE_FILTER_KEY);
         if (setting == null) {
             return null;
         }
-        return getFileFilterParser(props, locale).parse(setting);
+        return getFileFilterParser(props, locale, infoGenerator).parse(setting);
     }
 
     private Comparator<Info> getOrder(final Properties props) {
@@ -150,13 +152,16 @@ public class PropertiesConfigLoader implements ConfigLoader {
     }
     
     private static FileFilterParser getFileFilterParser(
-            final Properties props, final Locale locale) {
+            final Properties props,
+            final Locale locale,
+            final InfoGenerator infoGenerator) {
         
         return new FileFilterParser(
                 props.getProperty(HASH_ALGORITHM_KEY, DEFAULT_HASH_ALGORITHM),
                 props.getProperty(DATE_FORMAT_KEY, DEFAULT_DATE_FORMAT),
                 locale,
-                REGEX_FLAGS);
+                REGEX_FLAGS,
+                infoGenerator);
     }
     
 }

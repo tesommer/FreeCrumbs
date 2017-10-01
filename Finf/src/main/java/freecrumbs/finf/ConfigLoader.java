@@ -16,7 +16,8 @@ public interface ConfigLoader {
     
     /**
      * Returns the default configuration loader.
-     * @param overrides configuration overrides (a null value means default)
+     * @param overrides configuration overrides.
+     * A key with a null value means use the default setting.
      */
     public static ConfigLoader getDefault(final Map<String, String> overrides) {
         return new PropertiesConfigLoader(Locale.getDefault(), overrides);

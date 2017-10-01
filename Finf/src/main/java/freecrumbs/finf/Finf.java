@@ -8,8 +8,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.calclipse.lib.util.EncodingUtil;
-
 /**
  * Generates and prints
  * {@link freecrumbs.finf.Info file info}.
@@ -33,40 +31,32 @@ public final class Finf {
             final PrintStream out) throws IOException {
         
         if (config.getOrder().isPresent()) {
-            final List<Info> items = filterAndSort(files, config);
-            output(items, info -> info, config, out);
+            outputOrdered(files, config, out);
         } else {
-            final List<File> items = filter(files, config);
-            output(
-                    items,
-                    file -> getInfo(file, config.getHashGenerator()),
-                    config,
-                    out);
+            outputUnordered(files, config, out);
         }
     }
-    
-    /**
-     * Returns the file info of a single file.
-     * @throws IOException if the hash generator does.
-     */
-    public static Info getInfo(
-            final File file,
-            final HashGenerator hashGenerator) throws IOException {
+
+    private static void outputOrdered(
+            final Collection<? extends File> files,
+            final Config config,
+            final PrintStream out) throws IOException {
         
-        final String path;
-        final String filename;
-        final int index = file.getPath().lastIndexOf(File.separatorChar);
-        if (index < 0) {
-            path = "";
-            filename = file.getName();
-        } else {
-            path = file.getPath().substring(0, index + 1);
-            filename = file.getPath().substring(index + 1);
-        }
-        final String hash
-            = EncodingUtil.bytesToHex(false, hashGenerator.digest(file));
-        return new Info(
-                path, filename, file.length(), file.lastModified(), hash);
+        final List<Info> items = filterAndSort(files, config);
+        output(items, config, out, info -> info);
+    }
+
+    private static void outputUnordered(
+            final Collection<? extends File> files,
+            final Config config,
+            final PrintStream out) throws IOException {
+        
+        final List<File> items = filter(files, config);
+        output(
+                items,
+                config,
+                out,
+                file -> InfoGenerator.getInfo(file, config.getInfoGenerator()));
     }
     
     private static List<Info> filterAndSort(
@@ -76,7 +66,8 @@ public final class Finf {
         final List<Info> items = new ArrayList<>(files.size());
         for (final File file : files) {
             if (acceptsInput(file, config)) {
-                items.add(getInfo(file, config.getHashGenerator()));
+                items.add(InfoGenerator.getInfo(
+                        file, config.getInfoGenerator()));
             }
         }
         return items.stream()
@@ -85,7 +76,8 @@ public final class Finf {
     }
 
     private static List<File> filter(
-            final Collection<? extends File> files, final Config config) {
+            final Collection<? extends File> files,
+            final Config config) {
         
         return files.stream()
                 .filter(file -> acceptsInput(file, config))
@@ -99,9 +91,9 @@ public final class Finf {
 
     private static <T> void output(
             final List<T> items,
-            final Informer<? super T> informer,
             final Config config,
-            final PrintStream out) throws IOException {
+            final PrintStream out,
+            final Informer<? super T> informer) throws IOException {
         
         for (int i = 0; (config.getCount() < 0 || i < config.getCount())
                 && i < items.size(); i++) {

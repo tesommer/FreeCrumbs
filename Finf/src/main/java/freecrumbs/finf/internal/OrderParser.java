@@ -28,19 +28,19 @@ public class OrderParser {
     private static OrderSpec[] getOrderSpecs(
             final String setting, final Locale locale) {
         
-        final String orderTLC = setting.toLowerCase(locale);
+        final String settingTLC = setting.toLowerCase(locale);
         final Collection<OrderSpec> orderSpecs
             = new ArrayList<>(InfoField.values().length);
         for (final InfoField field : InfoField.values()) {
             boolean desc = false;
             final String name = field.name().toLowerCase(locale);
-            int precedence = orderTLC.indexOf(name + " asc");
+            int precedence = settingTLC.indexOf(name + " asc");
             if (precedence < 0) {
-                precedence = orderTLC.indexOf(name + " desc");
+                precedence = settingTLC.indexOf(name + " desc");
                 if (precedence > -1) {
                     desc = true;
                 } else {
-                    precedence = orderTLC.indexOf(name);
+                    precedence = settingTLC.indexOf(name);
                 }
             }
             if (precedence > -1) {

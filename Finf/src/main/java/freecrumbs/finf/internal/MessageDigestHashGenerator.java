@@ -10,46 +10,48 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import freecrumbs.finf.HashGenerator;
+import freecrumbs.finf.InfoGenerator;
 
 /**
  * A hash generator implemented using a {@code MessageDigest}.
  * 
  * @author Tone Sommerland
  */
-public class MessageDigestHashGenerator implements HashGenerator {
-    
-    private static final HashGenerator DUMMY = file -> new byte[0];
+public final class MessageDigestHashGenerator implements HashGenerator {
     
     private static final int DEFAULT_BUFFER_SIZE = 2048;
     
     private final String algorithm;
     private final int bufferSize;
 
-    public MessageDigestHashGenerator(
+    private MessageDigestHashGenerator(
             final String algorithm, final int bufferSize) {
         
-        if (bufferSize < 1) {
-            throw new IllegalArgumentException("bufferSize < 1");
-        }
-        this.algorithm = requireNonNull(algorithm, "algorithm");
+        this.algorithm = algorithm;
         this.bufferSize = bufferSize;
     }
 
-    public MessageDigestHashGenerator(final String algorithm) {
+    private MessageDigestHashGenerator(final String algorithm) {
         this(algorithm, DEFAULT_BUFFER_SIZE);
     }
     
     /**
-     * A convenience method that returns a dummy hash generator
-     * if the info format does not contain a hash.
+     * Makes the given info generator use an instance of this class
+     * if the info format contains hash.
      */
-    public static HashGenerator getInstance(
-            final String algorithm, final TokenInfoFormat infoFormat) {
+    public static InfoGenerator with(
+            final String hashAlgorithm,
+            final TokenInfoFormat infoFormat,
+            final InfoGenerator infoGenerator) {
         
+        requireNonNull(hashAlgorithm, "hashAlgorithm");
+        requireNonNull(infoFormat, "infoFormat");
+        requireNonNull(infoGenerator, "infoGenerator");
         if (infoFormat.containsHash()) {
-            return new MessageDigestHashGenerator(algorithm);
+            return infoGenerator.use(
+                    new MessageDigestHashGenerator(hashAlgorithm));
         }
-        return DUMMY;
+        return infoGenerator;
     }
 
     @Override
