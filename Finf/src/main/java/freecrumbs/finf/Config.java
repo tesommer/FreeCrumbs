@@ -23,7 +23,7 @@ public class Config {
     private final InfoGenerator infoGenerator;
     private final InfoFormat infoFormat;
     private final FileFilter fileFilter;
-    private final Comparator<Info> order;
+    private final Comparator<? super Info> order;
     private final int count;
     
     /**
@@ -38,7 +38,7 @@ public class Config {
         final InfoGenerator infoGenerator,
         final InfoFormat infoFormat,
         final FileFilter fileFilter,
-        final Comparator<Info> order,
+        final Comparator<? super Info> order,
         final int count) {
         
         this.infoGenerator = requireNonNull(infoGenerator, "infoGenerator");
@@ -60,7 +60,7 @@ public class Config {
         return Optional.ofNullable(fileFilter);
     }
     
-    public Optional<Comparator<Info>> getOrder() {
+    public Optional<Comparator<? super Info>> getOrder() {
         return Optional.ofNullable(order);
     }
     
