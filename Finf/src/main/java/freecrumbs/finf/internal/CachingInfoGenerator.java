@@ -17,7 +17,6 @@ import freecrumbs.finf.InfoGenerator;
  * @author Tone Sommerland
  */
 public class CachingInfoGenerator implements InfoGenerator {
-    
     private final Map<File, Info> cache = new HashMap<File, Info>();
 
     public CachingInfoGenerator() {
@@ -35,10 +34,6 @@ public class CachingInfoGenerator implements InfoGenerator {
         return info;
     }
     
-    /**
-     * Returns the file info of a single file.
-     * @throws IOException if the hash generator does.
-     */
     private static Info generateInfo(
             final File file,
             final HashGenerator hashGenerator) throws IOException {
