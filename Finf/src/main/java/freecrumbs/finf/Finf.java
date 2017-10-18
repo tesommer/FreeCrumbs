@@ -3,7 +3,6 @@ package freecrumbs.finf;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,17 +60,13 @@ public final class Finf {
     
     private static List<Info> filterAndSort(
             final Collection<? extends File> files,
-            final Config config) throws IOException {
+            final Config config) {
         
-        final List<Info> items = new ArrayList<>(files.size());
-        for (final File file : files) {
-            if (acceptsInput(file, config)) {
-                items.add(config.getInfoGenerator().apply(file));
-            }
-        }
-        return items.stream()
-                .sorted(config.getOrder().get())
-                .collect(Collectors.toList());
+        return files.stream()
+            .filter(file -> acceptsInput(file, config))
+            .map(config.getInfoGenerator())
+            .sorted(config.getOrder().get())
+            .collect(Collectors.toList());
     }
 
     private static List<File> filter(
@@ -85,7 +80,7 @@ public final class Finf {
     
     @FunctionalInterface
     private interface Informer<T> {
-        public abstract Info provide(T item) throws IOException;
+        public abstract Info provide(T item);
     }
 
     private static <T> void output(

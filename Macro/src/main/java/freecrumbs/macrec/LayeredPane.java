@@ -1,6 +1,7 @@
 package freecrumbs.macrec;
 
 import java.awt.Graphics;
+import java.util.stream.Stream;
 
 import javax.swing.JPanel;
 
@@ -22,8 +23,6 @@ public class LayeredPane extends JPanel {
     @Override
     protected void paintComponent(final Graphics g) {
         super.paintComponent(g);
-        for (final Layer layer : layers) {
-            layer.paint(g);
-        }
+        Stream.of(layers).forEach(layer -> layer.paint(g));
     }
 }
