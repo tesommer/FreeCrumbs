@@ -126,7 +126,7 @@ public class PropertiesConfigLoader implements ConfigLoader {
     private static Function<File, Info> getInfoGenerator(
             final Properties props, final InfoField[] fields) {
         
-        return file -> new CachedInfo(file, fields);
+        return file -> CachedInfo.getInfo(file, fields);
     }
 
     private static InfoFormat getInfoFormat(final Properties props) {

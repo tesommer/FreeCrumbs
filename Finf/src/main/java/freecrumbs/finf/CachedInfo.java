@@ -6,26 +6,52 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This info caches the info fields.
+ * Caches file info.
  * 
  * @author Tone Sommerland
  */
-public class CachedInfo extends Info {
+public final class CachedInfo extends Info {
+    
+    private static final Map<File, Info> INFO_CACHE = new HashMap<>();
+    
     private final Map<String, String> cache = new HashMap<>();
 
-    public CachedInfo(final File file, final InfoField... fields) {
+    private CachedInfo(final File file, final InfoField... fields) {
         super(file, fields);
+    }
+    
+    public static Info getInfo(final File file, final InfoField... fields) {
+        synchronized (INFO_CACHE) {
+            try {
+                return getCached(
+                        INFO_CACHE, file, () -> new CachedInfo(file, fields));
+            } catch (final IOException ex) {
+                throw new AssertionError(ex);
+            }
+        }
     }
 
     @Override
     protected String getValue(final InfoField field, final File file)
             throws IOException {
         
-        final String fieldName = field.getName();
-        String value = cache.get(fieldName);
+        return getCached(cache, field.getName(), () -> field.getValue(file));
+    }
+    
+    @FunctionalInterface
+    private interface Initial<T> {
+        T get() throws IOException;
+    }
+    
+    private static <K, V> V getCached(
+            final Map<? super K, V> cache,
+            final K key,
+            final Initial<? extends V> initial) throws IOException {
+        
+        V value = cache.get(key);
         if (value == null) {
-            value = field.getValue(file);
-            cache.put(fieldName, value);
+            value = initial.get();
+            cache.put(key, value);
         }
         return value;
     }
