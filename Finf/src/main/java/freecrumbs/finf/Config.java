@@ -2,9 +2,11 @@ package freecrumbs.finf;
 
 import static java.util.Objects.requireNonNull;
 
+import java.io.File;
 import java.io.FileFilter;
 import java.util.Comparator;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Finf config.
@@ -20,7 +22,7 @@ import java.util.Optional;
  * @author Tone Sommerland
  */
 public class Config {
-    private final InfoGenerator infoGenerator;
+    private final Function<File, Info> infoGenerator;
     private final InfoFormat infoFormat;
     private final FileFilter fileFilter;
     private final Comparator<? super Info> order;
@@ -35,7 +37,7 @@ public class Config {
      * @param count max lines to output (-1 = all)
      */
     public Config(
-        final InfoGenerator infoGenerator,
+        final Function<File, Info> infoGenerator,
         final InfoFormat infoFormat,
         final FileFilter fileFilter,
         final Comparator<? super Info> order,
@@ -48,7 +50,7 @@ public class Config {
         this.count = count;
     }
     
-    public InfoGenerator getInfoGenerator() {
+    public Function<File, Info> getInfoGenerator() {
         return infoGenerator;
     }
     

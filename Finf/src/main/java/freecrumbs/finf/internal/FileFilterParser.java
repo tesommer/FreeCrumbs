@@ -2,17 +2,18 @@ package freecrumbs.finf.internal;
 
 import static java.util.Objects.requireNonNull;
 
+import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Locale;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import freecrumbs.finf.Info;
 import freecrumbs.finf.InfoFormat;
-import freecrumbs.finf.InfoGenerator;
 
 /**
  * <p>
@@ -41,22 +42,13 @@ public class FileFilterParser {
     
     private static final int DELIM_LENGTH = 2;
 
-    private final String hashAlgorithm;
-    private final String dateFormat;
-    private final Locale locale;
     private final int regexFlags;
-    private final InfoGenerator infoGenerator;
+    private final Function<File, Info> infoGenerator;
     
     public FileFilterParser(
-            final String hashAlgorithm,
-            final String dateFormat,
-            final Locale locale,
             final int regexFlags,
-            final InfoGenerator infoGenerator) {
+            final Function<File, Info> infoGenerator) {
 
-        this.hashAlgorithm = requireNonNull(hashAlgorithm, "hashAlgorithm");
-        this.dateFormat = requireNonNull(dateFormat, "dateFormat");
-        this.locale = requireNonNull(locale, "locale");
         this.regexFlags = regexFlags;
         this.infoGenerator = requireNonNull(infoGenerator, "infoGenerator");
     }
@@ -76,32 +68,21 @@ public class FileFilterParser {
             final Matcher delimiter,
             final Part formatPart) throws IOException {
         
-        final InfoFormat infoFormat = getInfoFormat(formatPart);
-        final InfoGenerator optimizedInfoGenerator
-            = optimizeInfoGenerator(infoFormat);
+        final InfoFormat infoFormat = new TokenInfoFormat(formatPart.payload);
         final Collection<FormatPattern> formatPatterns = new ArrayList<>();
         Part part = formatPart;
         do {
             part = getNextPatternPart(setting, delimiter, part);
-            formatPatterns.add(getFormatPattern(part, optimizedInfoGenerator));
+            formatPatterns.add(getFormatPattern(part, infoGenerator));
         } while (!part.last);
         return new FormatPatternFileFilter(
                 infoFormat,
                 formatPatterns.stream().toArray(FormatPattern[]::new));
     }
-
-    private InfoFormat getInfoFormat(final Part formatPart) throws IOException {
-        return new TokenInfoFormat(formatPart.payload, dateFormat, locale);
-    }
-
-    private InfoGenerator optimizeInfoGenerator(final InfoFormat infoFormat) {
-        return MessageDigestHashGenerator.with(
-                hashAlgorithm, infoGenerator, infoFormat);
-    }
     
     private static FormatPattern getFormatPattern(
             final Part patternPart,
-            final InfoGenerator infoGenerator) throws IOException {
+            final Function<File, Info> infoGenerator) throws IOException {
         
         try {
             final Pattern pattern = Pattern.compile(patternPart.payload);

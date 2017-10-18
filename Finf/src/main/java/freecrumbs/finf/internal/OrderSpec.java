@@ -19,28 +19,28 @@ public class OrderSpec {
         -> Integer.valueOf(os1.getPrecedence())
             .compareTo(Integer.valueOf(os2.getPrecedence()));
     
-    private final InfoField field;
+    private final String fieldName;
     private final int precedence;
     private final boolean desc;
     
     /**
      * Creates an info field order-by specification.
-     * @param field the field to order by
+     * @param fieldName the field to order by
      * @param precedence the priority of this order spec relative to others
      * @param desc descending or not
      */
     public OrderSpec(
-        final InfoField field, final int precedence, final boolean desc) {
+        final String fieldName, final int precedence, final boolean desc) {
         
-        this.field = requireNonNull(field, "field");
+        this.fieldName = requireNonNull(fieldName, "fieldName");
         this.precedence = precedence;
         this.desc = desc;
     }
     
-    public InfoField getField() {
-        return field;
+    public String getFieldName() {
+        return fieldName;
     }
-    
+
     public int getPrecedence() {
         return precedence;
     }

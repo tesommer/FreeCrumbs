@@ -56,7 +56,7 @@ public final class Finf {
                 items,
                 config,
                 out,
-                file -> InfoGenerator.getInfo(file, config.getInfoGenerator()));
+                file -> config.getInfoGenerator().apply(file));
     }
     
     private static List<Info> filterAndSort(
@@ -66,8 +66,7 @@ public final class Finf {
         final List<Info> items = new ArrayList<>(files.size());
         for (final File file : files) {
             if (acceptsInput(file, config)) {
-                items.add(InfoGenerator.getInfo(
-                        file, config.getInfoGenerator()));
+                items.add(config.getInfoGenerator().apply(file));
             }
         }
         return items.stream()
@@ -106,4 +105,4 @@ public final class Finf {
         return config.getFileFilter().map(ff -> ff.accept(file)).orElse(true);
     }
 
-}
+}

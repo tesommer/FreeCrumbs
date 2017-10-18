@@ -1,11 +1,8 @@
 package freecrumbs.finf.internal;
 
-import static java.util.Objects.requireNonNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Locale;
 
 import freecrumbs.finf.Info;
 
@@ -15,36 +12,32 @@ import freecrumbs.finf.Info;
  * @author Tone Sommerland
  */
 public class OrderParser {
-    private final Locale locale;
+    private final String[] fieldNames;
 
-    public OrderParser(final Locale locale) {
-        this.locale = requireNonNull(locale, "locale");
+    public OrderParser(final String... fieldNames) {
+        this.fieldNames = fieldNames.clone();
     }
     
     public Comparator<Info> parse(final String setting) {
-        return new OrderSpecInfoSorter(getOrderSpecs(setting, locale));
+        return new OrderSpecInfoSorter(getOrderSpecs(setting));
     }
     
-    private static OrderSpec[] getOrderSpecs(
-            final String setting, final Locale locale) {
-        
-        final String settingTLC = setting.toLowerCase(locale);
+    private OrderSpec[] getOrderSpecs(final String setting) {
         final Collection<OrderSpec> orderSpecs
-            = new ArrayList<>(InfoField.values().length);
-        for (final InfoField field : InfoField.values()) {
+            = new ArrayList<>(fieldNames.length);
+        for (final String fieldName : fieldNames) {
             boolean desc = false;
-            final String name = field.name().toLowerCase(locale);
-            int precedence = settingTLC.indexOf(name + " asc");
+            int precedence = setting.indexOf(fieldName + " asc");
             if (precedence < 0) {
-                precedence = settingTLC.indexOf(name + " desc");
+                precedence = setting.indexOf(fieldName + " desc");
                 if (precedence > -1) {
                     desc = true;
                 } else {
-                    precedence = settingTLC.indexOf(name);
+                    precedence = setting.indexOf(fieldName);
                 }
             }
             if (precedence > -1) {
-                orderSpecs.add(new OrderSpec(field, precedence, desc));
+                orderSpecs.add(new OrderSpec(fieldName, precedence, desc));
             }
         }
         return orderSpecs.stream().toArray(OrderSpec[]::new);

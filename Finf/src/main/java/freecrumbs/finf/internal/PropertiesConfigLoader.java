@@ -2,6 +2,7 @@ package freecrumbs.finf.internal;
 
 import static java.util.Objects.requireNonNull;
 
+import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.Reader;
@@ -10,12 +11,20 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
+import freecrumbs.finf.CachedInfo;
 import freecrumbs.finf.Config;
 import freecrumbs.finf.ConfigLoader;
 import freecrumbs.finf.Info;
+import freecrumbs.finf.InfoField;
 import freecrumbs.finf.InfoFormat;
-import freecrumbs.finf.InfoGenerator;
+import freecrumbs.finf.field.FilenameField;
+import freecrumbs.finf.field.HashField;
+import freecrumbs.finf.field.ModifiedField;
+import freecrumbs.finf.field.PathField;
+import freecrumbs.finf.field.SizeField;
 
 /**
  * Loads configuration from a properties file.
@@ -30,7 +39,7 @@ import freecrumbs.finf.InfoGenerator;
  * count=100
  * }
  * </pre>
- * Example format pattern file filter:
+ * Alternative file filter &ndash; format pattern:
  * <pre>
  * {@code
  * file.filter=${filename}++.+\.html--index\..{3,4}
@@ -61,7 +70,7 @@ public class PropertiesConfigLoader implements ConfigLoader {
     /**
      * Creates a properties config loader.
      * @param overrides overrides keys in the properties file
-     * (a key with a value of null means default)
+     * (a key with a value of null means 'use default')
      */
     public PropertiesConfigLoader(
             final Locale locale, final Map<String, String> overrides) {
@@ -70,27 +79,18 @@ public class PropertiesConfigLoader implements ConfigLoader {
         this.overrides = new HashMap<>(overrides);
     }
     
-    /**
-     * Creates a properties config loader.
-     */
-    public PropertiesConfigLoader(final Locale locale) {
-        this(locale, new HashMap<>());
-    }
-    
     @Override
     public Config loadConfig(final Reader reader) throws IOException {
         final Properties props = getProperties(reader);
-        final InfoFormat infoFormat = getInfoFormat(props);
-        final InfoGenerator infoGenerator = getInfoGenerator(props, infoFormat);
-        final FileFilter fileFilter = getFileFilter(props, infoGenerator);
-        final Comparator<Info> order = getOrder(props);
-        final int count = getCount(props);
+        final InfoField[] fields = getInfoFields(props);
+        final Function<File, Info> infoGenerator
+            = getInfoGenerator(props, fields);
         return new Config(
                 infoGenerator,
-                infoFormat,
-                fileFilter,
-                order,
-                count);
+                getInfoFormat(props),
+                getFileFilter(props, infoGenerator),
+                getOrder(props, fields),
+                getCount(props));
     }
 
     private Properties getProperties(final Reader reader) throws IOException {
@@ -106,42 +106,56 @@ public class PropertiesConfigLoader implements ConfigLoader {
         }
         return props;
     }
-
-    private static InfoGenerator getInfoGenerator(
-            final Properties props, final InfoFormat infoFormat) {
+    
+    private InfoField[] getInfoFields(final Properties props)
+            throws IOException {
         
         final String hashAlgorithm
             = props.getProperty(HASH_ALGORITHM_KEY, DEFAULT_HASH_ALGORITHM);
-        return MessageDigestHashGenerator.with(
-                hashAlgorithm, new CachingInfoGenerator(), infoFormat);
+        final String dateFormat
+            = props.getProperty(DATE_FORMAT_KEY, DEFAULT_DATE_FORMAT);
+        return new InfoField[] {
+                PathField.INSTANCE,
+                FilenameField.INSTANCE,
+                SizeField.INSTANCE,
+                ModifiedField.getInstance(dateFormat, locale),
+                HashField.getInstance(hashAlgorithm),
+        };
     }
-
-    private InfoFormat getInfoFormat(final Properties props)
-            throws IOException {
+    
+    private static Function<File, Info> getInfoGenerator(
+            final Properties props, final InfoField[] fields) {
         
-        return new TokenInfoFormat(
-                props.getProperty(INFO_FORMAT_KEY, DEFAULT_INFO_FORMAT),
-                props.getProperty(DATE_FORMAT_KEY, DEFAULT_DATE_FORMAT),
-                locale);
+        return file -> new CachedInfo(file, fields);
     }
 
-    private FileFilter getFileFilter(
+    private static InfoFormat getInfoFormat(final Properties props) {
+        return new TokenInfoFormat(
+                props.getProperty(INFO_FORMAT_KEY, DEFAULT_INFO_FORMAT));
+    }
+
+    private static FileFilter getFileFilter(
             final Properties props,
-            final InfoGenerator infoGenerator) throws IOException {
+            final Function<File, Info> infoGenerator) throws IOException {
         
         final String setting = props.getProperty(FILE_FILTER_KEY);
         if (setting == null) {
             return null;
         }
-        return getFileFilterParser(props, locale, infoGenerator).parse(setting);
+        return getFileFilterParser(infoGenerator).parse(setting);
     }
 
-    private Comparator<Info> getOrder(final Properties props) {
+    private static Comparator<Info> getOrder(
+            final Properties props, final InfoField[] fields) {
+        
         final String setting = props.getProperty(ORDER_KEY);
         if (setting == null) {
             return null;
         }
-        return new OrderParser(locale).parse(setting);
+        final String[] fieldNames = Stream.of(fields)
+                .map(InfoField::getName)
+                .toArray(String[]::new);
+        return new OrderParser(fieldNames).parse(setting);
     }
 
     private static int getCount(final Properties props) throws IOException {
@@ -153,16 +167,9 @@ public class PropertiesConfigLoader implements ConfigLoader {
     }
     
     private static FileFilterParser getFileFilterParser(
-            final Properties props,
-            final Locale locale,
-            final InfoGenerator infoGenerator) {
+            final Function<File, Info> infoGenerator) {
         
-        return new FileFilterParser(
-                props.getProperty(HASH_ALGORITHM_KEY, DEFAULT_HASH_ALGORITHM),
-                props.getProperty(DATE_FORMAT_KEY, DEFAULT_DATE_FORMAT),
-                locale,
-                REGEX_FLAGS,
-                infoGenerator);
+        return new FileFilterParser(REGEX_FLAGS, infoGenerator);
     }
     
 }

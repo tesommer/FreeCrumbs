@@ -23,25 +23,7 @@ public class OrderSpecInfoSorter implements Comparator<Info> {
     public int compare(final Info info1, final Info info2) {
         int order = 0;
         for (final OrderSpec orderSpec : orderSpecs) {
-            switch (orderSpec.getField()) {
-            case PATH:
-                order = info1.getPath().compareTo(info2.getPath());
-                break;
-            case FILENAME:
-                order = info1.getFilename().compareTo(info2.getFilename());
-                break;
-            case SIZE:
-                order = Long.valueOf(info1.getSize()).compareTo(
-                    Long.valueOf(info2.getSize()));
-                break;
-            case MODIFIED:
-                order = Long.valueOf(info1.getModified()).compareTo(
-                    Long.valueOf(info2.getModified()));
-                break;
-            case HASH:
-            default:
-                order = info1.getHash().compareTo(info2.getHash());
-            }
+            order = info1.compare(orderSpec.getFieldName(), info2).orElse(0);
             if (order != 0) {
                 if (orderSpec.isDesc()) {
                     order = -order;

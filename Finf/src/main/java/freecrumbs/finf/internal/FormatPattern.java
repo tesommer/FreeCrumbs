@@ -4,11 +4,11 @@ import static java.util.Objects.requireNonNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import freecrumbs.finf.Info;
 import freecrumbs.finf.InfoFormat;
-import freecrumbs.finf.InfoGenerator;
 
 /**
  * Instances of this class are used by
@@ -22,7 +22,7 @@ import freecrumbs.finf.InfoGenerator;
 public class FormatPattern {
     private final Pattern pattern;
     private final boolean include;
-    private final InfoGenerator infoGenerator;
+    private final Function<File, Info> infoGenerator;
     
     /**
      * Creates a new format pattern.
@@ -33,7 +33,7 @@ public class FormatPattern {
     public FormatPattern(
             final Pattern pattern,
             final boolean include,
-            final InfoGenerator infoGenerator) {
+            final Function<File, Info> infoGenerator) {
         
         this.pattern = requireNonNull(pattern, "pattern");
         this.include = include;
@@ -46,7 +46,7 @@ public class FormatPattern {
     public boolean includes(final File file, final InfoFormat infoFormat)
             throws IOException {
         
-        final Info info = InfoGenerator.getInfo(file, infoGenerator);
+        final Info info = infoGenerator.apply(file);
         return pattern.matcher(infoFormat.toString(info)).matches() == include;
     }
     
