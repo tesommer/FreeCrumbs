@@ -22,7 +22,7 @@ import freecrumbs.finf.InfoFormat;
 public class FormatPattern {
     private final Pattern pattern;
     private final boolean include;
-    private final Function<File, Info> infoGenerator;
+    private final Function<? super File, ? extends Info> infoGenerator;
     
     /**
      * Creates a new format pattern.
@@ -33,7 +33,7 @@ public class FormatPattern {
     public FormatPattern(
             final Pattern pattern,
             final boolean include,
-            final Function<File, Info> infoGenerator) {
+            final Function<? super File, ? extends Info> infoGenerator) {
         
         this.pattern = requireNonNull(pattern, "pattern");
         this.include = include;

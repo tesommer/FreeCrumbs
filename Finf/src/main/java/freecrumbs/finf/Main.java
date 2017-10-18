@@ -50,7 +50,9 @@ public final class Main {
         return inputFiles;
     }
     
-    private static void addTree(final Collection<File> files, final File file) {
+    private static void addTree(
+            final Collection<? super File> files, final File file) {
+        
         if (file.isDirectory()) {
             Stream.of(file.listFiles()).forEach(child -> addTree(files, child));
         } else {
@@ -82,7 +84,8 @@ public final class Main {
     }
 
     private static void addOverride(
-            final Map<String, String> overrides, final String override) {
+            final Map<? super String, ? super String> overrides,
+            final String override) {
         
         final String key;
         final String value;

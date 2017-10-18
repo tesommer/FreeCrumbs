@@ -22,7 +22,7 @@ import java.util.function.Function;
  * @author Tone Sommerland
  */
 public class Config {
-    private final Function<File, Info> infoGenerator;
+    private final Function<? super File, ? extends Info> infoGenerator;
     private final InfoFormat infoFormat;
     private final FileFilter fileFilter;
     private final Comparator<? super Info> order;
@@ -37,7 +37,7 @@ public class Config {
      * @param count max lines to output (-1 = all)
      */
     public Config(
-        final Function<File, Info> infoGenerator,
+        final Function<? super File, ? extends Info> infoGenerator,
         final InfoFormat infoFormat,
         final FileFilter fileFilter,
         final Comparator<? super Info> order,
@@ -50,7 +50,7 @@ public class Config {
         this.count = count;
     }
     
-    public Function<File, Info> getInfoGenerator() {
+    public Function<? super File, ? extends Info> getInfoGenerator() {
         return infoGenerator;
     }
     

@@ -136,7 +136,8 @@ public class PropertiesConfigLoader implements ConfigLoader {
 
     private static FileFilter getFileFilter(
             final Properties props,
-            final Function<File, Info> infoGenerator) throws IOException {
+            final Function<? super File, ? extends Info> infoGenerator)
+                    throws IOException {
         
         final String setting = props.getProperty(FILE_FILTER_KEY);
         if (setting == null) {
@@ -167,7 +168,7 @@ public class PropertiesConfigLoader implements ConfigLoader {
     }
     
     private static FileFilterParser getFileFilterParser(
-            final Function<File, Info> infoGenerator) {
+            final Function<? super File, ? extends Info> infoGenerator) {
         
         return new FileFilterParser(REGEX_FLAGS, infoGenerator);
     }

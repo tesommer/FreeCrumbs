@@ -43,11 +43,11 @@ public class FileFilterParser {
     private static final int DELIM_LENGTH = 2;
 
     private final int regexFlags;
-    private final Function<File, Info> infoGenerator;
+    private final Function<? super File, ? extends Info> infoGenerator;
     
     public FileFilterParser(
             final int regexFlags,
-            final Function<File, Info> infoGenerator) {
+            final Function<? super File, ? extends Info> infoGenerator) {
 
         this.regexFlags = regexFlags;
         this.infoGenerator = requireNonNull(infoGenerator, "infoGenerator");
@@ -82,7 +82,8 @@ public class FileFilterParser {
     
     private static FormatPattern getFormatPattern(
             final Part patternPart,
-            final Function<File, Info> infoGenerator) throws IOException {
+            final Function<? super File, ? extends Info> infoGenerator)
+                    throws IOException {
         
         try {
             final Pattern pattern = Pattern.compile(patternPart.payload);
