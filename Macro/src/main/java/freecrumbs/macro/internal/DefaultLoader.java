@@ -87,7 +87,7 @@ public class DefaultLoader implements Loader {
      * and adds the resulting gesture to the gestures collection.
      */
     private void addGesture(
-            final Collection<Gesture> gestures,
+            final Collection<? super Gesture> gestures,
             final String line) throws MacroException {
         
         for (final GestureParser parser : gestureParsers) {
@@ -106,7 +106,7 @@ public class DefaultLoader implements Loader {
      * @param macroName the macro name (nullable)
      */
     private static void addMacro(
-            final Collection<Macro> macros,
+            final Collection<? super Macro> macros,
             final Collection<? extends Gesture> gestures,
             final String macroName) {
         

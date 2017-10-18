@@ -27,9 +27,9 @@ public class KeyRecorder extends JFrame implements KeyListener {
     private static final int HEIGHT = 123;
     
     private final Script script = Util.createEmptyScript();
-    private final Consumer<String> receiver;
+    private final Consumer<? super String> receiver;
 
-    public KeyRecorder(final Consumer<String> receiver) {
+    public KeyRecorder(final Consumer<? super String> receiver) {
         this.receiver = requireNonNull(receiver, "receiver");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         addKeyListener(this);

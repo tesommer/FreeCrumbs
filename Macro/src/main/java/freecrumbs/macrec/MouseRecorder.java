@@ -94,10 +94,10 @@ public class MouseRecorder extends ScreenCaptureFrame {
     textLayer
         = new TextLayer(TEXT_POINT, TEXT_COLOR, TEXT_FONT, TEXT_LINE_HEIGHT);
     
-    private final Consumer<String> receiver;
+    private final Consumer<? super String> receiver;
     private State state = State.RECORDING_PRESS_RELEASE;
 
-    public MouseRecorder(final Consumer<String> receiver)
+    public MouseRecorder(final Consumer<? super String> receiver)
             throws MacroException {
         
         this.receiver = requireNonNull(receiver, "receiver");
