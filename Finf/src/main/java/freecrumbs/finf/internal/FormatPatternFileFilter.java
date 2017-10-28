@@ -5,8 +5,10 @@ import static java.util.Objects.requireNonNull;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
+import freecrumbs.finf.Info;
 import freecrumbs.finf.InfoFormat;
 
 /**
@@ -19,19 +21,23 @@ public class FormatPatternFileFilter implements FileFilter {
     
     private static final Logger
     LOGGER = Logger.getLogger(FormatPatternFileFilter.class.getName());
-    
+
+    private final Function<? super File, ? extends Info> infoGenerator;
     private final InfoFormat infoFormat;
     private final FormatPattern[] formatPatterns;
 
     /**
      * Creates a new format pattern file filter.
+     * @param infoGenerator the info generator to use
      * @param infoFormat the format to apply to each file's info
      * @param formatPatterns the inclusion or exclusion patterns
      */
     public FormatPatternFileFilter(
+            final Function<? super File, ? extends Info> infoGenerator,
             final InfoFormat infoFormat,
             final FormatPattern... formatPatterns) {
-        
+
+        this.infoGenerator = requireNonNull(infoGenerator, "infoGenerator");
         this.infoFormat = requireNonNull(infoFormat, "infoFormat");
         this.formatPatterns = formatPatterns.clone();
     }
@@ -48,7 +54,7 @@ public class FormatPatternFileFilter implements FileFilter {
 
     private boolean includes(final File file) throws IOException {
         for (final FormatPattern formatPattern : formatPatterns) {
-            if (!formatPattern.includes(file, infoFormat)) {
+            if (!formatPattern.includes(file, infoGenerator, infoFormat)) {
                 return false;
             }
         }

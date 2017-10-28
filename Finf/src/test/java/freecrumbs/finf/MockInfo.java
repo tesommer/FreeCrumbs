@@ -18,10 +18,10 @@ public class MockInfo extends Info {
 
     public MockInfo(final MockField... fields) {
         super(new File(""), fields);
-        this.fields = fields;
+        this.fields = fields.clone();
     }
     
-    public static MockInfo getInfo(
+    public static MockInfo getInstance(
             final String path,
             final String filename,
             final String size,
@@ -48,10 +48,10 @@ public class MockInfo extends Info {
         };
     }
     
-    public boolean isRead(final String fieldName) {
+    public boolean isValueRead(final String fieldName) {
         return Stream.of(fields)
                 .filter(field -> field.getName().equals(fieldName))
-                .map(MockField::isRead)
+                .map(MockField::isValueRead)
                 .findAny()
                 .orElse(false);
     }

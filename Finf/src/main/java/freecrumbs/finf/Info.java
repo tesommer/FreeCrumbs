@@ -50,8 +50,9 @@ public abstract class Info {
     }
     
     /**
-     * Compares a field in this info with the same field in another info.
-     * @return empty if the field is nonexistent in any of the compared objects.
+     * Compares the value of a field in this info
+     * with the value of the same field in another info.
+     * @return empty if the field is nonexistent in any of the info objects.
      */
     public Optional<Integer> compare(final String fieldName, final Info other) {
         try {

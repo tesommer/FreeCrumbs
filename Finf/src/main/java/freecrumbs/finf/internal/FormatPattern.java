@@ -22,29 +22,24 @@ import freecrumbs.finf.InfoFormat;
 public class FormatPattern {
     private final Pattern pattern;
     private final boolean include;
-    private final Function<? super File, ? extends Info> infoGenerator;
     
     /**
      * Creates a new format pattern.
      * @param pattern the regex pattern to match against the format
      * @param include whether a match includes or excludes the file
-     * @param infoGenerator the info generator to use
      */
-    public FormatPattern(
-            final Pattern pattern,
-            final boolean include,
-            final Function<? super File, ? extends Info> infoGenerator) {
-        
+    public FormatPattern(final Pattern pattern, final boolean include) {
         this.pattern = requireNonNull(pattern, "pattern");
         this.include = include;
-        this.infoGenerator = requireNonNull(infoGenerator, "infoGenerator");
     }
     
     /**
      * Whether to include or exclude the given file.
      */
-    public boolean includes(final File file, final InfoFormat infoFormat)
-            throws IOException {
+    public boolean includes(
+            final File file,
+            final Function<? super File, ? extends Info> infoGenerator,
+            final InfoFormat infoFormat) throws IOException {
         
         final Info info = infoGenerator.apply(file);
         return pattern.matcher(infoFormat.toString(info)).matches() == include;

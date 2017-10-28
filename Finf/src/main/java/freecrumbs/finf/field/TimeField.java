@@ -7,6 +7,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * An abstract base class for fields representing timestamp values.
+ * 
+ * @author Tone Sommerland
+ */
 public abstract class TimeField extends AbstractInfoField {
     private final DateFormat dateFormat;
 
@@ -23,7 +28,7 @@ public abstract class TimeField extends AbstractInfoField {
         }
     }
     
-    protected abstract long getTime(File file);
+    protected abstract long getTime(File file) throws IOException;
 
     @Override
     public String getValue(final File file) throws IOException {

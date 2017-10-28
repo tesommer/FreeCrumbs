@@ -5,6 +5,13 @@ import java.io.IOException;
 
 import freecrumbs.finf.InfoField;
 
+/**
+ * The path without the filename.
+ * The path is empty if the file is in the root directory.
+ * Otherwise it ends with a file separator.
+ * 
+ * @author Tone Sommerland
+ */
 public final class PathField extends AbstractInfoField {
     
     public static final InfoField INSTANCE = new PathField("path");

@@ -5,7 +5,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.Comparator;
 
 /**
- * Specifies ordering of an info field.
+ * Specifies ordering by an info field.
  * 
  * @author Tone Sommerland
  */

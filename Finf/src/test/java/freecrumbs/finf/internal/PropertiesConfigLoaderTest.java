@@ -18,7 +18,7 @@ public class PropertiesConfigLoaderTest {
     private static final Locale LOCALE = Locale.getDefault();
     
     private static final Info
-    INFO = MockInfo.getInfo("p1", "f1", "2", "102", "h2");
+    INFO = MockInfo.getInstance("p1", "f1", "2", "102", "h2");
 
     public PropertiesConfigLoaderTest() {
     }
@@ -110,7 +110,7 @@ public class PropertiesConfigLoaderTest {
                     actual.getFileFilter().isPresent());
         } else {
             Assert.assertFalse(
-                    "Assert file filter not present",
+                    "Assert file filter absent",
                     actual.getFileFilter().isPresent());
         }
         if (orderPresent) {
@@ -119,7 +119,7 @@ public class PropertiesConfigLoaderTest {
                     actual.getOrder().isPresent());
         } else {
             Assert.assertFalse(
-                    "Assert order not present",
+                    "Assert order absent",
                     actual.getOrder().isPresent());
         }
         Assert.assertEquals("Count", count, actual.getCount());

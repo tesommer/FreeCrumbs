@@ -96,24 +96,17 @@ public class PropertiesConfigLoader implements ConfigLoader {
     private Properties getProperties(final Reader reader) throws IOException {
         final Properties props = new Properties();
         props.load(reader);
-        for (final String key : overrides.keySet()) {
-            final String value = overrides.get(key);
-            if (value == null) {
-                props.remove(key);
-            } else {
-                props.put(key, value);
-            }
-        }
+        applyOverrides(props, overrides);
         return props;
     }
     
     private InfoField[] getInfoFields(final Properties props)
             throws IOException {
-        
-        final String hashAlgorithm
-            = props.getProperty(HASH_ALGORITHM_KEY, DEFAULT_HASH_ALGORITHM);
-        final String dateFormat
-            = props.getProperty(DATE_FORMAT_KEY, DEFAULT_DATE_FORMAT);
+
+        final String hashAlgorithm = props.getProperty(
+                HASH_ALGORITHM_KEY, DEFAULT_HASH_ALGORITHM);
+        final String dateFormat = props.getProperty(
+                DATE_FORMAT_KEY, DEFAULT_DATE_FORMAT);
         return new InfoField[] {
                 PathField.INSTANCE,
                 FilenameField.INSTANCE,
@@ -126,7 +119,7 @@ public class PropertiesConfigLoader implements ConfigLoader {
     private static Function<File, Info> getInfoGenerator(
             final Properties props, final InfoField[] fields) {
         
-        return file -> CachedInfo.getInfo(file, fields);
+        return file -> CachedInfo.getInstance(file, fields);
     }
 
     private static InfoFormat getInfoFormat(final Properties props) {
@@ -153,10 +146,7 @@ public class PropertiesConfigLoader implements ConfigLoader {
         if (setting == null) {
             return null;
         }
-        final String[] fieldNames = Stream.of(fields)
-                .map(InfoField::getName)
-                .toArray(String[]::new);
-        return new OrderParser(fieldNames).parse(setting);
+        return getOrderParser(fields).parse(setting);
     }
 
     private static int getCount(final Properties props) throws IOException {
@@ -166,11 +156,31 @@ public class PropertiesConfigLoader implements ConfigLoader {
             throw new IOException(ex);
         }
     }
+
+    private static void applyOverrides(
+            final Properties props, final Map<String, String> overrides) {
+        
+        for (final String key : overrides.keySet()) {
+            final String value = overrides.get(key);
+            if (value == null) {
+                props.remove(key);
+            } else {
+                props.put(key, value);
+            }
+        }
+    }
     
     private static FileFilterParser getFileFilterParser(
             final Function<? super File, ? extends Info> infoGenerator) {
         
         return new FileFilterParser(REGEX_FLAGS, infoGenerator);
+    }
+    
+    private static OrderParser getOrderParser(final InfoField[] fields) {
+        final String[] fieldNames = Stream.of(fields)
+                .map(InfoField::getName)
+                .toArray(String[]::new);
+        return new OrderParser(fieldNames);
     }
     
 }

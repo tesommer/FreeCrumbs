@@ -1,6 +1,5 @@
 package freecrumbs.finf.internal;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,19 +15,19 @@ import freecrumbs.finf.MockInfo;
 public class OrderParserTest {
     
     private static final Info
-    I1 = MockInfo.getInfo("p1", "f1", "1", "100", "h1");
+    I1 = MockInfo.getInstance("p1", "f1", "1", "100", "h1");
     
     private static final Info
-    I2 = MockInfo.getInfo("p1", "f1", "2", "102", "h2");
+    I2 = MockInfo.getInstance("p1", "f1", "2", "102", "h2");
     
     private static final Info
-    I3 = MockInfo.getInfo("p1", "f2", "3", "102", "h3");
+    I3 = MockInfo.getInstance("p1", "f2", "3", "102", "h3");
 
     public OrderParserTest() {
     }
     
     @Test
-    public void testOrderParser() throws IOException {
+    public void testOrderParser() {
         final String setting = "path filename desc size asc";
         assertOrderParser(setting, I3, I1, I2);
         final String setting2 = "modified hash desc";
@@ -36,7 +35,7 @@ public class OrderParserTest {
     }
     
     @Test
-    public void testInvalidOrder() throws IOException {
+    public void testInvalidOrder() {
         final String setting = "wtf hash";
         assertOrderParser(setting, I1, I2, I3);
     }

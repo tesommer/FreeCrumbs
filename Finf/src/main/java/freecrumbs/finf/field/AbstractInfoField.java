@@ -7,7 +7,7 @@ public abstract class AbstractInfoField implements InfoField {
     private final String name;
 
     public AbstractInfoField(final String name) {
-        this.name = requireNonNull(name);
+        this.name = requireNonNull(name, "name");
     }
 
     @Override

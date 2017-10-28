@@ -5,6 +5,11 @@ import java.io.IOException;
 
 import freecrumbs.finf.InfoField;
 
+/**
+ * The file size in bytes.
+ * 
+ * @author Tone Sommerland
+ */
 public final class SizeField extends AbstractInfoField {
     
     public static final InfoField INSTANCE = new SizeField("size");

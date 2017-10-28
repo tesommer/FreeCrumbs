@@ -6,6 +6,11 @@ import java.util.Locale;
 
 import freecrumbs.finf.InfoField;
 
+/**
+ * Last modified.
+ * 
+ * @author Tone Sommerland
+ */
 public final class ModifiedField extends TimeField {
     
     private static final String NAME = "modified";
@@ -25,7 +30,7 @@ public final class ModifiedField extends TimeField {
     }
 
     @Override
-    protected long getTime(final File file) {
+    protected long getTime(final File file) throws IOException {
         return file.lastModified();
     }
 

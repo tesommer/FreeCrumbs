@@ -83,7 +83,7 @@ public class FileFilterParserTest {
         
         final FileFilterParser parser = new FileFilterParser(
                 REGEX_FLAGS,
-                file -> MockInfo.getInfo("", filename, "", "", ""));
+                file -> MockInfo.getInstance("", filename, "", "", ""));
         final FileFilter filter = parser.parse(setting);
         final File file = new File(filename);
         if (includes) {

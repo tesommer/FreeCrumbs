@@ -10,15 +10,15 @@ import freecrumbs.finf.InfoField;
 public class MockField implements InfoField {
     private final String name;
     private final String value;
-    private boolean read;
+    private boolean valueRead;
 
     public MockField(final String name, final String value) {
         this.name = requireNonNull(name, "name");
         this.value = requireNonNull(value, "value");
     }
 
-    public boolean isRead() {
-        return read;
+    public boolean isValueRead() {
+        return valueRead;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class MockField implements InfoField {
 
     @Override
     public String getValue(final File file) throws IOException {
-        read = true;
+        valueRead = true;
         return value;
     }
 

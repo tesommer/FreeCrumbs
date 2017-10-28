@@ -73,22 +73,20 @@ public class FileFilterParser {
         Part part = formatPart;
         do {
             part = getNextPatternPart(setting, delimiter, part);
-            formatPatterns.add(getFormatPattern(part, infoGenerator));
+            formatPatterns.add(getFormatPattern(part));
         } while (!part.last);
         return new FormatPatternFileFilter(
+                infoGenerator,
                 infoFormat,
                 formatPatterns.stream().toArray(FormatPattern[]::new));
     }
     
-    private static FormatPattern getFormatPattern(
-            final Part patternPart,
-            final Function<? super File, ? extends Info> infoGenerator)
-                    throws IOException {
+    private static FormatPattern getFormatPattern(final Part patternPart)
+            throws IOException {
         
         try {
             final Pattern pattern = Pattern.compile(patternPart.payload);
-            return new FormatPattern(
-                    pattern, isInclude(patternPart), infoGenerator);
+            return new FormatPattern(pattern, isInclude(patternPart));
         } catch (final PatternSyntaxException ex) {
             throw new IOException(ex);
         }

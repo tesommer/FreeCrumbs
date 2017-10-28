@@ -13,6 +13,11 @@ import com.calclipse.lib.util.EncodingUtil;
 
 import freecrumbs.finf.InfoField;
 
+/**
+ * A hash of the file content.
+ * 
+ * @author Tone Sommerland
+ */
 public final class HashField extends AbstractInfoField {
     
     private static final String NAME = "hash";
@@ -41,15 +46,15 @@ public final class HashField extends AbstractInfoField {
     public String getValue(final File file) throws IOException {
         try (final InputStream in = new FileInputStream(file)) {
             return EncodingUtil.bytesToHex(
-                    false, digest(MessageDigest.getInstance(algorithm), in));
+                    false, digest(in, MessageDigest.getInstance(algorithm)));
         } catch (final NoSuchAlgorithmException ex) {
             throw new IOException(ex);
         }
     }
 
     private byte[] digest(
-            final MessageDigest messageDigest,
-            final InputStream in) throws IOException {
+            final InputStream in,
+            final MessageDigest messageDigest) throws IOException {
 
         final byte[] buffer = new byte[bufferSize];
         int bytesRead = in.read(buffer);

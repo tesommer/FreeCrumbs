@@ -55,7 +55,7 @@ public final class Finf {
                 items,
                 config,
                 out,
-                file -> config.getInfoGenerator().apply(file));
+                config.getInfoGenerator()::apply);
     }
     
     private static List<Info> filterAndSort(

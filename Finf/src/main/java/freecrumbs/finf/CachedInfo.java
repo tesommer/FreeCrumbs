@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Caches file info.
+ * Cached file info.
  * 
  * @author Tone Sommerland
  */
@@ -20,7 +20,11 @@ public final class CachedInfo extends Info {
         super(file, fields);
     }
     
-    public static Info getInfo(final File file, final InfoField... fields) {
+    /**
+     * Returns a either new or cached instance for the given file.
+     * The field values retrieved by the returned instance, are also cached.
+     */
+    public static Info getInstance(final File file, final InfoField... fields) {
         synchronized (INFO_CACHE) {
             try {
                 return getCached(

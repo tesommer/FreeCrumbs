@@ -5,6 +5,11 @@ import java.io.IOException;
 
 import freecrumbs.finf.InfoField;
 
+/**
+ * The filename.
+ * 
+ * @author Tone Sommerland
+ */
 public final class FilenameField extends AbstractInfoField {
     
     public static final InfoField INSTANCE = new FilenameField("filename");
