@@ -117,7 +117,9 @@
 			<fileset file="Home/LICENSE.txt"/>
 		</jar>
 		<copy todir="${build.dir.home}/lib">
-			<fileset dir="${finf.project.dir}/lib"/>
+			<fileset dir="${finf.project.dir}/lib">
+				<exclude name=".track"/>
+			</fileset>
 		</copy>
 		
 		<!-- Delete BUILD/Temp -->

@@ -25,7 +25,7 @@ import freecrumbs.finf.InfoFormat;
  * </p>
  * <pre>
  * {@code
- * &lt;format-pattern&gt; ::= &lt;format&gt; (("++"|"--") &lt;pattern&gt;)+}
+ * <format-pattern> ::= <format> (("++"|"--") <pattern>)+
  * }
  * </pre>
  * 
