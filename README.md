@@ -159,8 +159,14 @@ file is a text file on the Java *properties* format. Here's a sample file:
 * ``date.format`` specifies the format of the modified timstamp in the output.
   See *java.txt.SimpleDateFormat* for details.
 
-* ``file.filter`` is a regex that matches the filenames to include as input. If
-  absent, all files are included.
+* ``file.filter`` filters input files. If absent, all files are included. This setting may be on one of two forms:
+  * _regex_: a regex pattern that matches the filenames to include as input
+  * _format pattern_: an info format followed by one or more regex patterns,
+    each preceded by either ``++`` to include matches or ``--`` to exclude
+    matches. The format is applied to the file info, and the result is matched
+    against the patterns. For example, the format pattern  
+  ``${filename}++.+\.html?--index\..{3,4}``  
+  includes files with extension _htm_ and _html_, but not index files.
 
 * ``order`` specifies a sort order of the output lines. It has the fields to
   order by (path, filename, etc), with space in between. Each field may be
@@ -183,6 +189,10 @@ The ``-o`` option allows you to override a config setting. In this case no
 config file was given. But if the ``-c`` option is used, a setting given with
 ``-o`` trumps the same setting in the config file. The example above prints the
 SHA-1 checksum for **hypotheticalfile.zip**.
+
+Omitting `=value` unsets the setting (and thus reverts to the default):
+
+    finf -c csv-list.properties -o order
 
 <a name="dups"></a>Dups
 -----------------------
@@ -268,7 +278,7 @@ A script may contain an arbitrary number of macros. A macro is terminated by a
 blank line or the end-of-file. Comments are lines that start with ``#``. The
 macro name is specified like this: ``name MyMacro``.
 
-This is an example macro script:
+This is a sample macro script:
 
     # This macro tabs between windows.
     name WTAB
@@ -282,49 +292,85 @@ This is an example macro script:
 *A key press must have a corresponding key release. Similarly, a mouse button
 press must be paired with a release of the button.*
 
+#### Variables
+
+A script may contain two kinds of variables: integers and images. They have
+separate namespaces. The variables created in a script only persist during the
+given run of the script, regardless of which macros are played.
+
+#### Script and image locations
+
+Locations referencing external scripts and images use forward slash (/). They
+may be relative to the executing script.
+
 #### Macro script reference
 
-This is a list of macro script commands. A script allows integer-variable
-declarations. For any parameter written in &lt;angles&gt;, either an integer
-literal or script variable may be used.
+This is a list of macro script commands. For any integer parameter written in
+&lt;angles&gt;, either an integer literal or variable name may be used. For any
+image parameter in angles, either an image variable or location may be used.
+Optional parameters are surrounded by [square brackets]. A parameter followed by
+equals and a value denotes a default value for the parameter.
 
 * ``add_key_code_variables``:
   Creates script variables corresponding to constants in
   *java.awt.event.KeyEvent* (VK_A, VK_ALT, VK_SPACE, …).
 
-* ``delay <millis> [auto]``: Delays further execution a specified number of
-  milliseconds or sets the auto delay.
+* ``beep``:
+  Creates an audible alert.
 
-* ``exit``: Exits the script.
+* ``delay <millis> [auto]``:
+  Delays further execution a specified number of milliseconds or sets the auto
+  delay.
 
-* ``image_xy x-variable y-variable <occurrence> image-file``: Stores the
-  coordinates of an image within the current screen capture to script variables.
-  The image file may be relative to the script's location. If the image is not
-  located, both variables will be set to -1. Occurrences are counted from the
-  top. The first occurrence has number one.
+* ``exit``:
+  Exits the script.
 
-* ``key_press <key-code>``: Generates a key press event.
+* ``idle [auto [<onOffToggle>=1]]``:
+  Waits for idle or sets the auto wait for idle. ``onOffToggle`` is zero to turn
+  auto wait for idle off, greater than zero to turn it on and less than zero to
+  toggle.
 
-* ``key_release <key-code>``: Generates a key release event.
+* ``key_press <key-code>``:
+  Generates a key press event.
 
-* ``mouse_move <x> <y>``: Moves the mouse to specified x-y coordinates.
+* ``key_release <key-code>``:
+  Generates a key release event.
 
-* ``mouse_press <button1> [<button2> [<button3>]]``: Generates a mouse press
-  event. A button is an integer where nonzero is pressed and zero is not.
-  Buttons are numbered left to right. In other words, to press the middle
-  button: ``mouse_press 0 1``. Mouse buttons must be released with the
-  ``mouse_release`` command.
+* ``load variable location``:
+  Loads an image from the specified location and stores it as a script image
+  with the given name.
 
-* ``mouse_release <button1> [<button2> [<button3>]]``: The release analogue to
-  ``mouse_press``.
+* ``mouse_move <x> <y>``:
+  Moves the mouse to specified x-y coordinates.
 
-* ``mouse_wheel <steps>``: Moves the mouse wheel. Negative steps means up/away
-  from user.
+* ``mouse_press <button1> [<button2> [<button3>]]``:
+  Generates a mouse press event. A button is an integer where nonzero is pressed
+  and zero is not. Buttons are numbered left to right. In other words, to press
+  the middle button:  
+  ``mouse_press 0 1``. Mouse buttons must be released with the ``mouse_release``
+  command.
 
-* ``play macro-name [<times>]``: Plays the macro with the given name a certain
-  number of times (default is one time). This command supports an optional
-  logical expression, e.g.: ``play WTAB 1 x > -1``. The macro will be played if
-  the condition is true. The following logical operators are supported:
+* ``mouse_release <button1> [<button2> [<button3>]]``:
+  The release analogue to ``mouse_press``.
+
+* ``mouse_wheel <steps>``:
+  Moves the mouse wheel. Negative steps means up/away from user.
+
+* ``pixel variable <x> <y>``:
+  Samples a pixel at ``x`` and ``y``, and stores its RGB value in the given
+  variable.
+
+* ``play macro [<times>=1]``:
+  Plays a macro a certain number of times (default is one). ``macro`` specifies
+  a macro in the current script, or a macro in an external script. In the latter
+  case, the format of the parameter is ``script-location->macro-name``. The
+  macro name may be omitted to play the first macro in the script. Input can be
+  passed to the external script like this:  
+  ``script-location:variable1=<value1>:variable2=<value2>->macro-name``.  
+  The variable-value pairs will be set in the external script. This command
+  supports an optional logical expression, e.g.:  
+  ``play WTAB 1 x > -1``. The macro will be played if the condition is true. The
+  following logical operators are supported:
     * ``==``: equals
     * ``!=``: not equals
     * ``<``: less than
@@ -335,20 +381,45 @@ literal or script variable may be used.
       ``var isset 1`` is true if ``var`` has been set.
       ``var isset 0`` is true if ``var`` has not been set yet.
 
-* ``print output``: Prints output to STDOUT. Script variables may be referenced
-  by precedeing them with $ in the output.
+* ``print output``:
+  Prints output to STDOUT. Script variables may be referenced by precedeing them
+  with $ in the output.
 
-* ``set variable <value>``: Sets or creates a script variable. The variable may
-  be assigned an arithmetic expression, e.g.: ``set xysum x + y``. Supported
-  operators are:
+* ``scan <from-x> <from-y> <to-x> <to-y> x-variable y-variable <image>
+  [<occurrence>=1 [<delay>=0 [<times>=1 [success-macro-name
+  [failure-macro-name]]]]]``:
+  Scans the current screen capture for an image. Stores the coordinates of the
+  image to script variables. If the image is not located, both variables will be
+  set to -1. Occurrences are counted from the top. This command will wait
+  ``delay`` milliseconds, take a screen shot and search for the image. It will
+  do this ``times`` times. If the image was found, ``success-macro-name`` will
+  be played, if specified. Otherwise, ``failure-macro-name`` will be played, if
+  specified. The from/to parameters limits the region being scanned. A value of
+  -1 for any of the from/to parameters disregards the limitation of the
+  parameter. If any of the from/to parameters are out of bounds, it is
+  restricted automatically.
+
+* ``screenshot variable [<x> [<y> [<width> [<height>]]]]``:
+  Takes a screenshot of the current screen and stores it as an image variable.
+  The parameters default to the screen dimensions.
+
+* ``set variable <value>``:
+  Sets or creates a script variable. The variable may be assigned an arithmetic
+  expression, e.g.: ``set xysum x + y``. Supported operators are:
     * ``+``: addition
     * ``-``: subtraction
     * ``*``: multiplication
     * ``/``: division
     * ``%``: modulus (remainder of integer division)
 
-* ``type <value>``: Generates key presses and key releases that types the given
-  value.
+* ``type <value>``:
+  Generates key presses and key releases that types the given value.
+
+* ``wait <from-x> <from-y> <to-x> <to-y> <image> [<gone>=0 [<millis>=100]]``:
+  Wait for an image within the current screen capture to either appear or
+  disappear. ``gone`` is non-zero to wait until the image is no longer there.
+  ``millis`` is the delay in milliseconds between checks. The from/to parameters
+  limit the area being searched. They work the same way as with ``scan``.
 
 ### <a name="macrec"></a>Macrec
 
@@ -376,4 +447,5 @@ have three modes that are activated by pressing the following keys:
 * M: Click in the screen capture to records mouse movement.
 * C: Click on two points in the screen capture to select a portion of it. The
   selection is saved as PNG to the current directory.
+* S: Click a point to get the coordinates of that point.
 * Escape: Exit.
