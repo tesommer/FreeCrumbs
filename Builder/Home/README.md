@@ -330,6 +330,11 @@ equals and a value denotes a default value for the parameter.
   auto wait for idle off, greater than zero to turn it on and less than zero to
   toggle.
 
+* ``key_chord <key-code1> <key-code2> ...``:
+  Generates a key chord by pressing one or more keys, then releasing them in
+  reverse order.  
+  Example: ``key_chord VK_CONTROL VK_C``
+
 * ``key_press <key-code>``:
   Generates a key press event.
 

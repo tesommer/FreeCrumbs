@@ -8,6 +8,7 @@ import freecrumbs.macro.gesture.Beep;
 import freecrumbs.macro.gesture.Delay;
 import freecrumbs.macro.gesture.Exit;
 import freecrumbs.macro.gesture.Idle;
+import freecrumbs.macro.gesture.KeyChord;
 import freecrumbs.macro.gesture.KeyPress;
 import freecrumbs.macro.gesture.KeyRelease;
 import freecrumbs.macro.gesture.Load;
@@ -48,6 +49,7 @@ public final class Main {
             new Exit(),
             new Idle(),
             new KeyPress(),
+            new KeyChord(),
             new KeyRelease(),
             new Load(),
             new MouseMove(),
