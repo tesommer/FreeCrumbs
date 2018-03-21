@@ -1,1 +1,1 @@
-calclipselib-2.0.0.jar
+com.calclipse.lib-3.0.0.jar
