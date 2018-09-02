@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * A file info field.
+ * A file-info field.
  * 
  * @author Tone Sommerland
  */

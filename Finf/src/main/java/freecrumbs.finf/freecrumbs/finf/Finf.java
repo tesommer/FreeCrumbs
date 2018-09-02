@@ -1,11 +1,12 @@
 package freecrumbs.finf;
 
+import static java.util.stream.Collectors.toList;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Generates and prints
@@ -66,7 +67,7 @@ public final class Finf {
             .filter(file -> acceptsInput(file, config))
             .map(config.getInfoGenerator())
             .sorted(config.getOrder().get())
-            .collect(Collectors.toList());
+            .collect(toList());
     }
 
     private static List<File> filter(
@@ -75,7 +76,7 @@ public final class Finf {
         
         return files.stream()
                 .filter(file -> acceptsInput(file, config))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
     
     @FunctionalInterface
@@ -100,4 +101,4 @@ public final class Finf {
         return config.getFileFilter().map(ff -> ff.accept(file)).orElse(true);
     }
 
-}
+}

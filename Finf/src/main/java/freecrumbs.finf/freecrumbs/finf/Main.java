@@ -4,12 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -43,7 +42,7 @@ public final class Main {
     }
 
     private static Collection<File> getInputFiles(final Args parsedArgs) {
-        final Collection<File> inputFiles = new ArrayList<>();
+        final var inputFiles = new ArrayList<File>();
         parsedArgs.inputFiles.stream()
             .map(File::new)
             .forEach(file -> addTree(inputFiles, file));
@@ -69,7 +68,7 @@ public final class Main {
             return loader.loadConfig(new InputStreamReader(System.in));
         }
         try (
-            final Reader reader
+            final var reader
                 = new InputStreamReader(new FileInputStream(args.configFile));
         ) {
             return loader.loadConfig(reader);
@@ -77,7 +76,7 @@ public final class Main {
     }
     
     private static Map<String, String> getConfigOverrides(final Args args) {
-        final Map<String, String> overrides = new HashMap<>();
+        final var overrides = new HashMap<String, String>();
         args.configOverrides.forEach(
                 override -> addOverride(overrides, override));
         return overrides;
@@ -87,9 +86,9 @@ public final class Main {
             final Map<? super String, ? super String> overrides,
             final String override) {
         
+        final int indexOfEquals = override.indexOf('=');
         final String key;
         final String value;
-        final int indexOfEquals = override.indexOf('=');
         if (indexOfEquals < 0) {
             key = override;
             value = null;
@@ -105,8 +104,8 @@ public final class Main {
      */
     private static Args parseArgs(final String[] args) {
         String configFile = null;
-        final Collection<String> configOverrides = new ArrayList<>();
-        final Collection<String> inputFiles = new ArrayList<>();
+        final var configOverrides = new ArrayList<String>();
+        final var inputFiles = new ArrayList<String>();
         int i = -1;
         while (++i < args.length) {
             if (HELP_OPTION.equals(args[i])) {
@@ -122,7 +121,7 @@ public final class Main {
                 }
                 configOverrides.add(args[++i]);
             } else {
-                inputFiles.addAll(Arrays.asList(args).subList(i, args.length));
+                inputFiles.addAll(List.of(args).subList(i, args.length));
                 break;
             }
         }
@@ -134,14 +133,14 @@ public final class Main {
         final Collection<String> configOverrides;
         final Collection<String> inputFiles;
 
-        public Args(
+        Args(
                 final String configFile,
                 final Collection<String> configOverrides,
                 final Collection<String> inputFiles) {
             
             this.configFile = configFile;
-            this.configOverrides = new ArrayList<>(configOverrides);
-            this.inputFiles = new ArrayList<>(inputFiles);
+            this.configOverrides = List.copyOf(configOverrides);
+            this.inputFiles = List.copyOf(inputFiles);
         }
     }
 

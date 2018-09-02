@@ -16,19 +16,19 @@ public final class CachedInfo extends Info {
     
     private final Map<String, String> cache = new HashMap<>();
 
-    private CachedInfo(final File file, final InfoField... fields) {
-        super(file, fields);
+    private CachedInfo(final InfoFields fields, final File file) {
+        super(fields, file);
     }
     
     /**
-     * Returns a either new or cached instance for the given file.
+     * Returns either a new or cached instance for the given file.
      * The field values retrieved by the returned instance, are also cached.
      */
-    public static Info getInstance(final File file, final InfoField... fields) {
+    public static Info getInstance(final InfoFields fields, final File file) {
         synchronized (INFO_CACHE) {
             try {
                 return getCached(
-                        INFO_CACHE, file, () -> new CachedInfo(file, fields));
+                        INFO_CACHE, file, () -> new CachedInfo(fields, file));
             } catch (final IOException ex) {
                 throw new AssertionError(ex);
             }
