@@ -9,6 +9,7 @@ import freecrumbs.finf.InfoField;
  * The path without the filename.
  * The path is empty if the file is in the root directory.
  * Otherwise it ends with a file separator.
+ * The name of this field is {@code "path"}.
  * 
  * @author Tone Sommerland
  */

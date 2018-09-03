@@ -7,6 +7,7 @@ import freecrumbs.finf.InfoField;
 
 /**
  * The filename.
+ * The name of this field is {@code "filename"}.
  * 
  * @author Tone Sommerland
  */

@@ -15,7 +15,14 @@ import java.util.Locale;
 public abstract class TimeField extends AbstractInfoField {
     private final DateFormat dateFormat;
 
-    public TimeField(
+    /**
+     * Constructor.
+     * @param name the name of this field
+     * @param dateFormat the date format
+     * @param locale the locale
+     * @throws IOException if the date format is incorrect
+     */
+    protected TimeField(
             final String name,
             final String dateFormat,
             final Locale locale) throws IOException {
@@ -31,7 +38,7 @@ public abstract class TimeField extends AbstractInfoField {
     protected abstract long getTime(File file) throws IOException;
 
     @Override
-    public String getValue(final File file) throws IOException {
+    public final String getValue(final File file) throws IOException {
         return dateFormat.format(new Date(getTime(file)));
     }
 

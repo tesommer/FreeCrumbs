@@ -8,6 +8,7 @@ import freecrumbs.finf.InfoField;
 
 /**
  * Last modified.
+ * The name of this field is {@code "modified"}.
  * 
  * @author Tone Sommerland
  */
@@ -23,6 +24,12 @@ public final class ModifiedField extends TimeField {
         super(name, dateFormat, locale);
     }
     
+    /**
+     * Returns an instance of this class.
+     * @param dateFormat the date format
+     * @param locale the locale
+     * @throws IOException if the date format is incorrect
+     */
     public static InfoField getInstance(
             final String dateFormat, final Locale locale) throws IOException {
         

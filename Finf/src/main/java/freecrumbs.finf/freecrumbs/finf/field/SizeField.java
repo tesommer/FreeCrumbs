@@ -7,6 +7,7 @@ import freecrumbs.finf.InfoField;
 
 /**
  * The file size in bytes.
+ * The name of this field is {@code "size"}.
  * 
  * @author Tone Sommerland
  */

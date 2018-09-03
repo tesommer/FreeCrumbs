@@ -15,6 +15,7 @@ import freecrumbs.finf.InfoField;
 
 /**
  * A hash of the file content.
+ * The name of this field is {@code "hash"}.
  * 
  * @author Tone Sommerland
  */
@@ -44,7 +45,7 @@ public final class HashField extends AbstractInfoField {
 
     @Override
     public String getValue(final File file) throws IOException {
-        try (final InputStream in = new FileInputStream(file)) {
+        try (final var in = new FileInputStream(file)) {
             return EncodingUtil.bytesToHex(
                     false, digest(in, MessageDigest.getInstance(algorithm)));
         } catch (final NoSuchAlgorithmException ex) {
@@ -57,10 +58,12 @@ public final class HashField extends AbstractInfoField {
             final MessageDigest messageDigest) throws IOException {
 
         final byte[] buffer = new byte[bufferSize];
-        int bytesRead = in.read(buffer);
-        while (bytesRead > 0) {
+        for (
+                int bytesRead = in.read(buffer);
+                bytesRead > 0;
+                bytesRead = in.read(buffer)) {
+            
             messageDigest.update(buffer, 0, bytesRead);
-            bytesRead = in.read(buffer);
         }
         return messageDigest.digest();
     }
