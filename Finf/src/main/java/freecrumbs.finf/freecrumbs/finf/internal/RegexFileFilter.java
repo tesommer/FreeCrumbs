@@ -11,7 +11,7 @@ import java.util.regex.PatternSyntaxException;
  * 
  * @author Tone Sommerland
  */
-public class RegexFileFilter implements FileFilter {
+public final class RegexFileFilter implements FileFilter {
     private final Pattern pattern;
     
     public RegexFileFilter(final String regex, final int flags)

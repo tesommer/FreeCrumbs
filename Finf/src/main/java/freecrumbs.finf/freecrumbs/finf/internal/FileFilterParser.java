@@ -6,14 +6,12 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import freecrumbs.finf.Info;
-import freecrumbs.finf.InfoFormat;
 
 /**
  * <p>
@@ -33,7 +31,7 @@ import freecrumbs.finf.InfoFormat;
  * 
  * @author Tone Sommerland
  */
-public class FileFilterParser {
+public final class FileFilterParser {
     
     private static final String
     DELIM_PATTERN = "(\\+\\+([^+]|$))|(\\-\\-([^-]|$))";
@@ -68,8 +66,8 @@ public class FileFilterParser {
             final Matcher delimiter,
             final Part formatPart) throws IOException {
         
-        final InfoFormat infoFormat = new TokenInfoFormat(formatPart.payload);
-        final Collection<FormatPattern> formatPatterns = new ArrayList<>();
+        final var infoFormat = new TokenInfoFormat(formatPart.payload);
+        final var formatPatterns = new ArrayList<FormatPattern>();
         Part part = formatPart;
         do {
             part = getNextPatternPart(setting, delimiter, part);
@@ -155,12 +153,14 @@ public class FileFilterParser {
         final String payload;
         final boolean last;
         
-        public Part(
+        Part(
                 final int start,
                 final String prefix,
                 final String payload,
                 final boolean last) {
             
+            assert prefix != null;
+            assert payload != null;
             this.start = start;
             this.prefix = prefix;
             this.payload = payload;

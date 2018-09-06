@@ -17,7 +17,7 @@ import freecrumbs.finf.InfoFormat;
  * 
  * @author Tone Sommerland
  */
-public class FormatPatternFileFilter implements FileFilter {
+public final class FormatPatternFileFilter implements FileFilter {
     
     private static final Logger
     LOGGER = Logger.getLogger(FormatPatternFileFilter.class.getName());

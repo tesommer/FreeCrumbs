@@ -19,7 +19,7 @@ import freecrumbs.finf.InfoFormat;
  * 
  * @author Tone Sommerland
  */
-public class FormatPattern {
+public final class FormatPattern {
     private final Pattern pattern;
     private final boolean include;
     

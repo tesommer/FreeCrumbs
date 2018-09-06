@@ -13,7 +13,7 @@ import freecrumbs.finf.InfoFormat;
  * 
  * @author Tone Sommerland
  */
-public class TokenInfoFormat implements InfoFormat {
+public final class TokenInfoFormat implements InfoFormat {
     private final String format;
 
     /**
