@@ -1,17 +1,16 @@
 package freecrumbs.finf.internal;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 
 import freecrumbs.finf.Info;
 
 /**
- * Parses the order config setting.
+ * Parses the order config-setting.
  * 
  * @author Tone Sommerland
  */
-public class OrderParser {
+public final class OrderParser {
     private final String[] fieldNames;
 
     public OrderParser(final String... fieldNames) {
@@ -23,8 +22,7 @@ public class OrderParser {
     }
     
     private OrderSpec[] getOrderSpecs(final String setting) {
-        final Collection<OrderSpec> orderSpecs
-            = new ArrayList<>(fieldNames.length);
+        final var orderSpecs = new ArrayList<OrderSpec>(fieldNames.length);
         for (final String fieldName : fieldNames) {
             boolean desc = false;
             int precedence = setting.indexOf(fieldName + " asc");

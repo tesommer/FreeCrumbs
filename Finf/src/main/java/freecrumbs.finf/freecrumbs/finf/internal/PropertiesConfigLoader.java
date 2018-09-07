@@ -7,18 +7,16 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import freecrumbs.finf.CachedInfo;
 import freecrumbs.finf.Config;
 import freecrumbs.finf.ConfigLoader;
 import freecrumbs.finf.Info;
-import freecrumbs.finf.InfoField;
+import freecrumbs.finf.InfoFields;
 import freecrumbs.finf.InfoFormat;
 import freecrumbs.finf.field.FilenameField;
 import freecrumbs.finf.field.HashField;
@@ -49,7 +47,7 @@ import freecrumbs.finf.field.SizeField;
  * 
  * @author Tone Sommerland
  */
-public class PropertiesConfigLoader implements ConfigLoader {
+public final class PropertiesConfigLoader implements ConfigLoader {
     
     public static final String HASH_ALGORITHM_KEY = "hash.algorithm";
     public static final String INFO_FORMAT_KEY = "info.format";
@@ -68,29 +66,28 @@ public class PropertiesConfigLoader implements ConfigLoader {
     private final Map<String, String> overrides;
 
     /**
-     * Creates a properties config loader.
+     * Creates a properties config-loader.
      * @param overrides overrides keys in the properties file
-     * (a key with a value of null means 'use default')
+     * (a key with a value of {@code null} means 'use default')
      */
     public PropertiesConfigLoader(
             final Locale locale, final Map<String, String> overrides) {
         
         this.locale = requireNonNull(locale, "locale");
-        this.overrides = new HashMap<>(overrides);
+        this.overrides = Map.copyOf(overrides);
     }
     
     @Override
     public Config loadConfig(final Reader reader) throws IOException {
         final Properties props = getProperties(reader);
-        final InfoField[] fields = getInfoFields(props);
-        final Function<File, Info> infoGenerator
-            = getInfoGenerator(props, fields);
-        return new Config(
-                infoGenerator,
-                getInfoFormat(props),
-                getFileFilter(props, infoGenerator),
-                getOrder(props, fields),
-                getCount(props));
+        final InfoFields fields = getInfoFields(props);
+        final Function<File, Info> infoGenerator = getInfoGenerator(
+                props, fields);
+        return new Config.Builder(infoGenerator, getInfoFormat(props))
+                .setFileFilter(getFileFilter(props, infoGenerator))
+                .setOrder(getOrder(props, fields))
+                .setCount(getCount(props))
+                .build();
     }
 
     private Properties getProperties(final Reader reader) throws IOException {
@@ -100,26 +97,25 @@ public class PropertiesConfigLoader implements ConfigLoader {
         return props;
     }
     
-    private InfoField[] getInfoFields(final Properties props)
+    private InfoFields getInfoFields(final Properties props)
             throws IOException {
 
         final String hashAlgorithm = props.getProperty(
                 HASH_ALGORITHM_KEY, DEFAULT_HASH_ALGORITHM);
         final String dateFormat = props.getProperty(
                 DATE_FORMAT_KEY, DEFAULT_DATE_FORMAT);
-        return new InfoField[] {
+        return InfoFields.of(
                 PathField.INSTANCE,
                 FilenameField.INSTANCE,
                 SizeField.INSTANCE,
                 ModifiedField.getInstance(dateFormat, locale),
-                HashField.getInstance(hashAlgorithm),
-        };
+                HashField.getInstance(hashAlgorithm));
     }
     
     private static Function<File, Info> getInfoGenerator(
-            final Properties props, final InfoField[] fields) {
+            final Properties props, final InfoFields fields) {
         
-        return file -> CachedInfo.getInstance(file, fields);
+        return file -> CachedInfo.getInstance(fields, file);
     }
 
     private static InfoFormat getInfoFormat(final Properties props) {
@@ -140,7 +136,7 @@ public class PropertiesConfigLoader implements ConfigLoader {
     }
 
     private static Comparator<Info> getOrder(
-            final Properties props, final InfoField[] fields) {
+            final Properties props, final InfoFields fields) {
         
         final String setting = props.getProperty(ORDER_KEY);
         if (setting == null) {
@@ -176,11 +172,8 @@ public class PropertiesConfigLoader implements ConfigLoader {
         return new FileFilterParser(REGEX_FLAGS, infoGenerator);
     }
     
-    private static OrderParser getOrderParser(final InfoField[] fields) {
-        final String[] fieldNames = Stream.of(fields)
-                .map(InfoField::getName)
-                .toArray(String[]::new);
-        return new OrderParser(fieldNames);
+    private static OrderParser getOrderParser(final InfoFields fields) {
+        return new OrderParser(fields.getNames());
     }
     
 }

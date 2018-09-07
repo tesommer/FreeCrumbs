@@ -10,7 +10,7 @@ import freecrumbs.finf.Info;
  * 
  * @author Tone Sommerland
  */
-public class OrderSpecInfoSorter implements Comparator<Info> {
+public final class OrderSpecInfoSorter implements Comparator<Info> {
     private final OrderSpec[] orderSpecs;
     
     public OrderSpecInfoSorter(final OrderSpec... orderSpecs) {

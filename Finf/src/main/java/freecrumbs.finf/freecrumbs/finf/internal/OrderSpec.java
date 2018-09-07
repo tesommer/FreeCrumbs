@@ -9,7 +9,7 @@ import java.util.Comparator;
  * 
  * @author Tone Sommerland
  */
-public class OrderSpec {
+public final class OrderSpec {
     
     /**
      * Order by precedence.
@@ -24,7 +24,7 @@ public class OrderSpec {
     private final boolean desc;
     
     /**
-     * Creates an info field order-by specification.
+     * Creates an info-field order-specification.
      * @param fieldName the field to order by
      * @param precedence the priority of this order spec relative to others
      * @param desc descending or not

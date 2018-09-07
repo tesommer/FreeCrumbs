@@ -15,7 +15,7 @@ import freecrumbs.finf.Info;
 
 /**
  * <p>
- * Parses the file filter config setting.
+ * Parses the file-filter config-setting.
  * Two setting styles are supported: regex and format pattern.
  * </p>
  * <p>
