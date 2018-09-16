@@ -7,6 +7,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
@@ -74,7 +75,7 @@ public final class PropertiesConfigLoader implements ConfigLoader {
             final Locale locale, final Map<String, String> overrides) {
         
         this.locale = requireNonNull(locale, "locale");
-        this.overrides = Map.copyOf(overrides);
+        this.overrides = new HashMap<>(overrides);
     }
     
     @Override

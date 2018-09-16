@@ -1,18 +1,18 @@
 package test.freecrumbs.finf;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -26,6 +26,53 @@ import freecrumbs.finf.Info;
 public final class ConfigLoaderTest {
 
     public ConfigLoaderTest() {
+    }
+    
+    @Test
+    @DisplayName("getDefault(Map): Empty config")
+    public void test1() throws IOException {
+        final Config config = loadConfig("");
+        assertConfig(config, false, false, -1);
+        final MockInfo info = MockInfo.getInstance("a", "b", "2", "3", "c");
+        assertInfoFormat(
+                config,
+                info,
+                "b",
+                fieldReadAssertion(MockInfo.PATH_FIELD_NAME,     false),
+                fieldReadAssertion(MockInfo.FILENAME_FIELD_NAME, true),
+                fieldReadAssertion(MockInfo.SIZE_FIELD_NAME,     false),
+                fieldReadAssertion(MockInfo.MODIFIED_FIELD_NAME, false),
+                fieldReadAssertion(MockInfo.HASH_FIELD_NAME,     false));
+    }
+    
+    @Test
+    @DisplayName("getDefault(Map): Invalid property")
+    public void test2() throws IOException {
+        final Config config = loadConfig("count=22\nabc=xyz");
+        assertConfig(config, false, false, 22);
+    }
+    
+    @Test
+    @DisplayName("getDefault(Map): Invalid date format")
+    public void test3() {
+        assertThrows(IOException.class, () -> loadConfig("date.format=j"));
+    }
+    
+    @Test
+    @DisplayName("getDefault(Map): Override")
+    public void test4() throws IOException {
+        final var overrides = Map.of("count", "21");
+        final Config config = loadConfig("count=22", overrides);
+        assertConfig(config, false, false, 21);
+    }
+    
+    @Test
+    @DisplayName("getDefault(Map): Override to default")
+    public void test5() throws IOException {
+        final var overrides = new HashMap<String, String>();
+        overrides.put("count", null);
+        final Config config = loadConfig("count=22", overrides);
+        assertConfig(config, false, false, -1);
     }
     
     @Nested
@@ -155,25 +202,15 @@ public final class ConfigLoaderTest {
                     "info.format=${modified}|${filename}: ${path} -- ${size}");
             final MockInfo info = MockInfo.getInstance(
                     "cat", "al", "ey", "a", "Z");
-            assertEquals(
+            assertInfoFormat(
+                    config,
+                    info,
                     "a|al: cat -- ey",
-                    config.getInfoFormat().toString(info),
-                    "Formatted info");
-            assertTrue(
-                    info.isValueRead(MockInfo.PATH_FIELD_NAME),
-                    "Path read");
-            assertTrue(
-                    info.isValueRead(MockInfo.FILENAME_FIELD_NAME),
-                    "Filename read");
-            assertTrue(
-                    info.isValueRead(MockInfo.SIZE_FIELD_NAME),
-                    "Size read");
-            assertTrue(
-                    info.isValueRead(MockInfo.MODIFIED_FIELD_NAME),
-                    "Modified read");
-            assertFalse(
-                    info.isValueRead(MockInfo.HASH_FIELD_NAME),
-                    "Hash read");
+                    fieldReadAssertion(MockInfo.PATH_FIELD_NAME,     true),
+                    fieldReadAssertion(MockInfo.FILENAME_FIELD_NAME, true),
+                    fieldReadAssertion(MockInfo.SIZE_FIELD_NAME,     true),
+                    fieldReadAssertion(MockInfo.MODIFIED_FIELD_NAME, true),
+                    fieldReadAssertion(MockInfo.HASH_FIELD_NAME,     false));
         }
     }
     
@@ -205,20 +242,56 @@ public final class ConfigLoaderTest {
         return loadConfig(properties, Map.of());
     }
     
+    private static FieldReadAssertion fieldReadAssertion(
+            final String fieldName, final boolean expectedRead) {
+        
+        return new FieldReadAssertion(fieldName, expectedRead);
+    }
+    
+    private static void assertConfig(
+            final Config config,
+            final boolean expectedFileFilterPresence,
+            final boolean expectedOrderPresence,
+            final int expectedCount) {
+        
+        assertEquals(
+                expectedFileFilterPresence,
+                config.getFileFilter().isPresent(),
+                "File filter presence");
+        assertEquals(
+                expectedOrderPresence,
+                config.getOrder().isPresent(),
+                "Order presence");
+        assertEquals(
+                expectedCount,
+                config.getCount(),
+                "Count");
+    }
+    
+    private static void assertInfoFormat(
+            final Config config,
+            final MockInfo info,
+            final String expectedFormattedInfo,
+            final FieldReadAssertion... fieldReadAssertions)
+                    throws IOException {
+        
+        final String actualFormattedInfo
+            = config.getInfoFormat().toString(info);
+        assertEquals(
+                expectedFormattedInfo, actualFormattedInfo, "Formatted info");
+        Stream.of(fieldReadAssertions).forEach(
+                assertion -> assertion.test(info));
+    }
+    
     private static void assertFileFilter(
             final Config config,
             final String filename,
-            final boolean includes) {
-        
-        if (includes) {
-            assertTrue(
-                    config.getFileFilter().get().accept(new File(filename)),
-                    "File filter includes " + filename);
-        } else {
-            assertFalse(
-                    config.getFileFilter().get().accept(new File(filename)),
-                    "File filter includes " + filename);
-        }
+            final boolean expectedIncludes) {
+
+        assertEquals(
+                expectedIncludes,
+                config.getFileFilter().get().accept(new File(filename)),
+                "File filter includes " + filename);
     }
     
     private static void assertOrder(
@@ -229,6 +302,26 @@ public final class ConfigLoaderTest {
         actual.sort(config.getOrder().get());
         for (int i = 0; i < expected.length; i++) {
             assertSame(expected[i], actual.get(i), "Order: index " + i);
+        }
+    }
+    
+    private static final class FieldReadAssertion {
+        private final String fieldName;
+        private final boolean expectedRead;
+        
+        private FieldReadAssertion(
+                final String fieldName, final boolean expectedRead) {
+            
+            assert fieldName != null;
+            this.fieldName = fieldName;
+            this.expectedRead = expectedRead;
+        }
+        
+        private void test(final MockInfo info) {
+            assertEquals(
+                    expectedRead,
+                    info.isValueRead(fieldName),
+                    "Is " + fieldName + " read");
         }
     }
 
