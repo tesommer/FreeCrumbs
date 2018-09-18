@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
  * 
  * @author Tone Sommerland
  */
-public class Scanner {
+public final class Scanner {
     private final BufferedImage image;
     private final int fromX;
     private final int fromY;
@@ -52,11 +52,11 @@ public class Scanner {
      * Searches for a sub-image.
      * @param subImage the image to find
      * @param occurrence the occurrence to find
-     * @return an array containing x and y, or an empty array.
+     * @return an array containing x and y, or an empty array
      */
     public int[] xyOf(final BufferedImage subImage, final int occurrence) {
         if (occurrence < 1) {
-            throw new IllegalArgumentException("occurrence < 1");
+            throw new IllegalArgumentException("occurrence < 1: " + occurrence);
         }
         int count = 0;
         for (int x = restrictFromX(); x < restrictToX(subImage); x++) {

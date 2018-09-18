@@ -2,6 +2,8 @@ package freecrumbs.macro;
 
 import java.io.InputStream;
 
+import freecrumbs.macro.internal.ScriptFile;
+
 /**
  * A script location.
  * 
@@ -10,9 +12,16 @@ import java.io.InputStream;
 public interface Location {
     
     /**
-     * The string specifying this location.
+     * Returns a location referencing a script file.
+     * The returned location supports both
+     * platform-dependent and platform-independent file paths.
+     * In the latter case,
+     * forward slash {@code '/'} is used as the file separator.
+     * @param filePath path to the file
      */
-    public abstract String getBase();
+    public static Location fromFilePath(final String filePath) {
+        return new ScriptFile(filePath);
+    }
     
     /**
      * Returns a location that points to the given target.

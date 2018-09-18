@@ -50,7 +50,7 @@ public class Idle extends Command {
             final String[] params) throws MacroException {
         
         final int onOffToggle
-            = script.getVariables().valueOf(paramOrDefault(params, 1, "1"));
+            = script.variables().value(paramOrDefault(params, 1, "1"));
         robot.setAutoWaitForIdle(isOn(robot, onOffToggle));
     }
 

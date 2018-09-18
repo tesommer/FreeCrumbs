@@ -136,7 +136,7 @@ public class Play extends Command {
                 }
                 input.put(
                         variable,
-                        current.getVariables().valueOf(scanner.next()));
+                        current.variables().value(scanner.next()));
             }
         }
 
@@ -146,7 +146,7 @@ public class Play extends Command {
         
         public void setInputVariables(final Script script) {
             for (final String variable : input.keySet()) {
-                script.getVariables().set(variable, input.get(variable));
+                script.variables().set(variable, input.get(variable));
             }
         }
         
@@ -186,9 +186,9 @@ public class Play extends Command {
             
             final Script script = getScript(current);
             if (macroName.isEmpty()) {
-                script.play(robot, current.getVariables().valueOf(times));
+                script.play(robot, current.variables().value(times));
             } else {
-                script.play(robot, current.getVariables().valueOf(times),
+                script.play(robot, current.variables().value(times),
                         macroName);
             }
         }
@@ -198,9 +198,9 @@ public class Play extends Command {
                 return current;
             }
             final Script script = new Script(
-                    current.getLocation()
+                    current.location()
                         .refer(scriptSpecifier.getScriptLocation()),
-                    current.getLoader());
+                    current.loader());
             scriptSpecifier.setInputVariables(script);
             return script;
         }

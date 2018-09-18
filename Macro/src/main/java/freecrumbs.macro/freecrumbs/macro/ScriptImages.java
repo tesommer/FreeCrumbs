@@ -17,7 +17,7 @@ import javax.imageio.ImageIO;
  * 
  * @author Tone Sommerland
  */
-public class ScriptImages {
+public final class ScriptImages {
     private final Map<String, BufferedImage> images = new HashMap<>();
     private final Location location;
 
@@ -46,12 +46,12 @@ public class ScriptImages {
      * Removes the image with the given name if it exists.
      */
     public void remove(final String name) {
-        images.remove(name);
+        images.remove(requireNonNull(name, "name"));
     }
     
     /**
      * Returns the image with the given name.
-     * @throws MacroException if the image was not found.
+     * @throws MacroException if the image was not found
      */
     public BufferedImage get(final String name) throws MacroException {
         if (images.containsKey(name)) {
@@ -63,7 +63,7 @@ public class ScriptImages {
     /**
      * Loads an image.
      * @param imageLocation the location of the image
-     * @throws MacroException if the image could not be loaded.
+     * @throws MacroException if the image could not be loaded
      */
     public BufferedImage load(final String imageLocation)
             throws MacroException {

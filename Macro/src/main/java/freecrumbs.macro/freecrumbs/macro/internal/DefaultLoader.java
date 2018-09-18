@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import freecrumbs.macro.AtomicRecursionGuard;
 import freecrumbs.macro.Gesture;
 import freecrumbs.macro.GestureParser;
 import freecrumbs.macro.Loader;
@@ -16,7 +15,7 @@ import freecrumbs.macro.MacroException;
 import freecrumbs.macro.RecursionGuard;
 import freecrumbs.macro.Util;
 
-public class DefaultLoader implements Loader {
+public final class DefaultLoader implements Loader {
     
     private static final int RECURSION_LIMIT = 21;
     
@@ -24,7 +23,7 @@ public class DefaultLoader implements Loader {
     private static final String COMMENT_PREFIX = "#";
     
     private final RecursionGuard
-    recursionGuard = new AtomicRecursionGuard(RECURSION_LIMIT);
+    recursionGuard = RecursionGuard.getAtomic(RECURSION_LIMIT);
     
     private final GestureParser[] gestureParsers;
 
@@ -34,14 +33,16 @@ public class DefaultLoader implements Loader {
 
     @Override
     public Macro[] load(final InputStream in) throws MacroException {
-        final BufferedReader reader
-            = new BufferedReader(new InputStreamReader(in));
+        final var reader = new BufferedReader(new InputStreamReader(in));
         try {
-            final Collection<Macro> macros = new ArrayList<>();
-            final Collection<Gesture> gestures = new ArrayList<>();
+            final var macros = new ArrayList<Macro>();
+            final var gestures = new ArrayList<Gesture>();
             String macroName = null;
-            String line = reader.readLine();
-            while (line != null) {
+            for (
+                    String line = reader.readLine();
+                    line != null;
+                    line = reader.readLine()) {
+                
                 if (line.trim().isEmpty()) {
                     addMacro(macros, gestures, macroName);
                     gestures.clear();
@@ -54,7 +55,6 @@ public class DefaultLoader implements Loader {
                         macroName = name;
                     }
                 }
-                line = reader.readLine();
             }
             addMacro(macros, gestures, macroName);
             return macros.stream().toArray(Macro[]::new);
@@ -114,10 +114,10 @@ public class DefaultLoader implements Loader {
             return;
         }
         if (macroName == null) {
-            macros.add(new Macro(
+            macros.add(Macro.getNameless(
                     gestures.stream().toArray(Gesture[]::new)));
         } else {
-            macros.add(new Macro(
+            macros.add(Macro.get(
                     macroName,
                     gestures.stream().toArray(Gesture[]::new)));
         }

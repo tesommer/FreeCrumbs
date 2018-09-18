@@ -12,7 +12,7 @@ import freecrumbs.macro.internal.DefaultLoader;
 public interface Loader {
     
     /**
-     * Creates a default loader.
+     * Returns a default loader.
      */
     public static Loader getDefault(final GestureParser... parsers) {
         return new DefaultLoader(parsers);

@@ -35,10 +35,10 @@ public class Print implements GestureParser {
             throws MacroException {
         
         String output = line.trim().substring(NAME.length()).trim();
-        for (final String variableName : script.getVariables().getNames()) {
+        for (final String variableName : script.variables().getNames()) {
             output = output.replace(
                     "$" + variableName,
-                    String.valueOf(script.getVariables().get(variableName)));
+                    String.valueOf(script.variables().get(variableName)));
         }
         System.out.println(output);
     }

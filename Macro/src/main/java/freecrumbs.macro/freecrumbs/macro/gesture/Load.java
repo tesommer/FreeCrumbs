@@ -23,8 +23,8 @@ public class Load extends Command {
     protected Gesture getGesture(final String line, final String[] params)
             throws MacroException {
         
-        return (script, robot) -> script.getImages()
-                .set(params[0], script.getImages().load(params[1]));
+        return (script, robot) -> script.images()
+                .set(params[0], script.images().load(params[1]));
     }
 
 }

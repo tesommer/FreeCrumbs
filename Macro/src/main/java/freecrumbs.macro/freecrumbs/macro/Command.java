@@ -17,19 +17,25 @@ public abstract class Command implements GestureParser {
     /**
      * Base constructor.
      * The command name will be trimmed,
-     * and must contain one or more non-white space chars.
+     * and must contain one or more non-whitespace chars.
      * @param name the name of the command
      * @param minParams the minimum number of supported parameters
      * @param maxParams the maximum number of supported parameters
+     * @throws IllegalArgumentException
+     * if {@code name} is empty or contains only whitespace chars,
+     * if {@code minParams} or {@code maxParams} are less than zero,
+     * or if {@code minParams} is greater than {@code maxParams}
      */
-    public Command(
+    protected Command(
             final String name, final int minParams, final int maxParams) {
         
         if (name.trim().isEmpty()) {
-            throw new IllegalArgumentException(name);
+            throw new IllegalArgumentException("Empty name: " + name);
         }
         if (minParams < 0 || maxParams < 0 || minParams > maxParams) {
-            throw new IllegalArgumentException("min/maxParams");
+            throw new IllegalArgumentException(
+                    "min/maxParams: minParams="
+                            + minParams + ", maxParams=" + maxParams);
         }
         this.name = name.trim();
         this.minParams = minParams;
@@ -46,7 +52,7 @@ public abstract class Command implements GestureParser {
             final String defaultParam) {
         
         if (index < 0) {
-            throw new IllegalArgumentException("index < 0");
+            throw new IllegalArgumentException("index < 0: " +  index);
         }
         return index < params.length ? params[index] : defaultParam;
     }

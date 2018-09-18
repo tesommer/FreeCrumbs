@@ -104,7 +104,7 @@ public final class Main {
     
     private static Script loadScript(final Args args) throws MacroException {
         return new Script(
-                ScriptFile.fromFilePath(args.inputFile),
+                Location.fromFilePath(args.inputFile),
                 Loader.getDefault(GESTURE_PARSERS));
     }
     

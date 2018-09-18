@@ -10,33 +10,37 @@ import java.awt.Robot;
  * 
  * @author Tone Sommerland
  */
-public class Macro {
+public final class Macro {
     private final String name;
     private final Gesture[] gestures;
 
-    /**
-     * Creates a macro.
-     * @param name the name of this macro
-     * @param gestures the gestures that this macro performs
-     */
-    public Macro(final String name, final Gesture... gestures) {
+    private Macro(final String name, final Gesture... gestures) {
         this.name = requireNonNull(name, "name");
         this.gestures = gestures.clone();
     }
     
     /**
-     * Creates a nameless macro.
+     * Returns a macro.
+     * @param name the name of this macro
      * @param gestures the gestures that this macro performs
      */
-    public Macro(final Gesture... gestures) {
-        this("", gestures);
+    public static Macro get(final String name, final Gesture... gestures) {
+        return new Macro(name, gestures);
+    }
+    
+    /**
+     * Returns a nameless macro.
+     * @param gestures the gestures that this macro performs
+     */
+    public static Macro getNameless(final Gesture... gestures) {
+        return new Macro("", gestures);
     }
 
     /**
      * The name of this macro.
-     * @return the empty string if this macro doesn't have a name.
+     * @return the empty string if this macro doesn't have a name
      */
-    public String getName() {
+    String getName() {
         return name;
     }
 
@@ -45,7 +49,7 @@ public class Macro {
      * @param script the script containing this macro
      * @param robot the event generator
      */
-    public void play(final Script script, final Robot robot)
+    void play(final Script script, final Robot robot)
             throws MacroException {
         
         for (final Gesture gesture : gestures) {

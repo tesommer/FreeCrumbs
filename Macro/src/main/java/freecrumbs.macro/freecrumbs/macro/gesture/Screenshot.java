@@ -37,7 +37,7 @@ public class Screenshot extends Command {
             final Robot robot,
             final String[] params) throws MacroException {
         
-        script.getImages().set(
+        script.images().set(
                 params[0],
                 robot.createScreenCapture(getRectangle(script, params)));
     }
@@ -60,7 +60,7 @@ public class Screenshot extends Command {
             final int index,
             final int defaultValue) throws MacroException {
         
-        return script.getVariables().valueOf(
+        return script.variables().value(
                 paramOrDefault(params, index, String.valueOf(defaultValue)));
     }
 

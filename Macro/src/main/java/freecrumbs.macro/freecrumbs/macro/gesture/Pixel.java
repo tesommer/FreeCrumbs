@@ -25,11 +25,11 @@ public class Pixel extends Command {
             throws MacroException {
         
         return (script, robot)
-                -> script.getVariables().set(
+                -> script.variables().set(
                         params[0],
                         robot.getPixelColor(
-                                script.getVariables().valueOf(params[1]),
-                                script.getVariables().valueOf(params[2]))
+                                script.variables().value(params[1]),
+                                script.variables().value(params[2]))
                                     .getRGB());
     }
 

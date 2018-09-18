@@ -61,20 +61,20 @@ public class Wait extends Command {
     private static BufferedImage getImage(
             final Script script, final String[] params) throws MacroException {
         
-        return script.getImages().getOrLoad(params[4]);
+        return script.images().getOrLoad(params[4]);
     }
     
     private static boolean getGone(final Script script, final String[] params)
             throws MacroException {
         
-        return script.getVariables().valueOf(
+        return script.variables().value(
                 paramOrDefault(params, 5, DEFAULT_GONE)) != 0;
     }
     
     private static int getMillis(final Script script, final String[] params)
             throws MacroException {
         
-        return script.getVariables().valueOf(
+        return script.variables().value(
                 paramOrDefault(params, 6, DEFAULT_MILLIS));
     }
     
@@ -83,10 +83,10 @@ public class Wait extends Command {
             final Robot robot,
             final String[] params) throws MacroException {
         
-        final int fromX = script.getVariables().valueOf(params[0]);
-        final int fromY = script.getVariables().valueOf(params[1]);
-        final int toX = script.getVariables().valueOf(params[2]);
-        final int toY = script.getVariables().valueOf(params[3]);
+        final int fromX = script.variables().value(params[0]);
+        final int fromY = script.variables().value(params[1]);
+        final int toX = script.variables().value(params[2]);
+        final int toY = script.variables().value(params[3]);
         return new Scanner(
                 Util.createScreenCapture(robot), fromX, fromY, toX, toY);
     }

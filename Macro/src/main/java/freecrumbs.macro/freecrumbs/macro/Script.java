@@ -12,7 +12,7 @@ import java.util.stream.Stream;
  * 
  * @author Tone Sommerland
  */
-public class Script {
+public final class Script {
     private final Location location;
     private final Loader loader;
     private final ScriptVariables variables;
@@ -23,6 +23,8 @@ public class Script {
      * Creates a new macro script.
      * @param location the location to open
      * @param loader the loader that loads macros
+     * @throws MacroException
+     * if for instance there was a problem loading the macros
      */
     public Script(final Location location, final Loader loader)
             throws MacroException {
@@ -41,28 +43,28 @@ public class Script {
     /**
      * The location of this script.
      */
-    public Location getLocation() {
+    public Location location() {
         return location;
     }
     
     /**
      * The loader of this script.
      */
-    public Loader getLoader() {
+    public Loader loader() {
         return loader;
     }
 
     /**
      * Script variables.
      */
-    public ScriptVariables getVariables() {
+    public ScriptVariables variables() {
         return variables;
     }
 
     /**
      * Script images.
      */
-    public ScriptImages getImages() {
+    public ScriptImages images() {
         return images;
     }
 
@@ -83,7 +85,7 @@ public class Script {
      * @param robot the event generator
      * @param times the number of times to play
      * @param macroName the name of the macro to play
-     * @throws MacroException in particular if the macro wasn't found.
+     * @throws MacroException in particular if the macro wasn't found
      */
     public void play(final Robot robot, final int times, final String macroName)
             throws MacroException {

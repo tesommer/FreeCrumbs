@@ -25,26 +25,27 @@ public final class Util {
     
     /**
      * Splits a line into words separated by space or tab.
-     * @param limit the maximum number of parts to split the line in,
+     */
+    public static String[] split(final String line) {
+        return split(line, 0);
+    }
+    
+    /**
+     * Splits a line into words separated by space or tab.
+     * {@code limit} is the maximum number of parts to split the line into,
      * starting left.
-     * The returned array will not be longer than the limit.
+     * The returned array will be no longer than the limit.
      * If the line contains more words than the limit,
      * the last element will contain a trimmed substring of the input line
      * after the first {@code limit - 1} words.
+     * A limit of zero or less turns the limit off.
      */
-    public static String[] split(final String line, final int limit) {
+    private static String[] split(final String line, final int limit) {
         final String[] words = line.trim().split("[ \\t]+", limit);
         if (words[0].isEmpty()) {
             return new String[0];
         }
         return words;
-    }
-    
-    /**
-     * Splits a line into words separated by space or tab.
-     */
-    public static String[] split(final String line) {
-        return split(line, 0);
     }
     
     /**
@@ -78,7 +79,7 @@ public final class Util {
             final Script script, final Field field) {
         
         try {
-            script.getVariables().set(field.getName(), field.getInt(null));
+            script.variables().set(field.getName(), field.getInt(null));
         } catch (final IllegalAccessException ex) {
             throw new AssertionError(ex);
         }
@@ -88,7 +89,7 @@ public final class Util {
      * Evaluates a three-word arithmetic expression.
      * @param script the script
      * @param left left operand (integer or variable)
-     * @param operator +, -, *, / or %
+     * @param operator one of {@code + - * / %}
      * @param right right operand (integer or variable)
      */
     public static int evaluateArithmetic(
@@ -97,8 +98,8 @@ public final class Util {
             final String operator,
             final String right) throws MacroException {
         
-        final int leftValue = script.getVariables().valueOf(left);
-        final int rightValue = script.getVariables().valueOf(right);
+        final int leftValue = script.variables().value(left);
+        final int rightValue = script.variables().value(right);
         if ("+".equals(operator)) {
             return leftValue + rightValue;
         } else if ("-".equals(operator)) {
@@ -125,8 +126,8 @@ public final class Util {
      * Evaluates a three-word logical expression.
      * @param script the script
      * @param left left operand (integer or variable)
-     * @param operator ==, !=, &lt;, &gt;, &lt;=, &gt;= or isset.
-     * isset tests the existence of a variable;
+     * @param operator one of {@code == != < > <= >= isset}.
+     * {@code isset} tests the existence of a variable;
      * {@code x isset 1} is true if {@code x} exists and
      * {@code x isset 0} is true if {@code x} is nonexistent.
      * @param right right operand (integer or variable)
@@ -139,11 +140,11 @@ public final class Util {
         
         if ("isset".equals(operator)) {
             final boolean existence
-                = script.getVariables().valueOf(right) != 0;
-            return script.getVariables().getNames().contains(left) == existence;
+                = script.variables().value(right) != 0;
+            return script.variables().getNames().contains(left) == existence;
         }
-        final int leftValue = script.getVariables().valueOf(left);
-        final int rightValue = script.getVariables().valueOf(right);
+        final int leftValue = script.variables().value(left);
+        final int rightValue = script.variables().value(right);
         if ("==".equals(operator)) {
             return leftValue == rightValue;
         } else if ("!=".equals(operator)) {
@@ -189,11 +190,6 @@ public final class Util {
     UXO_LOCATION = new Location() {
 
         @Override
-        public String getBase() {
-            return "";
-        }
-
-        @Override
         public Location refer(final String target) throws MacroException {
             throw new MacroException("UXO location just exploded!");
         }
@@ -214,7 +210,7 @@ public final class Util {
 
         @Override
         public RecursionGuard getRecursionGuard() {
-            return new AtomicRecursionGuard(0);
+            return RecursionGuard.getAtomic(0);
         }
         
     };

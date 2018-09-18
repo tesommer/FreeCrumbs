@@ -48,7 +48,7 @@ public class KeyChord extends Command {
         
         final int[] keyCodes = new int[params.length];
         for (int i = 0; i < keyCodes.length; i++) {
-            keyCodes[i] = script.getVariables().valueOf(params[i]);
+            keyCodes[i] = script.variables().value(params[i]);
         }
         return keyCodes;
     }

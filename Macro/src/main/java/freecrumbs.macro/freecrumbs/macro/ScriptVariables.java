@@ -8,11 +8,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Script integer variables.
+ * Script integer-variables.
  * 
  * @author Tone Sommerland
  */
-public class ScriptVariables {
+public final class ScriptVariables {
     private final Map<String, Integer> variables = new HashMap<>();
 
     ScriptVariables() {
@@ -40,13 +40,13 @@ public class ScriptVariables {
      * @param name the variable name
      */
     public void remove(final String name) {
-        variables.remove(name);
+        variables.remove(requireNonNull(name, "name"));
     }
     
     /**
      * Returns the value of a variable.
      * @param name the variable name
-     * @throws MacroException if the variable does not exist.
+     * @throws MacroException if the variable does not exist
      */
     public int get(final String name) throws MacroException {
         if (variables.containsKey(name)) {
@@ -59,9 +59,9 @@ public class ScriptVariables {
      * Returns the value of an integer literal or a stored variable.
      * @param nameOrLiteral either an integer literal or a variable name
      * @throws MacroException if it's neither
-     * a valid integer nor a stored variable.
+     * a valid integer nor a stored variable
      */
-    public int valueOf(final String nameOrLiteral) throws MacroException {
+    public int value(final String nameOrLiteral) throws MacroException {
         try {
             return Integer.valueOf(nameOrLiteral);
         } catch (final NumberFormatException ex) {

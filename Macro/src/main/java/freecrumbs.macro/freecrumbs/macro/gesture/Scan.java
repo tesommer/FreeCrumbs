@@ -87,10 +87,10 @@ public class Scan extends Command {
             
             return new Scanner(
                     Util.createScreenCapture(robot),
-                    script.getVariables().valueOf(fromX),
-                    script.getVariables().valueOf(fromY),
-                    script.getVariables().valueOf(toX),
-                    script.getVariables().valueOf(toY));
+                    script.variables().value(fromX),
+                    script.variables().value(fromY),
+                    script.variables().value(toX),
+                    script.variables().value(toY));
         }
     }
     
@@ -113,8 +113,8 @@ public class Scan extends Command {
                 x = -1;
                 y = -1;
             }
-            script.getVariables().set(xVariable, x);
-            script.getVariables().set(yVariable, y);
+            script.variables().set(xVariable, x);
+            script.variables().set(yVariable, y);
         }
     }
     
@@ -165,7 +165,7 @@ public class Scan extends Command {
         public BufferedImage getImage(final Script script)
                 throws MacroException {
             
-            return script.getImages().getOrLoad(image);
+            return script.images().getOrLoad(image);
         }
         
         public int[] scanScreenForImage(
@@ -176,10 +176,10 @@ public class Scan extends Command {
             int[] xy = new int[0];
             int time = 0;
             while (xy.length == 0
-                    && time++ < script.getVariables().valueOf(times)) {
-                robot.delay(script.getVariables().valueOf(delay));
+                    && time++ < script.variables().value(times)) {
+                robot.delay(script.variables().value(delay));
                 xy = fromToParams.getScanner(script, robot)
-                    .xyOf(image, script.getVariables().valueOf(occurrence));
+                    .xyOf(image, script.variables().value(occurrence));
             }
             return xy;
         }
