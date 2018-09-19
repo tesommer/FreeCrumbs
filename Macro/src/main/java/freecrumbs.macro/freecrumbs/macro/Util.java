@@ -6,8 +6,6 @@ import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.stream.IntStream;
@@ -184,47 +182,6 @@ public final class Util {
         final Dimension screenSize
             = Toolkit.getDefaultToolkit().getScreenSize();
         return robot.createScreenCapture(new Rectangle(screenSize));
-    }
-    
-    private static final Location
-    UXO_LOCATION = new Location() {
-
-        @Override
-        public Location refer(final String target) throws MacroException {
-            throw new MacroException("UXO location just exploded!");
-        }
-
-        @Override
-        public InputStream open() throws MacroException {
-            return new ByteArrayInputStream(new byte[0]);
-        }
-
-    };
-    
-    private static final Loader UXO_LOADER = new Loader() {
-
-        @Override
-        public Macro[] load(final InputStream in) throws MacroException {
-            return new Macro[0];
-        }
-
-        @Override
-        public RecursionGuard getRecursionGuard() {
-            return RecursionGuard.getAtomic(0);
-        }
-        
-    };
-    
-    /**
-     * Creates a dummy macro script.
-     * The returned script contains no macros.
-     */
-    public static Script createEmptyScript() {
-        try {
-            return new Script(UXO_LOCATION, UXO_LOADER);
-        } catch (final MacroException ex) {
-            throw new AssertionError(ex);
-        }
     }
 
 }
