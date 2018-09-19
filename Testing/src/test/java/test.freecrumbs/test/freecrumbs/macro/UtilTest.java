@@ -38,7 +38,7 @@ public final class UtilTest {
     @Test
     @DisplayName("evaluateArithmetic")
     public void test2() throws MacroException {
-        final Script script = Util.createEmptyScript();
+        final Script script = dummyScript();
         script.variables().set("x", 2);
         script.variables().set("y", 3);
         assertEquals(
@@ -78,7 +78,7 @@ public final class UtilTest {
     @Test
     @DisplayName("evaluateLogical")
     public void test3() throws MacroException {
-        final Script script = Util.createEmptyScript();
+        final Script script = dummyScript();
         script.variables().set("x", 7);
         script.variables().set("y", 11);
         assertTrue(
@@ -120,12 +120,20 @@ public final class UtilTest {
     @Test
     @DisplayName("addKeyCodeVariables")
     public void test4() {
-        final Script script = Util.createEmptyScript();
+        final Script script = dummyScript();
         Util.addKeyCodeVariables(script);
         Stream.of("VK_A", "VK_B", "VK_T")
             .forEach(s -> assertTrue(
                     script.variables().getNames().contains(s),
                     "Missing variable: " + s));
+    }
+    
+    private static Script dummyScript() {
+        try {
+            return new Script(MockLocation.DUMMY, MockLoader.DUMMY);
+        } catch (final MacroException ex) {
+            throw new AssertionError(ex);
+        }
     }
     
     private static void assertSplit(
