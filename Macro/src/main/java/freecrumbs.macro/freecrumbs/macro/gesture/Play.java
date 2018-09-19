@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
+import freecrumbs.macro.GestureParser;
 import freecrumbs.macro.MacroException;
 import freecrumbs.macro.Script;
 import freecrumbs.macro.Util;
@@ -35,7 +36,9 @@ import freecrumbs.macro.Util;
  * 
  * @author Tone Sommerland
  */
-public class Play extends Command {
+public final class Play extends Command {
+    
+    public static final GestureParser INSTANCE = new Play();
     
     public static final String NAME = "play";
     
@@ -51,7 +54,7 @@ public class Play extends Command {
     private static final String
     INPUT_DELIMITER = SCRIPT_INPUT_SEPARATOR + "|" + VARIABLE_VALUE_SEPARATOR;
     
-    public Play() {
+    private Play() {
         super(NAME, 1, 5);
     }
 
@@ -115,7 +118,7 @@ public class Play extends Command {
                 final String scriptParam,
                 final int index) throws MacroException {
             
-            try (final Scanner scanner
+            try (final var scanner
                     = new Scanner(scriptParam.substring(index))) {
                 try (final Scanner delimited
                         = scanner.useDelimiter(INPUT_DELIMITER)) {
@@ -197,7 +200,7 @@ public class Play extends Command {
             if (scriptSpecifier == null) {
                 return current;
             }
-            final Script script = new Script(
+            final Script script = Script.load(
                     current.location()
                         .refer(scriptSpecifier.getScriptLocation()),
                     current.loader());

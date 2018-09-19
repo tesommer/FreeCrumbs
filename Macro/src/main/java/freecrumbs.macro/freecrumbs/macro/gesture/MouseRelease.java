@@ -3,10 +3,11 @@ package freecrumbs.macro.gesture;
 import static freecrumbs.macro.gesture.MousePress.getButtons;
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
+import freecrumbs.macro.GestureParser;
 import freecrumbs.macro.MacroException;
 
 /**
- * Generates a mouse release event.
+ * Generates a mouse-release event.
  * Syntax:
  * {@code mouse_release button1 [button2 [button3]]}.
  * A button is an integer where nonzero is released and zero is not.
@@ -14,11 +15,13 @@ import freecrumbs.macro.MacroException;
  * 
  * @author Tone Sommerland
  */
-public class MouseRelease extends Command {
+public final class MouseRelease extends Command {
+    
+    public static final GestureParser INSTANCE = new MouseRelease();
     
     public static final String NAME = "mouse_release";
     
-    public MouseRelease() {
+    private MouseRelease() {
         super(NAME, 1, 3);
     }
 

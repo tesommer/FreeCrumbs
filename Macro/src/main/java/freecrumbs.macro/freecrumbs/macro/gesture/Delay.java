@@ -2,6 +2,7 @@ package freecrumbs.macro.gesture;
 
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
+import freecrumbs.macro.GestureParser;
 import freecrumbs.macro.MacroException;
 
 /**
@@ -12,13 +13,15 @@ import freecrumbs.macro.MacroException;
  * 
  * @author Tone Sommerland
  */
-public class Delay extends Command {
+public final class Delay extends Command {
+    
+    public static final GestureParser INSTANCE = new Delay();
     
     public static final String NAME = "delay";
     
     public static final String AUTO = "auto";
 
-    public Delay() {
+    private Delay() {
         super(NAME, 1, 2);
     }
 

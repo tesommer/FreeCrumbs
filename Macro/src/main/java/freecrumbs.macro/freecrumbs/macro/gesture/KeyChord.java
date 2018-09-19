@@ -5,6 +5,7 @@ import java.util.stream.IntStream;
 
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
+import freecrumbs.macro.GestureParser;
 import freecrumbs.macro.MacroException;
 import freecrumbs.macro.Script;
 
@@ -16,11 +17,13 @@ import freecrumbs.macro.Script;
  * 
  * @author Tone Sommerland
  */
-public class KeyChord extends Command {
+public final class KeyChord extends Command {
+    
+    public static final GestureParser INSTANCE = new KeyChord();
     
     public static final String NAME = "key_chord";
 
-    public KeyChord() {
+    private KeyChord() {
         super(NAME, 1, Integer.MAX_VALUE);
     }
 

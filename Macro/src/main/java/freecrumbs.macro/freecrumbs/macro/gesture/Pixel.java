@@ -2,6 +2,7 @@ package freecrumbs.macro.gesture;
 
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
+import freecrumbs.macro.GestureParser;
 import freecrumbs.macro.MacroException;
 
 /**
@@ -12,11 +13,13 @@ import freecrumbs.macro.MacroException;
  * 
  * @author Tone Sommerland
  */
-public class Pixel extends Command {
+public final class Pixel extends Command {
+    
+    public static final GestureParser INSTANCE = new Pixel();
     
     public static final String NAME = "pixel";
     
-    public Pixel() {
+    private Pixel() {
         super(NAME, 3, 3);
     }
 

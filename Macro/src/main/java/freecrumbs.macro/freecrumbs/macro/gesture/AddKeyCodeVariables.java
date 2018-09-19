@@ -2,6 +2,7 @@ package freecrumbs.macro.gesture;
 
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
+import freecrumbs.macro.GestureParser;
 import freecrumbs.macro.MacroException;
 import freecrumbs.macro.Util;
 
@@ -12,11 +13,13 @@ import freecrumbs.macro.Util;
  * 
  * @author Tone Sommerland
  */
-public class AddKeyCodeVariables extends Command {
+public final class AddKeyCodeVariables extends Command {
+    
+    public static final GestureParser INSTANCE = new AddKeyCodeVariables();
     
     public static final String NAME = "add_key_code_variables";
 
-    public AddKeyCodeVariables() {
+    private AddKeyCodeVariables() {
         super(NAME, 0, 0);
     }
 

@@ -43,27 +43,27 @@ public final class Main {
     private static final GestureParser[]
     GESTURE_PARSERS
         = new GestureParser[] {
-            new AddKeyCodeVariables(),
-            new Beep(),
-            new Delay(),
-            new Exit(),
-            new Idle(),
-            new KeyPress(),
-            new KeyChord(),
-            new KeyRelease(),
-            new Load(),
-            new MouseMove(),
-            new MousePress(),
-            new MouseRelease(),
-            new MouseWheel(),
-            new Pixel(),
-            new Play(),
-            new Print(),
-            new Scan(),
-            new Screenshot(),
-            new Set(),
-            new Type(),
-            new Wait(),
+                AddKeyCodeVariables.INSTANCE,
+                Beep.INSTANCE,
+                Delay.INSTANCE,
+                Exit.INSTANCE,
+                Idle.INSTANCE,
+                KeyPress.INSTANCE,
+                KeyChord.INSTANCE,
+                KeyRelease.INSTANCE,
+                Load.INSTANCE,
+                MouseMove.INSTANCE,
+                MousePress.INSTANCE,
+                MouseRelease.INSTANCE,
+                MouseWheel.INSTANCE,
+                Pixel.INSTANCE,
+                Play.INSTANCE,
+                Print.INSTANCE,
+                Scan.INSTANCE,
+                Screenshot.INSTANCE,
+                Set.INSTANCE,
+                Type.INSTANCE,
+                Wait.INSTANCE,
         };
 
     private Main() {
@@ -103,7 +103,7 @@ public final class Main {
     }
     
     private static Script loadScript(final Args args) throws MacroException {
-        return new Script(
+        return Script.load(
                 Location.fromFilePath(args.inputFile),
                 Loader.getDefault(GESTURE_PARSERS));
     }
@@ -144,7 +144,7 @@ public final class Main {
             playTimes = 1;
         } else {
             try {
-                playTimes = Integer.valueOf(times);
+                playTimes = Integer.parseInt(times);
             } catch (final NumberFormatException ex) {
                 throw new MacroException(ex);
             }
@@ -157,11 +157,12 @@ public final class Main {
         final String macroName;
         final String inputFile;
         
-        public Args(
+        Args(
                 final int times,
                 final String macroName,
                 final String inputFile) {
 
+            assert inputFile != null;
             this.times = times;
             this.macroName = macroName;
             this.inputFile = inputFile;

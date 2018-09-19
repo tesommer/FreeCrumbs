@@ -130,7 +130,7 @@ public final class UtilTest {
     
     private static Script dummyScript() {
         try {
-            return new Script(MockLocation.DUMMY, MockLoader.DUMMY);
+            return Script.load(MockLocation.DUMMY, MockLoader.DUMMY);
         } catch (final MacroException ex) {
             throw new AssertionError(ex);
         }

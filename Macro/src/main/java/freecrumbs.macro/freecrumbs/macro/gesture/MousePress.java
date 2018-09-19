@@ -4,11 +4,12 @@ import java.awt.event.InputEvent;
 
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
+import freecrumbs.macro.GestureParser;
 import freecrumbs.macro.MacroException;
 import freecrumbs.macro.Script;
 
 /**
- * Generates a mouse press event.
+ * Generates a mouse-press event.
  * Syntax:
  * {@code mouse_press button1 [button2 [button3]]}.
  * A button is an integer where nonzero is pressed and zero is not.
@@ -16,11 +17,13 @@ import freecrumbs.macro.Script;
  * 
  * @author Tone Sommerland
  */
-public class MousePress extends Command {
+public final class MousePress extends Command {
+    
+    public static final GestureParser INSTANCE = new MousePress();
     
     public static final String NAME = "mouse_press";
     
-    public MousePress() {
+    private MousePress() {
         super(NAME, 1, 3);
     }
 

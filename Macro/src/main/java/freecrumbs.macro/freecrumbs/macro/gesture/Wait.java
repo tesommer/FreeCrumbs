@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
+import freecrumbs.macro.GestureParser;
 import freecrumbs.macro.MacroException;
 import freecrumbs.macro.Scanner;
 import freecrumbs.macro.Script;
@@ -22,14 +23,16 @@ import freecrumbs.macro.Util;
  * 
  * @author Tone Sommerland
  */
-public class Wait extends Command {
+public final class Wait extends Command {
+    
+    public static final GestureParser INSTANCE = new Wait();
     
     public static final String NAME = "wait";
 
     private static final String DEFAULT_GONE = "0";
     private static final String DEFAULT_MILLIS = "100";
     
-    public Wait() {
+    private Wait() {
         super(NAME, 5, 7);
     }
 

@@ -4,6 +4,7 @@ import java.awt.Robot;
 
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
+import freecrumbs.macro.GestureParser;
 import freecrumbs.macro.MacroException;
 import freecrumbs.macro.Script;
 
@@ -19,13 +20,15 @@ import freecrumbs.macro.Script;
  * 
  * @author Tone Sommerland
  */
-public class Idle extends Command {
+public final class Idle extends Command {
+    
+    public static final GestureParser INSTANCE = new Idle();
     
     public static final String NAME = "idle";
     
     public static final String AUTO = "auto";
     
-    public Idle() {
+    private Idle() {
         super(NAME, 0, 2);
     }
 

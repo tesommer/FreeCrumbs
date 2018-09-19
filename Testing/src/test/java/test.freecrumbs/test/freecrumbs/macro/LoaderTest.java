@@ -154,7 +154,7 @@ public final class LoaderTest {
         
         try {
             final Robot robot = new Robot();
-            final Script script = new Script(
+            final Script script = Script.load(
                     MockLocation.DUMMY, new MockLoader(macros));
             if (macroName == null) {
                 script.play(robot, times);

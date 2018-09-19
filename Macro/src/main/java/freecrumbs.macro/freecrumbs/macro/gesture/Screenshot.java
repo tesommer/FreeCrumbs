@@ -7,6 +7,7 @@ import java.awt.Toolkit;
 
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
+import freecrumbs.macro.GestureParser;
 import freecrumbs.macro.MacroException;
 import freecrumbs.macro.Script;
 
@@ -17,11 +18,13 @@ import freecrumbs.macro.Script;
  * 
  * @author Tone Sommerland
  */
-public class Screenshot extends Command {
+public final class Screenshot extends Command {
+    
+    public static final GestureParser INSTANCE = new Screenshot();
     
     public static final String NAME = "screenshot";
     
-    public Screenshot() {
+    private Screenshot() {
         super(NAME, 1, 5);
     }
 

@@ -14,12 +14,10 @@ import freecrumbs.macro.Util;
  * 
  * @author Tone Sommerland
  */
-public class Print implements GestureParser {
+public enum Print implements GestureParser {
+    INSTANCE;
     
     public static final String NAME = "print";
-    
-    public Print() {
-    }
 
     @Override
     public boolean supports(final String line) {

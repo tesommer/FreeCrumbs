@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
+import freecrumbs.macro.GestureParser;
 import freecrumbs.macro.MacroException;
 import freecrumbs.macro.Scanner;
 import freecrumbs.macro.Script;
@@ -35,11 +36,13 @@ import freecrumbs.macro.Util;
  * 
  * @author Tone Sommerland
  */
-public class Scan extends Command {
+public final class Scan extends Command {
+    
+    public static final GestureParser INSTANCE = new Scan();
     
     public static final String NAME = "scan";
 
-    public Scan() {
+    private Scan() {
         super(NAME, 7, 12);
     }
     

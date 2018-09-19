@@ -19,14 +19,7 @@ public final class Script {
     private final ScriptImages images;
     private final Macro[] macros;
     
-    /**
-     * Creates a new macro script.
-     * @param location the location to open
-     * @param loader the loader that loads macros
-     * @throws MacroException
-     * if for instance there was a problem loading the macros
-     */
-    public Script(final Location location, final Loader loader)
+    private Script(final Location location, final Loader loader)
             throws MacroException {
 
         this.location = requireNonNull(location, "location");
@@ -38,6 +31,19 @@ public final class Script {
         } catch (final IOException ex) {
             throw new MacroException(ex);
         }
+    }
+    
+    /**
+     * Loads a macro script.
+     * @param location the script's location
+     * @param loader the macro loader to use
+     * @throws MacroException
+     * if for instance there was a problem loading the macros
+     */
+    public static Script load(final Location location, final Loader loader)
+            throws MacroException {
+        
+        return new Script(location, loader);
     }
 
     /**

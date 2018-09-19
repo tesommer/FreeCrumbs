@@ -4,6 +4,7 @@ import java.awt.Toolkit;
 
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
+import freecrumbs.macro.GestureParser;
 import freecrumbs.macro.MacroException;
 
 /**
@@ -13,11 +14,13 @@ import freecrumbs.macro.MacroException;
  * 
  * @author Tone Sommerland
  */
-public class Beep extends Command {
+public final class Beep extends Command {
+    
+    public static final GestureParser INSTANCE = new Beep();
     
     public static final String NAME = "beep";
     
-    public Beep() {
+    private Beep() {
         super(NAME, 0, 0);
     }
 
