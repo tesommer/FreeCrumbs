@@ -1,16 +1,18 @@
-package freecrumbs.macrec;
+package freecrumbs.macrec.layer;
 
 import static java.util.Objects.requireNonNull;
 
 import java.awt.Graphics;
 import java.awt.Image;
 
+import freecrumbs.macrec.Layer;
+
 /**
  * A layer that draws an image.
  * 
  * @author Tone Sommerland
  */
-public class ImageLayer implements Layer {
+public final class ImageLayer implements Layer {
     private final Image image;
     
     public ImageLayer(final Image image) {

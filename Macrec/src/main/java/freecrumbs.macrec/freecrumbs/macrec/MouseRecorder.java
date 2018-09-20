@@ -19,6 +19,10 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.FileImageOutputStream;
 
+import freecrumbs.macrec.layer.CheckerLayer;
+import freecrumbs.macrec.layer.ImageLayer;
+import freecrumbs.macrec.layer.MarkLayer;
+import freecrumbs.macrec.layer.TextLayer;
 import freecrumbs.macro.MacroException;
 import freecrumbs.macro.gesture.MouseMove;
 import freecrumbs.macro.gesture.MousePress;
@@ -40,7 +44,7 @@ import freecrumbs.macro.gesture.MouseRelease;
  * 
  * @author Tone Sommerland
  */
-public class MouseRecorder extends ScreenCaptureFrame {
+public final class MouseRecorder extends ScreenCaptureFrame {
     
     private static final long serialVersionUID = 1L;
     
@@ -101,13 +105,11 @@ public class MouseRecorder extends ScreenCaptureFrame {
             throws MacroException {
         
         this.receiver = requireNonNull(receiver, "receiver");
-        final LayeredPane layeredPane
-            = new LayeredPane(
-                    new ImageLayer(screenCapture),
-                    new CheckerLayer(
-                            CHECKER_PATTERN_COLOR, CHECKER_SQUARE_WIDTH),
-                    markLayer,
-                    textLayer);
+        final LayeredPane layeredPane = new LayeredPane(
+                new ImageLayer(screenCapture),
+                new CheckerLayer(CHECKER_PATTERN_COLOR, CHECKER_SQUARE_WIDTH),
+                markLayer,
+                textLayer);
         getContentPane().add(layeredPane);
         setState(state);
     }
@@ -225,7 +227,7 @@ public class MouseRecorder extends ScreenCaptureFrame {
         int number = 0;
         String filename = MessageFormat.format(
                 CAPTURE_FILENAME_FORMAT, number);
-        while (new File(filename).exists()) {
+        while (new File(filename).exists() && number <= Integer.MAX_VALUE) {
             filename = MessageFormat.format(
                     CAPTURE_FILENAME_FORMAT, ++number);
         }

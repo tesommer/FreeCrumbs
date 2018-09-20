@@ -1,4 +1,4 @@
-package freecrumbs.macrec;
+package freecrumbs.macrec.layer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -7,16 +7,22 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Toolkit;
 
+import freecrumbs.macrec.Layer;
+
 /**
  * This layer fills the screen with a checker pattern.
  * 
  * @author Tone Sommerland
  */
-public class CheckerLayer implements Layer {
+public final class CheckerLayer implements Layer {
     private final Color color;
     private final int squareWidth;
 
     public CheckerLayer(final Color color, final int squareWidth) {
+        if (squareWidth < 0) {
+            throw new IllegalArgumentException(
+                    "squareWidth < 0: " + squareWidth);
+        }
         this.color = requireNonNull(color, "color");
         this.squareWidth = squareWidth;
     }

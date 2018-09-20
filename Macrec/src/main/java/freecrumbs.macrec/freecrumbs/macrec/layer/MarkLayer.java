@@ -1,4 +1,4 @@
-package freecrumbs.macrec;
+package freecrumbs.macrec.layer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -8,21 +8,26 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+import freecrumbs.macrec.Layer;
+
 /**
  * A layer used for marking positions on the screen.
  * 
  * @author Tone Sommerland
  */
-public class MarkLayer implements Layer {
+public final class MarkLayer implements Layer {
     
     private static final class Mark {
         final Point point;
         final Color color;
         final int length;
         
-        public Mark(final Point point, final Color color, final int length) {
-            this.point = requireNonNull(point, "point");
-            this.color = requireNonNull(color, "color");
+        Mark(final Point point, final Color color, final int length) {
+            assert point != null;
+            assert color != null;
+            assert length >= 0;
+            this.point = point;
+            this.color = color;
             this.length = length;
         }
     }
@@ -52,7 +57,13 @@ public class MarkLayer implements Layer {
     public void addMark(
             final Point point, final Color color, final int length) {
         
-        marks.add(new Mark(new Point(point), color, length));
+        if (length < 0) {
+            throw new IllegalArgumentException("length < 0: " + length);
+        }
+        marks.add(new Mark(
+                new Point(requireNonNull(point, "null")),
+                requireNonNull(color, "color"),
+                length));
     }
     
     public void removeMark(final int index) {

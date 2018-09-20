@@ -26,7 +26,7 @@ public final class MacroRecorder {
             startKeyRecorder();
         } else if (MOUSE_REC_OPTION.equals(args[0]) && args.length == 2) {
             try {
-                final long millis = Long.valueOf(args[1]);
+                final long millis = Long.parseLong(args[1]);
                 Thread.sleep(millis);
                 startMouseRecorder();
             } catch (final NumberFormatException ex) {
