@@ -58,7 +58,7 @@
            <file file="${macro.project.dir}/macrohelp.txt"/>
         </loadresource>
         <loadresource property="macrec.help">
-           <file file="${macro.project.dir}/macrechelp.txt"/>
+           <file file="${macrec.project.dir}/macrechelp.txt"/>
         </loadresource>
         <replace
             file="${build.dir.src}/main/java/freecrumbs.finf/freecrumbs/finf/Main.java"
