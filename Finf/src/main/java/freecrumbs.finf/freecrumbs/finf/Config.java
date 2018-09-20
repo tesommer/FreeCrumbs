@@ -16,7 +16,7 @@ import java.util.function.Function;
  *  <li>{@code infoFormat}: format of the file info units</li>
  *  <li>{@code fileFilter}: filters input files (optional)</li>
  *  <li>{@code order}: sort order of the info units (optional)</li>
- *  <li>{@code count}: max lines to output ({@code < 0} = all)</li>
+ *  <li>{@code count}: max info units to output ({@code < 0} = all)</li>
  * </ul>
  *
  * @author Tone Sommerland
