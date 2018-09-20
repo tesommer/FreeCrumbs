@@ -1,164 +1,171 @@
 <?xml version="1.0"?>
 
 <project name="FreeCrumbs" default="main" basedir=".">
-	
-	<property name="version" value="2.1.1"/>
-	<property name="product.and.version" value="FreeCrumbs version ${version}"/>
-	<property name="copyright.year.owner" value="2017 Tone Sommerland"/>
-	<property name="copyright" value="Copyright (C) ${copyright.year.owner}"/>
-	
-	<property name="build.dir" value="../Build"/>
-	<property name="build.dir.home" value="${build.dir}/FreeCrumbs-${version}"/>
-	<property name="build.dir.src" value="${build.dir}/FreeCrumbs_src-${version}"/>
-	<property name="build.dir.javadoc" value="${build.dir}/FreeCrumbs_javadoc-${version}"/>
-	
-	<property name="finf.project.dir" value="../Finf"/>
-	<property name="hash.project.dir" value="../Hash"/>
-	<property name="macro.project.dir" value="../Macro"/>
-	
-	<!-- Dependencies -->
-	<path id="classpath">
-	  <fileset dir="${finf.project.dir}/lib"/>
-	</path>
-	
-	<target name="main">
-		
-		<!-- Delete BUILD -->
-		<delete dir="${build.dir}"/>
-		
-		<!-- Create BUILD_SRC -->
-		<mkdir dir="${build.dir.src}"/>
-		
-		<!-- Copy source files to BUILD_SRC -->
-		<copy todir="${build.dir.src}">
-			<fileset dir="${finf.project.dir}/src">
-				<include name="**/*.java"/>
-			</fileset>
-			<fileset dir="${hash.project.dir}/src">
-				<include name="**/*.java"/>
-			</fileset>
-			<fileset dir="${macro.project.dir}/src">
-				<include name="**/*.java"/>
-			</fileset>
-			<!-- Prepend source header -->
-			<filterchain>
-				<concatfilter prepend="srcheader.txt"/>
-			</filterchain>
-		</copy>
-		
-		<!-- Delete BUILD_SRC/test -->
-		<delete dir="${build.dir.src}/test"/>
-		
-		<!-- Insert help text into entry point source files -->
-		<loadresource property="finf.help">
-		   <file file="${finf.project.dir}/finfhelp.txt"/>
-		</loadresource>
-		<loadresource property="hash.help">
-		   <file file="${hash.project.dir}/hashhelp.txt"/>
-		</loadresource>
-		<loadresource property="macro.help">
-		   <file file="${macro.project.dir}/macrohelp.txt"/>
-		</loadresource>
-		<loadresource property="macrec.help">
-		   <file file="${macro.project.dir}/macrechelp.txt"/>
-		</loadresource>
-		<replace
-			file="${build.dir.src}/main/java/freecrumbs/finf/Main.java"
-			token="@finfhelp@"
-			value="${finf.help}"/>
-		<replace
-			file="${build.dir.src}/main/java/freecrumbs/hash/Hash.java"
-			token="@hashhelp@"
-			value="${hash.help}"/>
-		<replace
-			file="${build.dir.src}/main/java/freecrumbs/macro/Main.java"
-			token="@macrohelp@"
-			value="${macro.help}"/>
-		<replace
-			file="${build.dir.src}/main/java/freecrumbs/macrec/MacroRecorder.java"
-			token="@macrechelp@"
-			value="${macrec.help}"/>
-		
-		<!-- Replace BUILD_SRC tokens -->
-		<replace
-			dir="${build.dir.src}/main/java"
-			token="@version@"
-			value="${version}"/>
-		<replace
-			dir="${build.dir.src}/main/java"
-			token="@productandversion@"
-			value="${product.and.version}"/>
-		<replace
-			dir="${build.dir.src}/main/java"
-			token="@copyrightyearowner@"
-			value="${copyright.year.owner}"/>
-		<replace
-			dir="${build.dir.src}/main/java"
-			token="@copyright@"
-			value="${copyright}"/>
-		
-		<!-- Make BUILD/Temp -->
-		<mkdir dir="${build.dir}/Temp"/>
-		
-		<!-- Compile BUILD_SRC to BUILD/Temp -->
-		<javac
-			srcdir="${build.dir.src}/main/java"
-			destdir="${build.dir}/Temp"
-			includeantruntime="false">
-			<classpath refid="classpath"/>
-		</javac>
-		
-		<!-- Create BUILD_HOME/lib -->
-		<mkdir dir="${build.dir.home}/lib"/>
-		<jar destfile="${build.dir.home}/lib/freecrumbs-${version}.jar">
-			<fileset dir="${build.dir}/Temp">
-				<include name="**/*.class"/>
-			</fileset>
-			<fileset file="Home/LICENSE.txt"/>
-		</jar>
-		<copy todir="${build.dir.home}/lib">
-			<fileset dir="${finf.project.dir}/lib">
-				<exclude name=".track"/>
-			</fileset>
-		</copy>
-		
-		<!-- Delete BUILD/Temp -->
-		<delete dir="${build.dir}/Temp"/>
-		
-		<!-- Copy license to BUILD_SRC -->
-		<copy todir="${build.dir.src}">
-			<fileset file="Home/LICENSE.txt"/>
-		</copy>
-		
-		<!-- Copy home files to BUILD_HOME -->
-		<copy todir="${build.dir.home}">
-			<fileset dir="Home"/>
-		</copy>
-		
-		<!-- Replace BULD_HOME tokens -->
-		<replace dir="${build.dir.home}" token="@version@" value="${version}">
-			<include name="**/*.md"/>
-		</replace>
-		<replace dir="${build.dir.home}" token="@productandversion@" value="${product.and.version}">
-			<include name="**/*.md"/>
-		</replace>
-		<replace dir="${build.dir.home}" token="@copyrightyearowner@" value="${copyright.year.owner}">
-			<include name="**/*.md"/>
-		</replace>
-		<replace dir="${build.dir.home}" token="@copyright@" value="${copyright}">
-			<include name="**/*.md"/>
-		</replace>
-		
-	</target>
+    
+    <property name="version" value="3.0.0"/>
+    <property name="product.and.version" value="FreeCrumbs version ${version}"/>
+    <property name="copyright.year.owner" value="2018 Tone Sommerland"/>
+    <property name="copyright" value="Copyright (C) ${copyright.year.owner}"/>
+    
+    <property name="build.dir" value="../Build"/>
+    <property name="build.dir.src" value="${build.dir}/FreeCrumbs_src-${version}"/>
+    <property name="build.dir.home" value="${build.dir}/FreeCrumbs-${version}"/>
+    
+    <property name="finf.project.dir" value="../Finf"/>
+    <property name="hash.project.dir" value="../Hash"/>
+    <property name="macro.project.dir" value="../Macro"/>
+    <property name="macrec.project.dir" value="../Macrec"/>
+    
+    <property name="dependencies.dir" value="${finf.project.dir}/lib"/>
+    
+    <!-- Makes source and binary distributions. -->
+    <target name="main">
+        
+        <!-- Delete BUILD -->
+        <delete dir="${build.dir}"/>
+        
+        <!-- Create BUILD_SRC -->
+        <mkdir dir="${build.dir.src}"/>
+        
+        <!-- Copy Java files to BUILD_SRC -->
+        <copy todir="${build.dir.src}">
+            <fileset dir="${finf.project.dir}/src">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="${hash.project.dir}/src">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="${macro.project.dir}/src">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="${macrec.project.dir}/src">
+                <include name="**/*.java"/>
+            </fileset>
+            <!-- Prepend source header -->
+            <filterchain>
+                <concatfilter prepend="srcheader.txt"/>
+            </filterchain>
+        </copy>
+        
+        <!-- Insert help text into entry point-source files -->
+        <loadresource property="finf.help">
+           <file file="${finf.project.dir}/finfhelp.txt"/>
+        </loadresource>
+        <loadresource property="hash.help">
+           <file file="${hash.project.dir}/hashhelp.txt"/>
+        </loadresource>
+        <loadresource property="macro.help">
+           <file file="${macro.project.dir}/macrohelp.txt"/>
+        </loadresource>
+        <loadresource property="macrec.help">
+           <file file="${macro.project.dir}/macrechelp.txt"/>
+        </loadresource>
+        <replace
+            file="${build.dir.src}/main/java/freecrumbs.finf/freecrumbs/finf/Main.java"
+            token="@finfhelp@"
+            value="${finf.help}"/>
+        <replace
+            file="${build.dir.src}/main/java/freecrumbs.hash/freecrumbs/hash/Hash.java"
+            token="@hashhelp@"
+            value="${hash.help}"/>
+        <replace
+            file="${build.dir.src}/main/java/freecrumbs.macro/freecrumbs/macro/Main.java"
+            token="@macrohelp@"
+            value="${macro.help}"/>
+        <replace
+            file="${build.dir.src}/main/java/freecrumbs.macrec/freecrumbs/macrec/MacroRecorder.java"
+            token="@macrechelp@"
+            value="${macrec.help}"/>
+        
+        <!-- Replace BUILD_SRC tokens -->
+        <replace
+            dir="${build.dir.src}/main/java"
+            token="@version@"
+            value="${version}"/>
+        <replace
+            dir="${build.dir.src}/main/java"
+            token="@productandversion@"
+            value="${product.and.version}"/>
+        <replace
+            dir="${build.dir.src}/main/java"
+            token="@copyrightyearowner@"
+            value="${copyright.year.owner}"/>
+        <replace
+            dir="${build.dir.src}/main/java"
+            token="@copyright@"
+            value="${copyright}"/>
+        
+        <!-- Make BUILD/Temp -->
+        <mkdir dir="${build.dir}/Temp"/>
+        
+        <!-- Compile BUILD_SRC to BUILD/Temp -->
+        <javac
+            modulepath="${dependencies.dir}"
+            modulesourcepath="${build.dir.src}/main/java"
+            destdir="${build.dir}/Temp"
+            includeantruntime="false"/>
+        
+        <!-- Create BUILD_HOME/lib -->
+        <mkdir dir="${build.dir.home}/lib"/>
+        <jar destfile="${build.dir.home}/lib/freecrumbs.finf-${version}.jar">
+            <fileset dir="${build.dir}/Temp/freecrumbs.finf">
+                <include name="**/*.class"/>
+            </fileset>
+            <fileset file="Home/LICENSE.txt"/>
+        </jar>
+        <jar destfile="${build.dir.home}/lib/freecrumbs.hash-${version}.jar">
+            <fileset dir="${build.dir}/Temp/freecrumbs.hash">
+                <include name="**/*.class"/>
+            </fileset>
+            <fileset file="Home/LICENSE.txt"/>
+        </jar>
+        <jar destfile="${build.dir.home}/lib/freecrumbs.macro-${version}.jar">
+            <fileset dir="${build.dir}/Temp/freecrumbs.macro">
+                <include name="**/*.class"/>
+            </fileset>
+            <fileset file="Home/LICENSE.txt"/>
+        </jar>
+        <jar destfile="${build.dir.home}/lib/freecrumbs.macrec-${version}.jar">
+            <fileset dir="${build.dir}/Temp/freecrumbs.macrec">
+                <include name="**/*.class"/>
+            </fileset>
+            <fileset file="Home/LICENSE.txt"/>
+        </jar>
+        
+        <!-- Copy dependencies to BUILD_HOME/lib -->
+        <copy todir="${build.dir.home}/lib">
+            <fileset dir="${dependencies.dir}">
+                <include name="**/*.jar"/>
+            </fileset>
+        </copy>
+        
+        <!-- Delete BUILD/Temp -->
+        <delete dir="${build.dir}/Temp"/>
+        
+        <!-- Copy license to BUILD_SRC -->
+        <copy todir="${build.dir.src}">
+            <fileset file="Home/LICENSE.txt"/>
+        </copy>
+        
+        <!-- Copy home files to BUILD_HOME -->
+        <copy todir="${build.dir.home}">
+            <fileset dir="Home"/>
+        </copy>
+        
+        <!-- Replace BULD_HOME tokens -->
+        <replace dir="${build.dir.home}" token="@version@" value="${version}">
+            <include name="**/*.md"/>
+        </replace>
+        <replace dir="${build.dir.home}" token="@productandversion@" value="${product.and.version}">
+            <include name="**/*.md"/>
+        </replace>
+        <replace dir="${build.dir.home}" token="@copyrightyearowner@" value="${copyright.year.owner}">
+            <include name="**/*.md"/>
+        </replace>
+        <replace dir="${build.dir.home}" token="@copyright@" value="${copyright}">
+            <include name="**/*.md"/>
+        </replace>
+        
+    </target>
 
-	<!-- Makes Javadoc distribution. -->
-	<target name="make-javadoc" depends="main">
-		<javadoc
-			sourcepath="${build.dir.src}/main/java"
-			destdir="${build.dir.javadoc}"
-			author="true"
-			failonerror="true"
-			packagenames="freecrumbs.*">
-		</javadoc>
-	</target>
 </project>

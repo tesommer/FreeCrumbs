@@ -71,7 +71,7 @@ Finf is a command-line tool that prints file information to standard out. The
 * **finf.bat** for Windows
 * **finf** for Unix/GNU Linux
 
-A line of file info may contain the following fields:
+A file-info unit may contain the following fields:
 
 * *path*: the path without the filename (ends with a file separator)
 * *filename*: the filename
@@ -107,7 +107,7 @@ ___
     finf -c ..\FinfConfigs\csv-list.properties C:\SomeDirectory
 
 The ``-c`` option is used to specify a config file, in this case
-**csv-list.properties**. This particular config makes Finf print each info line
+**csv-list.properties**. This particular config makes Finf print each info unit
 as a semicolon-separated list on this format:
 
     path;filename;size;modified;hash
@@ -152,7 +152,7 @@ file is a text file on the Java *properties* format. Here's a sample file:
 * ``hash.algorithm`` is the algorithm used to generate the file hash. Default is
   MD5.
 
-* ``info.format`` is the format of the output lines. Occurrences of the
+* ``info.format`` is the format of the outputted info units. Occurrences of the
   following tokens will be replaced by the corresponding actual information:
   *${path}*, *${filename}*, *${size}*, *${modified}* and *${hash}*.
 
@@ -168,12 +168,12 @@ file is a text file on the Java *properties* format. Here's a sample file:
   ``${filename}++.+\.html?--index\..{3,4}``  
   includes files with extension _htm_ and _html_, but not index files.
 
-* ``order`` specifies a sort order of the output lines. It has the fields to
+* ``order`` specifies a sort order of the outputted info. It has the fields to
   order by (path, filename, etc), with space in between. Each field may be
   followed by ``asc`` or ``desc`` (ascending or descending). ``asc`` is default.
 
-* ``count`` sets a maximum number of output lines. If absent, all lines are
-  output.
+* ``count`` sets a maximum number of outputted info units. If absent, all are
+  outputted.
 
 If Finf doesn't get a config file, it will use this:
 
