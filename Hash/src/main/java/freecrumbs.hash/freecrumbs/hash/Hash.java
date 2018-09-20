@@ -45,7 +45,7 @@ public final class Hash {
         }
         final boolean upperCase = false;
         try (
-            final InputStream in = new FileInputStream(args[0]);
+            final var in = new FileInputStream(args[0]);
         ) {
             byte[][] hashes = getHashes(in, algorithms);
             for (int i = 0; i < algorithms.length; i++) {
@@ -60,27 +60,36 @@ public final class Hash {
         final InputStream in,
         final String... algorithms) throws IOException {
             
-        final MessageDigest[] mds = new MessageDigest[algorithms.length];
-        try {
-            for (int i = 0; i < algorithms.length; i++) {
-                mds[i] = MessageDigest.getInstance(algorithms[i]);
-            }
-        } catch (final NoSuchAlgorithmException ex) {
-            throw new IOException(ex);
-        }
-        final byte[] bytes = new byte[BUFFER_SIZE];
-        int bytesRead = in.read(bytes);
-        while (bytesRead > 0) {
+        final MessageDigest[] mds = getMessageDigests(algorithms);
+        final var bytes = new byte[BUFFER_SIZE];
+        for (
+                int bytesRead = in.read(bytes);
+                bytesRead > 0;
+                bytesRead = in.read(bytes)) {
+            
             for (final MessageDigest md : mds) {
                 md.update(bytes, 0, bytesRead);
             }
-            bytesRead = in.read(bytes);
         }
         final byte[][] hashes = new byte[algorithms.length][];
         for (int i = 0; i < mds.length; i++) {
             hashes[i] = mds[i].digest();
         }
         return hashes;
+    }
+    
+    private static MessageDigest[] getMessageDigests(final String[] algorithms)
+            throws IOException {
+        
+        try {
+            final var mds = new MessageDigest[algorithms.length];
+            for (int i = 0; i < algorithms.length; i++) {
+                mds[i] = MessageDigest.getInstance(algorithms[i]);
+            }
+            return mds;
+        } catch (final NoSuchAlgorithmException ex) {
+            throw new IOException(ex);
+        }
     }
     
     private static void printHash(
