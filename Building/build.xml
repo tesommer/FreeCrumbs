@@ -47,7 +47,7 @@
             </filterchain>
         </copy>
         
-        <!-- Insert help text into entry point-source files -->
+        <!-- Insert help text into entry-point source-files -->
         <loadresource property="finf.help">
            <file file="${finf.project.dir}/finfhelp.txt"/>
         </loadresource>
@@ -132,15 +132,15 @@
             <fileset file="Home/LICENSE.txt"/>
         </jar>
         
+        <!-- Delete BUILD/Temp -->
+        <delete dir="${build.dir}/Temp"/>
+        
         <!-- Copy dependencies to BUILD_HOME/lib -->
         <copy todir="${build.dir.home}/lib">
             <fileset dir="${dependencies.dir}">
                 <include name="**/*.jar"/>
             </fileset>
         </copy>
-        
-        <!-- Delete BUILD/Temp -->
-        <delete dir="${build.dir}/Temp"/>
         
         <!-- Copy license to BUILD_SRC -->
         <copy todir="${build.dir.src}">

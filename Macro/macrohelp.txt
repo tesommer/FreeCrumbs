@@ -19,5 +19,5 @@
 + "Example 1: play macro script wtab.txt:\n"
 + "macro wtab.txt\n"
 + "\n"
-+ "Example 2: play macro mac1 in macroscript macros.txt two times:\n"
++ "Example 2: play macro mac1 in macro script macros.txt two times:\n"
 + "macro -m mac1 -t 2 macros.txt\n

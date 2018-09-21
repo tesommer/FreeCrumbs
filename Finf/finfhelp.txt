@@ -28,7 +28,7 @@
 + "  - ${path}: the path without the filename\n"
 + "  - ${filename}: the filename\n"
 + "  - ${size}: the size in bytes\n"
-+ "  - ${modified}: last modified timestamp\n"
++ "  - ${modified}: last-modified timestamp\n"
 + "  - ${hash}: file checksum\n"
 + "  (default: ${filename})\n"
 + "* date.format: applied to the modified field (default: yyyy-MM-dd HH:mm)\n"
