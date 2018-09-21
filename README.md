@@ -65,7 +65,7 @@ Programs included in FreeCrumbs
 <a name="finf"></a>Finf
 -----------------------
 
-Finf is a command-line tool that prints file information to standard out. The
+Finf is a command-line tool that prints file information to standard output. The
 ``finf`` command is located in the **bin** directory. There are two executables:
 
 * **finf.bat** for Windows
@@ -95,7 +95,7 @@ ___
 
     finf -h
 
-This will print the Finf manual to standard out.
+This will print the Finf manual to standard output.
 ___
 
     finf C:\SomeDirectory
@@ -153,7 +153,7 @@ file is a text file on the Java *properties* format. Here's a sample file:
   MD5.
 
 * ``info.format`` is the format of the outputted info units. Occurrences of
-  tokens on the form *${field-name}* (e.g. *${path}*, *${filename}*, and so on)
+  tokens on the form *${field}* (such as *${path}*, *${filename}*, and so on)
   will be replaced by the corresponding field value.
 
 * ``date.format`` specifies the timestamp format of the output. See
@@ -209,6 +209,11 @@ Usage:
 
     dups <file/directory list>
 
+Example:
+___
+
+    dups \LotsOfStuff
+
 Sample output:
 
     \LotsOfStuff\Pix\20150311(1).jpg
@@ -217,16 +222,7 @@ Sample output:
     \LotsOfStuff\Paper\draft10.odf
     \LotsOfStuff\Paper\paper.odf
     \LotsOfStuff\Trash\draft10.odf
-
-The **bin** directory contains a file named **dups.pl**. This is a Perl script
-that uses Finf to print groups of duplicate files to standard out. With no
-arguments it prints a Finf config file. With any argument it parses the output
-from Finf and prints the result. This script is used together with Finf with the
-help of [pipelines](https://en.wikipedia.org/wiki/Pipeline_%28Unix%29).
-
-Example:
-
-    dups.pl | finf -c - \LotsOfStuff | dups.pl x
+___
 
 <a name="hash"></a>Hash
 -----------------------
@@ -315,7 +311,7 @@ given run of the script, regardless of which macros are played.
 Locations referencing external scripts and images use forward slash (/). They
 may be relative to the executing script.
 
-#### Macro script reference
+#### Macro-script reference
 
 This is a list of macro-script commands. For any integer parameter written in
 &lt;angles&gt;, either an integer literal or variable name may be used. For any

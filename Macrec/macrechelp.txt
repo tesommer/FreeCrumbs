@@ -10,13 +10,12 @@
 + "  -k    start key recorder\n"
 + "  -m    start mouse recorder after specified number of milliseconds\n"
 + "\n"
-+ "Macro-script lines are printed to STDOUT.\n"
++ "Macro-script lines are printed to standard output.\n"
 + "\n"
 + "Mouse-recorder operation-keys:\n"
 + "* P: mouse-button press/release-mode\n"
 + "* M: mouse-movement mode\n"
 + "* C: screen-capture mode\n"
 + "* Esc: exit\n"
-+ "When in screen-capture mode,"
-+ " one presses two points to select a sub image,"
-+ " which\nis then saved to a PNG file in the current directory.\n
++ "When in screen-capture mode, one presses two points to select a sub image, which\n"
++ "is then saved to a PNG file in the current directory.\n
