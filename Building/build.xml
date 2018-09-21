@@ -111,25 +111,25 @@
             <fileset dir="${build.dir}/Temp/freecrumbs.finf">
                 <include name="**/*.class"/>
             </fileset>
-            <fileset file="Home/LICENSE.txt"/>
+            <fileset file="../LICENSE.txt"/>
         </jar>
         <jar destfile="${build.dir.home}/lib/freecrumbs.hash-${version}.jar">
             <fileset dir="${build.dir}/Temp/freecrumbs.hash">
                 <include name="**/*.class"/>
             </fileset>
-            <fileset file="Home/LICENSE.txt"/>
+            <fileset file="../LICENSE.txt"/>
         </jar>
         <jar destfile="${build.dir.home}/lib/freecrumbs.macro-${version}.jar">
             <fileset dir="${build.dir}/Temp/freecrumbs.macro">
                 <include name="**/*.class"/>
             </fileset>
-            <fileset file="Home/LICENSE.txt"/>
+            <fileset file="../LICENSE.txt"/>
         </jar>
         <jar destfile="${build.dir.home}/lib/freecrumbs.macrec-${version}.jar">
             <fileset dir="${build.dir}/Temp/freecrumbs.macrec">
                 <include name="**/*.class"/>
             </fileset>
-            <fileset file="Home/LICENSE.txt"/>
+            <fileset file="../LICENSE.txt"/>
         </jar>
         
         <!-- Delete BUILD/Temp -->
@@ -142,14 +142,19 @@
             </fileset>
         </copy>
         
-        <!-- Copy license to BUILD_SRC -->
-        <copy todir="${build.dir.src}">
-            <fileset file="Home/LICENSE.txt"/>
-        </copy>
-        
         <!-- Copy home files to BUILD_HOME -->
         <copy todir="${build.dir.home}">
             <fileset dir="Home"/>
+        </copy>
+        
+        <!-- Copy LICENSE and README to BUILD_SRC and BUILD_HOME -->
+        <copy todir="${build.dir.src}">
+            <fileset file="../LICENSE.txt"/>
+            <fileset file="../README.md"/>
+        </copy>
+        <copy todir="${build.dir.home}">
+            <fileset file="../LICENSE.txt"/>
+            <fileset file="../README.md"/>
         </copy>
         
         <!-- Replace BULD_HOME tokens -->

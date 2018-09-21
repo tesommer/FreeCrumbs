@@ -29,7 +29,7 @@ A collection of tiny command-line tools.
 Legal
 -----
 
-Copyright &copy; 2018 Tone Sommerland
+Copyright &copy; @copyrightyearowner@
 
 For the terms and conditions of this product, see **LICENSE.txt**.
 
