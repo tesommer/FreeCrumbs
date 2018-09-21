@@ -29,7 +29,7 @@ A collection of tiny command-line tools.
 Legal
 -----
 
-Copyright &copy; 2017 Tone Sommerland
+Copyright &copy; 2018 Tone Sommerland
 
 For the terms and conditions of this product, see **LICENSE.txt**.
 
@@ -38,7 +38,7 @@ third-party libraries that this product depends on.
 
 FreeCrumbs comes bundled with:
 
-* [CalclipseLib version 2](http://www.calclipse.com)
+* [CalclipseLib version 3](http://www.calclipse.com)
 
 Directory layout
 ----------------
@@ -48,7 +48,7 @@ FreeCrumbs
     |
     +---- bin # executables
     |
-    +---- lib # the FreeCrumbs jar and third party libraries
+    +---- lib # the FreeCrumbs jars and third-party libraries
     |
     +---- FinfConfigs # configs that go to the Finf program (described below)
 ```
@@ -60,7 +60,7 @@ Programs included in FreeCrumbs
 * [Dups](#dups)
 * [Hash](#hash)
 * [Macro](#macro)
-  * [Macrec](#macrec)
+    * [Macrec](#macrec)
 
 <a name="finf"></a>Finf
 -----------------------
@@ -76,7 +76,7 @@ A file-info unit may contain the following fields:
 * *path*: the path without the filename (ends with a file separator)
 * *filename*: the filename
 * *size*: the size in bytes
-* *modified*: the last modified timestamp
+* *modified*: the last-modified timestamp
 * *hash*: a checksum of the file's content
 
 Two files with the exact same content will have the same hash. It's possible,
@@ -84,8 +84,8 @@ but extremely unlikely, that two different files will have equal hashes.
 
 ### Basic usage
 
-The following examples assumes you're in a terminal or command prompt
-with **bin** as the current directory.
+The following examples assume you're in a terminal or command prompt with
+**bin** as the current directory.
 ___
 
     finf
@@ -106,7 +106,7 @@ ___
 
     finf -c ..\FinfConfigs\csv-list.properties C:\SomeDirectory
 
-The ``-c`` option is used to specify a config file, in this case
+The ``-c`` option is used for specifying a config file, in this case
 **csv-list.properties**. This particular config makes Finf print each info unit
 as a semicolon-separated list on this format:
 
@@ -152,14 +152,15 @@ file is a text file on the Java *properties* format. Here's a sample file:
 * ``hash.algorithm`` is the algorithm used to generate the file hash. Default is
   MD5.
 
-* ``info.format`` is the format of the outputted info units. Occurrences of the
-  following tokens will be replaced by the corresponding actual information:
-  *${path}*, *${filename}*, *${size}*, *${modified}* and *${hash}*.
+* ``info.format`` is the format of the outputted info units. Occurrences of
+  tokens on the form *${field-name}* (e.g. *${path}*, *${filename}*, and so on)
+  will be replaced by the corresponding field value.
 
-* ``date.format`` specifies the format of the modified timstamp in the output.
-  See *java.txt.SimpleDateFormat* for details.
+* ``date.format`` specifies the timestamp format of the output. See
+  *java.txt.SimpleDateFormat* for details.
 
-* ``file.filter`` filters input files. If absent, all files are included. This setting may be on one of two forms:
+* ``file.filter`` filters input files. If absent, all files are included. This
+  setting may be on one of two forms:
   * _regex_: a regex pattern that matches the filenames to include as input
   * _format pattern_: an info format followed by one or more regex patterns,
     each preceded by either ``++`` to include matches or ``--`` to exclude
@@ -197,15 +198,16 @@ Omitting `=value` unsets the setting (and thus reverts to the default):
 <a name="dups"></a>Dups
 -----------------------
 
-The **bin** directory contains a file named **dups.pl**. This is a Perl script
-that uses Finf to print groups of duplicate files to standard out. With no
-arguments it prints a Finf config file. With any argument it parses the output
-from finf and prints the result. This script is used together with Finf with the
-help of [pipelines](https://en.wikipedia.org/wiki/Pipeline_%28Unix%29).
+**Note:** Requires Perl.
 
-Example:
+Dups lists duplicate files. There are two executables in **bin**:
 
-    dups.pl | finf -c - \LotsOfStuff | dups.pl x
+* **dups.bat** for Windows
+* **dups** for Unix/GNU Linux
+
+Usage:
+
+    dups <file/directory list>
 
 Sample output:
 
@@ -215,6 +217,16 @@ Sample output:
     \LotsOfStuff\Paper\draft10.odf
     \LotsOfStuff\Paper\paper.odf
     \LotsOfStuff\Trash\draft10.odf
+
+The **bin** directory contains a file named **dups.pl**. This is a Perl script
+that uses Finf to print groups of duplicate files to standard out. With no
+arguments it prints a Finf config file. With any argument it parses the output
+from Finf and prints the result. This script is used together with Finf with the
+help of [pipelines](https://en.wikipedia.org/wiki/Pipeline_%28Unix%29).
+
+Example:
+
+    dups.pl | finf -c - \LotsOfStuff | dups.pl x
 
 <a name="hash"></a>Hash
 -----------------------
@@ -289,7 +301,7 @@ This is a sample macro script:
     key_release VK_ALT
 
 **Warning:**
-*A key press must have a corresponding key release. Similarly, a mouse button
+*A key press must have a corresponding key release. Similarly, a mouse-button
 press must be paired with a release of the button.*
 
 #### Variables
@@ -305,7 +317,7 @@ may be relative to the executing script.
 
 #### Macro script reference
 
-This is a list of macro script commands. For any integer parameter written in
+This is a list of macro-script commands. For any integer parameter written in
 &lt;angles&gt;, either an integer literal or variable name may be used. For any
 image parameter in angles, either an image variable or location may be used.
 Optional parameters are surrounded by [square brackets]. A parameter followed by
@@ -326,15 +338,20 @@ equals and a value denotes a default value for the parameter.
   Exits the script.
 
 * ``idle [auto [<onOffToggle>=1]]``:
-  Waits for idle or sets the auto wait for idle. ``onOffToggle`` is zero to turn
-  auto wait for idle off, greater than zero to turn it on and less than zero to
+  Waits for idle or sets the auto wait-for-idle. ``onOffToggle`` is zero to turn
+  auto wait-for-idle off, greater than zero to turn it on and less than zero to
   toggle.
 
+* ``key_chord <key-code1> <key-code2> ...``:
+  Generates a key chord by pressing one or more keys, then releasing them in
+  reverse order.  
+  Example: ``key_chord VK_CONTROL VK_C``
+
 * ``key_press <key-code>``:
-  Generates a key press event.
+  Generates a key-press event.
 
 * ``key_release <key-code>``:
-  Generates a key release event.
+  Generates a key-release event.
 
 * ``load variable location``:
   Loads an image from the specified location and stores it as a script image
@@ -344,7 +361,7 @@ equals and a value denotes a default value for the parameter.
   Moves the mouse to specified x-y coordinates.
 
 * ``mouse_press <button1> [<button2> [<button3>]]``:
-  Generates a mouse press event. A button is an integer where nonzero is pressed
+  Generates a mouse-press event. A button is an integer where nonzero is pressed
   and zero is not. Buttons are numbered left to right. In other words, to press
   the middle button:  
   ``mouse_press 0 1``. Mouse buttons must be released with the ``mouse_release``
@@ -423,7 +440,7 @@ equals and a value denotes a default value for the parameter.
 
 ### <a name="macrec"></a>Macrec
 
-Macrec (Macro recorder) is a utility that prints macro script lines to STDOUT.
+Macrec (Macro recorder) is a utility that prints macro-script lines to STDOUT.
 The **bin** directory contains the Macrec launchers:
 
 * **macrec.bat** for Windows

@@ -60,7 +60,7 @@ Programs included in FreeCrumbs
 * [Dups](#dups)
 * [Hash](#hash)
 * [Macro](#macro)
-* [Macrec](#macrec)
+    * [Macrec](#macrec)
 
 <a name="finf"></a>Finf
 -----------------------
