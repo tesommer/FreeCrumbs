@@ -198,15 +198,16 @@ Omitting `=value` unsets the setting (and thus reverts to the default):
 <a name="dups"></a>Dups
 -----------------------
 
-The **bin** directory contains a file named **dups.pl**. This is a Perl script
-that uses Finf to print groups of duplicate files to standard out. With no
-arguments it prints a Finf config file. With any argument it parses the output
-from finf and prints the result. This script is used together with Finf with the
-help of [pipelines](https://en.wikipedia.org/wiki/Pipeline_%28Unix%29).
+**Note:** Requires Perl.
 
-Example:
+Dups lists duplicate files. There are two executables in **bin**:
 
-    dups.pl | finf -c - \LotsOfStuff | dups.pl x
+* **dups.bat** for Windows
+* **dups** for Unix/GNU Linux
+
+Usage:
+
+    dups <file/directory list>
 
 Sample output:
 
@@ -216,6 +217,16 @@ Sample output:
     \LotsOfStuff\Paper\draft10.odf
     \LotsOfStuff\Paper\paper.odf
     \LotsOfStuff\Trash\draft10.odf
+
+The **bin** directory contains a file named **dups.pl**. This is a Perl script
+that uses Finf to print groups of duplicate files to standard out. With no
+arguments it prints a Finf config file. With any argument it parses the output
+from Finf and prints the result. This script is used together with Finf with the
+help of [pipelines](https://en.wikipedia.org/wiki/Pipeline_%28Unix%29).
+
+Example:
+
+    dups.pl | finf -c - \LotsOfStuff | dups.pl x
 
 <a name="hash"></a>Hash
 -----------------------
