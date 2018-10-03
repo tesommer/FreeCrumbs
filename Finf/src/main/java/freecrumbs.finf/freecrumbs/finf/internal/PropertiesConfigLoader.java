@@ -3,27 +3,20 @@ package freecrumbs.finf.internal;
 import static java.util.Objects.requireNonNull;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import freecrumbs.finf.CachedInfo;
 import freecrumbs.finf.Config;
 import freecrumbs.finf.ConfigLoader;
+import freecrumbs.finf.FieldReader;
 import freecrumbs.finf.Info;
-import freecrumbs.finf.InfoFields;
-import freecrumbs.finf.InfoFormat;
-import freecrumbs.finf.field.FilenameField;
-import freecrumbs.finf.field.HashField;
-import freecrumbs.finf.field.ModifiedField;
-import freecrumbs.finf.field.PathField;
-import freecrumbs.finf.field.SizeField;
 
 /**
  * Loads configuration from a properties file.
@@ -50,17 +43,18 @@ import freecrumbs.finf.field.SizeField;
  */
 public final class PropertiesConfigLoader implements ConfigLoader {
     
-    public static final String HASH_ALGORITHM_KEY = "hash.algorithm";
-    public static final String INFO_FORMAT_KEY = "info.format";
-    public static final String DATE_FORMAT_KEY = "date.format";
-    public static final String FILE_FILTER_KEY = "file.filter";
-    public static final String ORDER_KEY = "order";
-    public static final String COUNT_KEY = "count";
+    private static final String HASH_ALGORITHM_KEY = "hash.algorithm";
+    private static final String INFO_FORMAT_KEY = "info.format";
+    private static final String DATE_FORMAT_KEY = "date.format";
+    private static final String FILE_FILTER_KEY = "file.filter";
+    private static final String ORDER_KEY = "order";
+    private static final String COUNT_KEY = "count";
     
     private static final String DEFAULT_HASH_ALGORITHM = "MD5";
     private static final String DEFAULT_INFO_FORMAT = "${filename}";
     private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm";
     
+    private static final int BUFFER_SIZE = 2048;
     private static final int REGEX_FLAGS = 0;
     
     private final Locale locale;
@@ -75,18 +69,29 @@ public final class PropertiesConfigLoader implements ConfigLoader {
             final Locale locale, final Map<String, String> overrides) {
         
         this.locale = requireNonNull(locale, "locale");
+        // Do not use Map.copyOf because overrides may contain null.
         this.overrides = new HashMap<>(overrides);
     }
     
     @Override
     public Config loadConfig(final Reader reader) throws IOException {
         final Properties props = getProperties(reader);
-        final InfoFields fields = getInfoFields(props);
-        final Function<File, Info> infoGenerator = getInfoGenerator(
-                props, fields);
-        return new Config.Builder(infoGenerator, getInfoFormat(props))
-                .setFileFilter(getFileFilter(props, infoGenerator))
-                .setOrder(getOrder(props, fields))
+        final AvailableFields availableFields = getAvailableFields(props);
+        final String[] availableFieldNames = availableFields.getNames();
+        final TokenInfoFormat infoFormat = getInfoFormat(props);
+        final FileFilterParser fileFilterParser = getFileFilterParser(props);
+        final OrderParser orderParser = getOrderParser(
+                props, availableFieldNames);
+        final String[] usedFieldNames = getUsedFieldNames(
+                availableFieldNames, infoFormat, fileFilterParser, orderParser);
+        final FieldReader fieldReader = availableFields.getReader(
+                BUFFER_SIZE, usedFieldNames);
+        final Function<File, Info> infoGenerator
+            = file -> CachedInfo.getInstance(fieldReader, file);
+        return new Config.Builder(infoGenerator, infoFormat)
+                .setFileFilter(fileFilterParser.getFileFilter(
+                        REGEX_FLAGS, infoGenerator))
+                .setOrder(orderParser.getOrder())
                 .setCount(getCount(props))
                 .build();
     }
@@ -97,53 +102,52 @@ public final class PropertiesConfigLoader implements ConfigLoader {
         applyOverrides(props, overrides);
         return props;
     }
-    
-    private InfoFields getInfoFields(final Properties props)
-            throws IOException {
 
+    private static void applyOverrides(
+            final Properties props, final Map<String, String> overrides) {
+        
+        overrides.forEach((key, value) -> {
+            if (value == null) {
+                props.remove(key);
+            } else {
+                props.put(key, value);
+            }
+        });
+    }
+    
+    private AvailableFields getAvailableFields(final Properties props)
+            throws IOException {
+        
         final String hashAlgorithm = props.getProperty(
                 HASH_ALGORITHM_KEY, DEFAULT_HASH_ALGORITHM);
         final String dateFormat = props.getProperty(
                 DATE_FORMAT_KEY, DEFAULT_DATE_FORMAT);
-        return InfoFields.of(
-                PathField.INSTANCE,
-                FilenameField.INSTANCE,
-                SizeField.INSTANCE,
-                ModifiedField.getInstance(dateFormat, locale),
-                HashField.getInstance(hashAlgorithm));
-    }
-    
-    private static Function<File, Info> getInfoGenerator(
-            final Properties props, final InfoFields fields) {
-        
-        return file -> CachedInfo.getInstance(fields, file);
+        return new AvailableFields(locale, dateFormat, hashAlgorithm);
     }
 
-    private static InfoFormat getInfoFormat(final Properties props) {
+    private static String[] getUsedFieldNames(
+            final String[] availableFieldNames,
+            final TokenInfoFormat infoFormat,
+            final FileFilterParser fileFilterParser,
+            final OrderParser orderParser) {
+        
+        final String[] usedByInfoFormat = infoFormat.getUsedFieldNames(
+                availableFieldNames);
+        final String[] usedByFileFilter = fileFilterParser.getUsedFieldNames(
+                availableFieldNames);
+        final String[] usedByOrder = orderParser.getUsedFieldNames();
+        return Stream.concat(
+                Stream.concat(
+                        Stream.of(usedByInfoFormat),
+                        Stream.of(usedByFileFilter)),
+                Stream.of(usedByOrder))
+                .distinct()
+                .toArray(String[]::new);
+    }
+
+    private static TokenInfoFormat getInfoFormat(final Properties props) {
         return new TokenInfoFormat(
                 props.getProperty(INFO_FORMAT_KEY, DEFAULT_INFO_FORMAT));
-    }
-
-    private static FileFilter getFileFilter(
-            final Properties props,
-            final Function<? super File, ? extends Info> infoGenerator)
-                    throws IOException {
-        
-        final String setting = props.getProperty(FILE_FILTER_KEY);
-        if (setting == null) {
-            return null;
-        }
-        return getFileFilterParser(infoGenerator).parse(setting);
-    }
-
-    private static Comparator<Info> getOrder(
-            final Properties props, final InfoFields fields) {
-        
-        final String setting = props.getProperty(ORDER_KEY);
-        if (setting == null) {
-            return null;
-        }
-        return getOrderParser(fields).parse(setting);
     }
 
     private static int getCount(final Properties props) throws IOException {
@@ -154,27 +158,18 @@ public final class PropertiesConfigLoader implements ConfigLoader {
         }
     }
 
-    private static void applyOverrides(
-            final Properties props, final Map<String, String> overrides) {
+    private static FileFilterParser getFileFilterParser(final Properties props)
+            throws IOException {
         
-        for (final String key : overrides.keySet()) {
-            final String value = overrides.get(key);
-            if (value == null) {
-                props.remove(key);
-            } else {
-                props.put(key, value);
-            }
-        }
+        final String setting = props.getProperty(FILE_FILTER_KEY);
+        return new FileFilterParser(setting);
     }
     
-    private static FileFilterParser getFileFilterParser(
-            final Function<? super File, ? extends Info> infoGenerator) {
+    private static OrderParser getOrderParser(
+            final Properties props, final String[] availableFieldNames) {
         
-        return new FileFilterParser(REGEX_FLAGS, infoGenerator);
-    }
-    
-    private static OrderParser getOrderParser(final InfoFields fields) {
-        return new OrderParser(fields.getNames());
+        final String setting = props.getProperty(ORDER_KEY);
+        return new OrderParser(setting, availableFieldNames);
     }
     
 }

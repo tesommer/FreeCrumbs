@@ -1,11 +1,10 @@
 package freecrumbs.finf.internal;
 
-import static java.util.Objects.requireNonNull;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,43 +39,71 @@ public final class FileFilterParser {
     
     private static final int DELIM_LENGTH = 2;
 
-    private final int regexFlags;
-    private final Function<? super File, ? extends Info> infoGenerator;
+    private final Collection<FormatPattern> formatPatterns = new ArrayList<>();
+    private final String setting;
+    private final TokenInfoFormat infoFormat;
     
-    public FileFilterParser(
-            final int regexFlags,
-            final Function<? super File, ? extends Info> infoGenerator) {
-
-        this.regexFlags = regexFlags;
-        this.infoGenerator = requireNonNull(infoGenerator, "infoGenerator");
-    }
-
-    public FileFilter parse(final String setting) throws IOException {
-        final Matcher delimiter
-            = Pattern.compile(DELIM_PATTERN).matcher(setting);
-        final Part formatPart = getFormatPart(setting, delimiter);
-        if (formatPart == null) {
-            return new RegexFileFilter(setting, regexFlags);
+    /**
+     * Parser the file-filter setting.
+     * @param setting the file-filter setting (nullable)
+     */
+    public FileFilterParser(final String setting) throws IOException {
+        this.setting = setting;
+        if (setting == null) {
+            this.infoFormat = null;
+        } else {
+            final Matcher delimiter
+                = Pattern.compile(DELIM_PATTERN).matcher(setting);
+            final Part formatPart = getFormatPart(setting, delimiter);
+            if (formatPart == null) {
+                this.infoFormat = null;
+            } else {
+                this.infoFormat = new TokenInfoFormat(formatPart.payload);
+                initFormatPatterns(setting, delimiter, formatPart);
+            }
         }
-        return parseFormatPattern(setting, delimiter, formatPart);
     }
 
-    private FileFilter parseFormatPattern(
+    private void initFormatPatterns(
             final String setting,
             final Matcher delimiter,
             final Part formatPart) throws IOException {
         
-        final var infoFormat = new TokenInfoFormat(formatPart.payload);
-        final var formatPatterns = new ArrayList<FormatPattern>();
         Part part = formatPart;
         do {
             part = getNextPatternPart(setting, delimiter, part);
             formatPatterns.add(getFormatPattern(part));
         } while (!part.last);
-        return new FormatPatternFileFilter(
-                infoGenerator,
-                infoFormat,
-                formatPatterns.stream().toArray(FormatPattern[]::new));
+    }
+    
+    /**
+     * Returns the field names used by the file-filter setting.
+     */
+    public String[] getUsedFieldNames(final String[] availableFieldNames) {
+        return infoFormat == null
+                ? new String[0]
+                : infoFormat.getUsedFieldNames(availableFieldNames);
+    }
+    
+    /**
+     * Returns the file filter.
+     * @return null if the setting is null
+     */
+    public FileFilter getFileFilter(
+            final int regexFlags,
+            final Function<? super File, ? extends Info> infoGenerator)
+                    throws IOException {
+        
+        if (setting == null) {
+            return null;
+        } else if (infoFormat == null) {
+            return new RegexFileFilter(setting, regexFlags);
+        } else {
+            return new FormatPatternFileFilter(
+                    infoGenerator,
+                    infoFormat,
+                    formatPatterns.stream().toArray(FormatPattern[]::new));
+        }
     }
     
     private static FormatPattern getFormatPattern(final Part patternPart)
@@ -135,7 +162,7 @@ public final class FileFilterParser {
     }
     
     /**
-     * A part of a setting in the format pattern style.
+     * A part of a setting in the format-pattern style.
      * The part may either be the format part,
      * or any of the pattern parts.
      * - start is the start index of the entire part.

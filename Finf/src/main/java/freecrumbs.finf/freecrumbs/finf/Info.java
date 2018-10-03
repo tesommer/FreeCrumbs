@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -17,16 +18,16 @@ public abstract class Info {
     
     private static final Logger LOGGER = Logger.getLogger(Info.class.getName());
     
-    private final InfoFields fields;
+    private final FieldReader reader;
     private final File file;
 
     /**
      * Creates a new file info object.
-     * @param fields the fields of info to get
+     * @param fields the fields of info to acquire
      * @param file the file to get info about
      */
-    protected Info(final InfoFields fields, final File file) {
-        this.fields = requireNonNull(fields, "fields");
+    protected Info(final FieldReader reader, final File file) {
+        this.reader = requireNonNull(reader, "reader");
         this.file = requireNonNull(file, "file");
     }
     
@@ -34,7 +35,7 @@ public abstract class Info {
      * The names of the fields this info contains.
      */
     public final String[] getFieldNames() {
-        return fields.getNames();
+        return reader.getFieldNames();
     }
     
     /**
@@ -43,7 +44,12 @@ public abstract class Info {
      * if this info doesn't have the given field
      */
     public final String getValue(final String fieldName) throws IOException {
-        return getValue(fields.getField(fieldName), file);
+        requireNonNull(fieldName, "fieldName");
+        final Map<String, String> values = getValues(reader, file);
+        if (!values.containsKey(fieldName)) {
+            new NoSuchElementException(fieldName);
+        }
+        return values.get(fieldName);
     }
     
     /**
@@ -67,9 +73,9 @@ public abstract class Info {
     }
     
     /**
-     * Retrieves the value of the given field from the given file.
+     * Uses the given field reader to get the field values of the given file.
      */
-    protected abstract String getValue(InfoField field, File file)
-            throws IOException;
+    protected abstract Map<String, String> getValues(
+            FieldReader reader, File file) throws IOException;
 
 }

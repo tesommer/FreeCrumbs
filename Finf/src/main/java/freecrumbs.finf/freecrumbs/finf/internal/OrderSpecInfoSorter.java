@@ -19,6 +19,15 @@ public final class OrderSpecInfoSorter implements Comparator<Info> {
                 .toArray(OrderSpec[]::new);
     }
     
+    /**
+     * Returns the field names used by this sorter.
+     */
+    public String[] getUsedFieldNames() {
+        return Stream.of(orderSpecs)
+                .map(OrderSpec::getFieldName)
+                .toArray(String[]::new);
+    }
+    
     @Override
     public int compare(final Info info1, final Info info2) {
         int order = 0;

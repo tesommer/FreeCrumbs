@@ -3,6 +3,7 @@ package freecrumbs.finf.internal;
 import static java.util.Objects.requireNonNull;
 
 import java.io.IOException;
+import java.util.stream.Stream;
 
 import freecrumbs.finf.Info;
 import freecrumbs.finf.InfoFormat;
@@ -22,6 +23,15 @@ public final class TokenInfoFormat implements InfoFormat {
      */
     public TokenInfoFormat(final String format) {
         this.format = requireNonNull(format, "format");
+    }
+    
+    /**
+     * Returns the field names used by this format.
+     */
+    public String[] getUsedFieldNames(final String[] availableFieldNames) {
+        return Stream.of(availableFieldNames)
+                .filter(name -> format.contains(getToken(name)))
+                .toArray(String[]::new);
     }
     
     @Override

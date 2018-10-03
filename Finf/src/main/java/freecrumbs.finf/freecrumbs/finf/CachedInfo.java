@@ -14,50 +14,31 @@ public final class CachedInfo extends Info {
     
     private static final Map<File, Info> INFO_CACHE = new HashMap<>();
     
-    private final Map<String, String> cache = new HashMap<>();
+    private Map<String, String> values;
 
-    private CachedInfo(final InfoFields fields, final File file) {
-        super(fields, file);
+    private CachedInfo(final FieldReader reader, final File file) {
+        super(reader, file);
     }
     
     /**
      * Returns either a new or cached instance for the given file.
      * The field values retrieved by the returned instance, are also cached.
      */
-    public static Info getInstance(final InfoFields fields, final File file) {
+    public static Info getInstance(final FieldReader reader, final File file) {
         synchronized (INFO_CACHE) {
-            try {
-                return getCached(
-                        INFO_CACHE, file, () -> new CachedInfo(fields, file));
-            } catch (final IOException ex) {
-                throw new AssertionError(ex);
-            }
+            return INFO_CACHE.computeIfAbsent(
+                    file, f -> new CachedInfo(reader, f));
         }
     }
-
+    
     @Override
-    protected String getValue(final InfoField field, final File file)
-            throws IOException {
+    protected Map<String, String> getValues(
+            final FieldReader reader, final File file) throws IOException {
         
-        return getCached(cache, field.getName(), () -> field.getValue(file));
-    }
-    
-    @FunctionalInterface
-    private interface Initial<T> {
-        T get() throws IOException;
-    }
-    
-    private static <K, V> V getCached(
-            final Map<? super K, V> cache,
-            final K key,
-            final Initial<? extends V> initial) throws IOException {
-        
-        V value = cache.get(key);
-        if (value == null) {
-            value = initial.get();
-            cache.put(key, value);
+        if (values == null) {
+            values = Map.copyOf(reader.getFieldValues(file));
         }
-        return value;
+        return values;
     }
 
 }
