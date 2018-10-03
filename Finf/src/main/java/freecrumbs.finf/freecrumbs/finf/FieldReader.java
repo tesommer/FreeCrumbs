@@ -70,6 +70,9 @@ public final class FieldReader {
             final File file) throws IOException {
         
         final FieldComputation[] computations = getComputations();
+        if (computations.length == 0) {
+            return;
+        }
         reset(computations);
         serve(computations, buffer, file);
         compute(fields, values);

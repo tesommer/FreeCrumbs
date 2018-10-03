@@ -2,12 +2,12 @@ package test.freecrumbs.finf;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.stream.Stream;
 
+import freecrumbs.finf.Field;
+import freecrumbs.finf.FieldReader;
 import freecrumbs.finf.Info;
-import freecrumbs.finf.InfoField;
-import freecrumbs.finf.InfoFields;
-import test.freecrumbs.finf.field.MockField;
 
 public final class MockInfo extends Info {
     
@@ -17,10 +17,10 @@ public final class MockInfo extends Info {
     public static final String MODIFIED_FIELD_NAME = "modified";
     public static final String HASH_FIELD_NAME = "hash";
     
-    private final MockField[] fields;
+    private final Field[] fields;
 
-    private MockInfo(final MockField[] fields) {
-        super(InfoFields.of(fields), new File(""));
+    private MockInfo(final Field[] fields) {
+        super(FieldReader.getInstance(1024, fields), new File(""));
         this.fields = fields.clone();
     }
     
@@ -35,35 +35,40 @@ public final class MockInfo extends Info {
                 getFields(path, filename, size, modified, hash));
     }
     
-    private static MockField[] getFields(
+    private static Field[] getFields(
             final String path,
             final String filename,
             final String size,
             final String modified,
             final String hash) {
         
-        return new MockField[] {
-                new MockField(PATH_FIELD_NAME, path),
-                new MockField(FILENAME_FIELD_NAME, filename),
-                new MockField(SIZE_FIELD_NAME, size),
-                new MockField(MODIFIED_FIELD_NAME, modified),
-                new MockField(HASH_FIELD_NAME, hash),
+        return new Field[] {
+                Field.getInstance(
+                        PATH_FIELD_NAME, new MockFieldValue(path)),
+                Field.getInstance(
+                        FILENAME_FIELD_NAME, new MockFieldValue(filename)),
+                Field.getInstance(
+                        SIZE_FIELD_NAME, new MockFieldValue(size)),
+                Field.getInstance(
+                        MODIFIED_FIELD_NAME, new MockFieldValue(modified)),
+                Field.getInstance(
+                        HASH_FIELD_NAME, new MockFieldValue(hash)),
         };
     }
     
     public boolean isValueRead(final String fieldName) {
         return Stream.of(fields)
-                .filter(field -> field.getName().equals(fieldName))
-                .map(MockField::isValueRead)
+                .filter(field -> field.name().equals(fieldName))
+                .map(MockFieldValue::isValueRead)
                 .findAny()
                 .orElse(false);
     }
 
     @Override
-    protected String getValue(final InfoField field, final File file)
-            throws IOException {
+    protected Map<String, String> getValues(
+            final FieldReader reader, final File file) throws IOException {
         
-        return field.getValue(file);
+        return reader.getFieldValues(file);
     }
 
     @Override

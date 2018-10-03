@@ -38,11 +38,11 @@ public final class ConfigLoaderTest {
                 config,
                 info,
                 "b",
-                fieldReadAssertion(MockInfo.PATH_FIELD_NAME,     false),
+                fieldReadAssertion(MockInfo.PATH_FIELD_NAME,     true),
                 fieldReadAssertion(MockInfo.FILENAME_FIELD_NAME, true),
-                fieldReadAssertion(MockInfo.SIZE_FIELD_NAME,     false),
-                fieldReadAssertion(MockInfo.MODIFIED_FIELD_NAME, false),
-                fieldReadAssertion(MockInfo.HASH_FIELD_NAME,     false));
+                fieldReadAssertion(MockInfo.SIZE_FIELD_NAME,     true),
+                fieldReadAssertion(MockInfo.MODIFIED_FIELD_NAME, true),
+                fieldReadAssertion(MockInfo.HASH_FIELD_NAME,     true));
     }
     
     @Test
