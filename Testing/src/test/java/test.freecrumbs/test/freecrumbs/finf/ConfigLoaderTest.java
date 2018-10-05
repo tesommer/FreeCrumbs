@@ -26,49 +26,6 @@ import freecrumbs.finf.Info;
 
 @DisplayName("ConfigLoader")
 public final class ConfigLoaderTest {
-    
-    /*
-    Tests that caches info:
-    test1:
-        fields:
-            "path"
-            "filename"
-            "size"
-            "hash"
-        filenames:
-            "з|@#гд$%&/{([)]=}?+`┤"
-    GetDefaultTest_FileFilter:
-        test3:
-            fields:
-                "filename"
-            filenames:
-                "ununpentium.txt"
-                "moscovium.txt"
-                "index.html"
-                "index.php"
-                "download.html"
-                "download.php"
-                "download.htm"
-                "index.htm"
-        test4:
-            fields:
-                "filename"
-            filenames:
-                "element115.txt"
-                ""
-        test5:
-            fields:
-                "filename"
-            filenames:
-                "123"
-                "abc"
-        test6:
-            fields:
-                "filename"
-            filenames:
-                ""
-                "a"
-    */
 
     public ConfigLoaderTest() {
     }
@@ -137,6 +94,23 @@ public final class ConfigLoaderTest {
                 MockInfo.HASH_FIELD_NAME);
     }
     
+    @Test
+    @DisplayName("getDefault(Map): Each Config has its own info cache")
+    public void test7() throws IOException {
+        final String filename = "thecommonfilename.txt";
+        final Config config1 = loadConfig("info.format=${filename}");
+        assertInfoGenerator(
+                config1,
+                filename,
+                MockInfo.FILENAME_FIELD_NAME);
+        final Config config2 = loadConfig("info.format=${path} ${filename}");
+        assertInfoGenerator(
+                config2,
+                filename,
+                MockInfo.FILENAME_FIELD_NAME,
+                MockInfo.PATH_FIELD_NAME);
+    }
+    
     @Nested
     @DisplayName("ConfigLoader.getDefault(Map): file.filter")
     public static final class GetDefaultTest_FileFilter {
@@ -175,22 +149,6 @@ public final class ConfigLoaderTest {
             assertFileFilter(config, "download.php",    true);
             assertFileFilter(config, "download.htm",    true);
             assertFileFilter(config, "index.htm",       false);
-            assertInfoGenerator(
-                    config, "ununpentium.txt", MockInfo.FILENAME_FIELD_NAME);
-            assertInfoGenerator(
-                    config, "moscovium.txt",   MockInfo.FILENAME_FIELD_NAME);
-            assertInfoGenerator(
-                    config, "index.html",      MockInfo.FILENAME_FIELD_NAME);
-            assertInfoGenerator(
-                    config, "index.php",       MockInfo.FILENAME_FIELD_NAME);
-            assertInfoGenerator(
-                    config, "download.html",   MockInfo.FILENAME_FIELD_NAME);
-            assertInfoGenerator(
-                    config, "download.php",    MockInfo.FILENAME_FIELD_NAME);
-            assertInfoGenerator(
-                    config, "download.htm",    MockInfo.FILENAME_FIELD_NAME);
-            assertInfoGenerator(
-                    config, "index.htm",       MockInfo.FILENAME_FIELD_NAME);
         }
         
         @Test
@@ -204,15 +162,6 @@ public final class ConfigLoaderTest {
             assertFileFilter(config1, filename2, true);
             assertFileFilter(config2, filename1, false);
             assertFileFilter(config2, filename2, false);
-            // Filename is used by the default info format.
-            assertInfoGenerator(
-                    config1, "element115.txt", MockInfo.FILENAME_FIELD_NAME);
-            assertInfoGenerator(
-                    config1, "",               MockInfo.FILENAME_FIELD_NAME);
-            assertInfoGenerator(
-                    config2, "element115.txt", MockInfo.FILENAME_FIELD_NAME);
-            assertInfoGenerator(
-                    config2, "",               MockInfo.FILENAME_FIELD_NAME);
         }
         
         @Test
@@ -222,10 +171,6 @@ public final class ConfigLoaderTest {
                     "file.filter=${filename}++\\\\d+++\\\\w+");
             assertFileFilter(config, "123", true);
             assertFileFilter(config, "abc", false);
-            assertInfoGenerator(
-                    config, "123", MockInfo.FILENAME_FIELD_NAME);
-            assertInfoGenerator(
-                    config, "abc", MockInfo.FILENAME_FIELD_NAME);
         }
         
         @Test
@@ -234,10 +179,6 @@ public final class ConfigLoaderTest {
             final Config config = loadConfig("file.filter=${filename}++.?++");
             assertFileFilter(config, "", true);
             assertFileFilter(config, "a", false);
-            assertInfoGenerator(
-                    config, "",  MockInfo.FILENAME_FIELD_NAME);
-            assertInfoGenerator(
-                    config, "a", MockInfo.FILENAME_FIELD_NAME);
         }
         
         @Test

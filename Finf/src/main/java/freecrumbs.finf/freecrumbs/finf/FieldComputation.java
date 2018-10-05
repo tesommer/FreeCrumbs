@@ -16,6 +16,7 @@ public interface FieldComputation {
     
     /**
      * Updates the computation with the given input.
+     * The input array should not be modified by this method.
      * @param input the next input to process
      * @param offset the offset to start from in the input array
      * @param length the number of bytes to devour

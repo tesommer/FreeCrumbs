@@ -12,7 +12,6 @@ import java.util.Properties;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import freecrumbs.finf.CachedInfo;
 import freecrumbs.finf.Config;
 import freecrumbs.finf.ConfigLoader;
 import freecrumbs.finf.FieldReader;
@@ -86,8 +85,8 @@ public final class PropertiesConfigLoader implements ConfigLoader {
                 availableFieldNames, infoFormat, fileFilterParser, orderParser);
         final FieldReader fieldReader = availableFields.getReader(
                 BUFFER_SIZE, usedFieldNames);
-        final Function<File, Info> infoGenerator
-            = file -> CachedInfo.getInstance(fieldReader, file);
+        final Function<File, Info> infoGenerator = getInfoGenerator(
+                fieldReader);
         return new Config.Builder(infoGenerator, infoFormat)
                 .setFileFilter(fileFilterParser.getFileFilter(
                         REGEX_FLAGS, infoGenerator))
@@ -143,6 +142,13 @@ public final class PropertiesConfigLoader implements ConfigLoader {
                 Stream.of(usedByOrder))
                 .distinct()
                 .toArray(String[]::new);
+    }
+
+    private static Function<File, Info> getInfoGenerator(
+            final FieldReader fieldReader) {
+        
+        final var cache = new HashMap<File, Info>();
+        return file -> CachedInfo.getInstance(fieldReader, file, cache);
     }
 
     private static TokenInfoFormat getInfoFormat(final Properties props) {
