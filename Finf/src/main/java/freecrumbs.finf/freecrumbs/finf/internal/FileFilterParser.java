@@ -44,7 +44,7 @@ public final class FileFilterParser {
     private final TokenInfoFormat infoFormat;
     
     /**
-     * Parser the file-filter setting.
+     * Parses the file-filter setting.
      * @param setting the file-filter setting (nullable)
      */
     public FileFilterParser(final String setting) throws IOException {

@@ -68,7 +68,7 @@ public final class MockInfo extends Info {
     protected Map<String, String> getValues(
             final FieldReader reader, final File file) throws IOException {
         
-        return reader.getFieldValues(file);
+        return reader.readFieldValues(file);
     }
 
     @Override

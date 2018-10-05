@@ -36,7 +36,7 @@ public final class CachedInfo extends Info {
             final FieldReader reader, final File file) throws IOException {
         
         if (values == null) {
-            values = Map.copyOf(reader.getFieldValues(file));
+            values = Map.copyOf(reader.readFieldValues(file));
         }
         return values;
     }

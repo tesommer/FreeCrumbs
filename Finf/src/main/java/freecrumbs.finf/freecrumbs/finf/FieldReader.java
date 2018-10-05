@@ -36,7 +36,10 @@ public final class FieldReader {
         return new FieldReader(bufferSize, fields);
     }
     
-    String[] getFieldNames() {
+    /**
+     * The names of the fields this reader contains.
+     */
+    public String[] getFieldNames() {
         return Field.namesOf(fields);
     }
     
@@ -45,7 +48,7 @@ public final class FieldReader {
      * @param file the file to get info about
      * @return the field names associated with their respective values
      */
-    public Map<String, String> getFieldValues(final File file)
+    public Map<String, String> readFieldValues(final File file)
             throws IOException {
         
         final var values = new HashMap<String, String>();
@@ -88,7 +91,7 @@ public final class FieldReader {
     private static void reset(final FieldComputation[] computations)
             throws IOException {
         
-        for (final FieldComputation computation : computations) {
+        for (final var computation : computations) {
             computation.reset();
         }
     }
@@ -104,7 +107,7 @@ public final class FieldReader {
                     bytesRead > 0;
                     bytesRead = in.read(buffer)) {
                 
-                for (final FieldComputation computation : computations) {
+                for (final var computation : computations) {
                     computation.update(buffer, 0, bytesRead);
                 }
             }
@@ -116,7 +119,7 @@ public final class FieldReader {
             final Map<? super String, ? super String> values)
                     throws IOException {
         
-        for (final Field field : fields) {
+        for (final var field : fields) {
             if (field.isComputed()) {
                 values.put(field.name(), field.computation().get());
             }

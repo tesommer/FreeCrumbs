@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +26,49 @@ import freecrumbs.finf.Info;
 
 @DisplayName("ConfigLoader")
 public final class ConfigLoaderTest {
+    
+    /*
+    Tests that caches info:
+    test1:
+        fields:
+            "path"
+            "filename"
+            "size"
+            "hash"
+        filenames:
+            "з|@#гд$%&/{([)]=}?+`┤"
+    GetDefaultTest_FileFilter:
+        test3:
+            fields:
+                "filename"
+            filenames:
+                "ununpentium.txt"
+                "moscovium.txt"
+                "index.html"
+                "index.php"
+                "download.html"
+                "download.php"
+                "download.htm"
+                "index.htm"
+        test4:
+            fields:
+                "filename"
+            filenames:
+                "element115.txt"
+                ""
+        test5:
+            fields:
+                "filename"
+            filenames:
+                "123"
+                "abc"
+        test6:
+            fields:
+                "filename"
+            filenames:
+                ""
+                "a"
+    */
 
     public ConfigLoaderTest() {
     }
@@ -75,6 +120,23 @@ public final class ConfigLoaderTest {
         assertConfig(config, false, false, -1);
     }
     
+    @Test
+    @DisplayName("getDefault(Map): Used fields")
+    public void test6() throws IOException {
+        final Config config = loadConfig(
+                "info.format=${filename}\n"
+                + "file.filter=${path}++\n"
+                + "order=hash size desc");
+        final String filename = "з|@#гд$%&/{([)]=}?+`┤";
+        assertInfoGenerator(
+                config,
+                filename,
+                MockInfo.PATH_FIELD_NAME,
+                MockInfo.FILENAME_FIELD_NAME,
+                MockInfo.SIZE_FIELD_NAME,
+                MockInfo.HASH_FIELD_NAME);
+    }
+    
     @Nested
     @DisplayName("ConfigLoader.getDefault(Map): file.filter")
     public static final class GetDefaultTest_FileFilter {
@@ -113,6 +175,22 @@ public final class ConfigLoaderTest {
             assertFileFilter(config, "download.php",    true);
             assertFileFilter(config, "download.htm",    true);
             assertFileFilter(config, "index.htm",       false);
+            assertInfoGenerator(
+                    config, "ununpentium.txt", MockInfo.FILENAME_FIELD_NAME);
+            assertInfoGenerator(
+                    config, "moscovium.txt",   MockInfo.FILENAME_FIELD_NAME);
+            assertInfoGenerator(
+                    config, "index.html",      MockInfo.FILENAME_FIELD_NAME);
+            assertInfoGenerator(
+                    config, "index.php",       MockInfo.FILENAME_FIELD_NAME);
+            assertInfoGenerator(
+                    config, "download.html",   MockInfo.FILENAME_FIELD_NAME);
+            assertInfoGenerator(
+                    config, "download.php",    MockInfo.FILENAME_FIELD_NAME);
+            assertInfoGenerator(
+                    config, "download.htm",    MockInfo.FILENAME_FIELD_NAME);
+            assertInfoGenerator(
+                    config, "index.htm",       MockInfo.FILENAME_FIELD_NAME);
         }
         
         @Test
@@ -126,6 +204,15 @@ public final class ConfigLoaderTest {
             assertFileFilter(config1, filename2, true);
             assertFileFilter(config2, filename1, false);
             assertFileFilter(config2, filename2, false);
+            // Filename is used by the default info format.
+            assertInfoGenerator(
+                    config1, "element115.txt", MockInfo.FILENAME_FIELD_NAME);
+            assertInfoGenerator(
+                    config1, "",               MockInfo.FILENAME_FIELD_NAME);
+            assertInfoGenerator(
+                    config2, "element115.txt", MockInfo.FILENAME_FIELD_NAME);
+            assertInfoGenerator(
+                    config2, "",               MockInfo.FILENAME_FIELD_NAME);
         }
         
         @Test
@@ -135,6 +222,10 @@ public final class ConfigLoaderTest {
                     "file.filter=${filename}++\\\\d+++\\\\w+");
             assertFileFilter(config, "123", true);
             assertFileFilter(config, "abc", false);
+            assertInfoGenerator(
+                    config, "123", MockInfo.FILENAME_FIELD_NAME);
+            assertInfoGenerator(
+                    config, "abc", MockInfo.FILENAME_FIELD_NAME);
         }
         
         @Test
@@ -143,6 +234,10 @@ public final class ConfigLoaderTest {
             final Config config = loadConfig("file.filter=${filename}++.?++");
             assertFileFilter(config, "", true);
             assertFileFilter(config, "a", false);
+            assertInfoGenerator(
+                    config, "",  MockInfo.FILENAME_FIELD_NAME);
+            assertInfoGenerator(
+                    config, "a", MockInfo.FILENAME_FIELD_NAME);
         }
         
         @Test
@@ -210,7 +305,7 @@ public final class ConfigLoaderTest {
                     fieldReadAssertion(MockInfo.FILENAME_FIELD_NAME, true),
                     fieldReadAssertion(MockInfo.SIZE_FIELD_NAME,     true),
                     fieldReadAssertion(MockInfo.MODIFIED_FIELD_NAME, true),
-                    fieldReadAssertion(MockInfo.HASH_FIELD_NAME,     false));
+                    fieldReadAssertion(MockInfo.HASH_FIELD_NAME,     true));
         }
     }
     
@@ -266,6 +361,17 @@ public final class ConfigLoaderTest {
                 expectedCount,
                 config.getCount(),
                 "Count");
+    }
+    
+    private static void assertInfoGenerator(
+            final Config config,
+            final String filename,
+            final String... expectedFieldNames) {
+        
+        final Info info = config.getInfoGenerator().apply(new File(filename));
+        final var expected = new TreeSet<String>(Set.of(expectedFieldNames));
+        final var actual = new TreeSet<String>(Set.of(info.getFieldNames()));
+        assertEquals(expected, actual, "Field names");
     }
     
     private static void assertInfoFormat(

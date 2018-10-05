@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 import freecrumbs.finf.Info;
 
 /**
- * Orders file info units based on a collection of order specs.
+ * Orders info based on a collection of order specs.
  * 
  * @author Tone Sommerland
  */

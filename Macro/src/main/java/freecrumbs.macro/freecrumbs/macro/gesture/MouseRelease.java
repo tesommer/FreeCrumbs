@@ -1,6 +1,7 @@
 package freecrumbs.macro.gesture;
 
 import static freecrumbs.macro.gesture.MousePress.getButtons;
+
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
 import freecrumbs.macro.GestureParser;

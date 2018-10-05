@@ -44,7 +44,7 @@ public final class OrderParser {
         return order;
     }
     
-    private OrderSpec[] getOrderSpecs(
+    private static OrderSpec[] getOrderSpecs(
             final String setting, final String[] availableFieldNames) {
         
         final var orderSpecs = new ArrayList<OrderSpec>(

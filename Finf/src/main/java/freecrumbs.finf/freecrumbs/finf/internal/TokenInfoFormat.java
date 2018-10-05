@@ -18,7 +18,7 @@ public final class TokenInfoFormat implements InfoFormat {
     private final String format;
 
     /**
-     * Creates a new token info format.
+     * Creates a new token info-format.
      * @param format the format string containing tokens to be replaced
      */
     public TokenInfoFormat(final String format) {

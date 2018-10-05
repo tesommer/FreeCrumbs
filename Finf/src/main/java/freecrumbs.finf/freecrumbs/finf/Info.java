@@ -22,8 +22,8 @@ public abstract class Info {
     private final File file;
 
     /**
-     * Creates a new file info object.
-     * @param fields the fields of info to acquire
+     * Creates a new info object.
+     * @param reader responsible for acquiring info about the file
      * @param file the file to get info about
      */
     protected Info(final FieldReader reader, final File file) {
@@ -47,7 +47,7 @@ public abstract class Info {
         requireNonNull(fieldName, "fieldName");
         final Map<String, String> values = getValues(reader, file);
         if (!values.containsKey(fieldName)) {
-            new NoSuchElementException(fieldName);
+            throw new NoSuchElementException(fieldName);
         }
         return values.get(fieldName);
     }
@@ -73,7 +73,9 @@ public abstract class Info {
     }
     
     /**
-     * Uses the given field reader to get the field values of the given file.
+     * Returns the field names associated with their respective values.
+     * @param reader a reader of the fields to get
+     * @param file the file which fields to get
      */
     protected abstract Map<String, String> getValues(
             FieldReader reader, File file) throws IOException;

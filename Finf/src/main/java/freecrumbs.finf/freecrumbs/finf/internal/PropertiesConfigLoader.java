@@ -97,7 +97,7 @@ public final class PropertiesConfigLoader implements ConfigLoader {
     }
 
     private Properties getProperties(final Reader reader) throws IOException {
-        final Properties props = new Properties();
+        final var props = new Properties();
         props.load(reader);
         applyOverrides(props, overrides);
         return props;

@@ -47,7 +47,8 @@ public final class AvailableFields {
     
     /**
      * Returns a reader of only the fields that are actually used.
-     * @throws NoSuchElementException if any of the used fields are unavailable
+     * @throws NoSuchElementException
+     * if any of the specified fields are unavailable
      */
     public FieldReader getReader(
             final int bufferSize, final String... usedFieldNames) {
