@@ -12,20 +12,22 @@ import freecrumbs.finf.Field;
 import freecrumbs.finf.FieldComputation;
 
 /**
- * A hash of the file content.
- * The name of this field is {@code "hash"}.
+ * File-content hash.
  * 
  * @author Tone Sommerland
  */
 public final class Hash {
     
-    private static final String NAME = "hash";
-    
     private Hash() {
     }
     
-    public static Field getField(final String algorithm) {
-        return Field.getInstance(NAME, new HashFieldComputation(algorithm));
+    /**
+     * Returns a hash-computation field.
+     * @param name the field name
+     * @param algorithm the hash algorithm
+     */
+    public static Field getField(final String name, final String algorithm) {
+        return Field.getInstance(name, new HashFieldComputation(algorithm));
     }
     
     private static final class HashFieldComputation

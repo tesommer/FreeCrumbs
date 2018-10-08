@@ -15,7 +15,7 @@ public final class MockInfo extends Info {
     public static final String FILENAME_FIELD_NAME = "filename";
     public static final String SIZE_FIELD_NAME = "size";
     public static final String MODIFIED_FIELD_NAME = "modified";
-    public static final String HASH_FIELD_NAME = "hash";
+    public static final String MD5_FIELD_NAME = "md5";
     
     private final Field[] fields;
 
@@ -29,10 +29,10 @@ public final class MockInfo extends Info {
             final String filename,
             final String size,
             final String modified,
-            final String hash) {
+            final String md5) {
         
         return new MockInfo(
-                getFields(path, filename, size, modified, hash));
+                getFields(path, filename, size, modified, md5));
     }
     
     private static Field[] getFields(
@@ -40,7 +40,7 @@ public final class MockInfo extends Info {
             final String filename,
             final String size,
             final String modified,
-            final String hash) {
+            final String md5) {
         
         return new Field[] {
                 Field.getInstance(
@@ -52,7 +52,7 @@ public final class MockInfo extends Info {
                 Field.getInstance(
                         MODIFIED_FIELD_NAME, new MockFieldValue(modified)),
                 Field.getInstance(
-                        HASH_FIELD_NAME, new MockFieldValue(hash)),
+                        MD5_FIELD_NAME, new MockFieldValue(md5)),
         };
     }
     

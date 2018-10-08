@@ -27,15 +27,17 @@ public final class AvailableFields {
     public AvailableFields(
             final Locale locale,
             final String dateFormat,
-            final String hashAlgorithm) throws IOException {
+            final String... hashAlgorithms) throws IOException {
         
-        this.fields = new Field[] {
-                Path.FIELD,
-                Filename.FIELD,
-                Size.FIELD,
-                Modified.getField(dateFormat, locale),
-                Hash.getField(hashAlgorithm),
-        };
+        this.fields = Stream.concat(
+                Stream.of(
+                        Path.FIELD,
+                        Filename.FIELD,
+                        Size.FIELD,
+                        Modified.getField(dateFormat, locale)),
+                Stream.of(hashAlgorithms)
+                    .map(algorithm -> Hash.getField(algorithm, algorithm)))
+                .toArray(Field[]::new);
     }
     
     /**

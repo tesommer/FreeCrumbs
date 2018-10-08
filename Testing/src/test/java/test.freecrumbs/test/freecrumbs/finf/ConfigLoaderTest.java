@@ -1,5 +1,6 @@
 package test.freecrumbs.finf;
 
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -12,8 +13,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
@@ -44,7 +43,7 @@ public final class ConfigLoaderTest {
                 fieldReadAssertion(MockInfo.FILENAME_FIELD_NAME, true),
                 fieldReadAssertion(MockInfo.SIZE_FIELD_NAME,     true),
                 fieldReadAssertion(MockInfo.MODIFIED_FIELD_NAME, true),
-                fieldReadAssertion(MockInfo.HASH_FIELD_NAME,     true));
+                fieldReadAssertion(MockInfo.MD5_FIELD_NAME,     true));
     }
     
     @Test
@@ -83,7 +82,7 @@ public final class ConfigLoaderTest {
         final Config config = loadConfig(
                 "info.format=${filename}\n"
                 + "file.filter=${path}++\n"
-                + "order=hash size desc");
+                + "order=md5 size desc");
         final String filename = "з|@#гд$%&/{([)]=}?+`┤";
         assertInfoGenerator(
                 config,
@@ -91,7 +90,7 @@ public final class ConfigLoaderTest {
                 MockInfo.PATH_FIELD_NAME,
                 MockInfo.FILENAME_FIELD_NAME,
                 MockInfo.SIZE_FIELD_NAME,
-                MockInfo.HASH_FIELD_NAME);
+                MockInfo.MD5_FIELD_NAME);
     }
     
     @Test
@@ -109,6 +108,22 @@ public final class ConfigLoaderTest {
                 filename,
                 MockInfo.FILENAME_FIELD_NAME,
                 MockInfo.PATH_FIELD_NAME);
+    }
+    
+    @Test
+    @DisplayName("getDefault(Map): hash.algorithms")
+    public void test8() throws IOException {
+        final String setting
+            = "hash.algorithms= md5  sha-512, \tnothanx md5 MD5 \n"
+            + "info.format="
+            + "${md5} ${sha-512,} ${nothanx} ${} ${ }  ${MD5}${\t}";
+        final Config config = loadConfig(setting);
+        assertInfoGenerator(config, "", "md5", "sha-512,", "nothanx");
+        final String setting2
+            = "hash.algorithms= \n"
+            + "info.format=${md5} ${sha-512,} ${nothanx} ${} ${ } ${\t}";
+        final Config config2 = loadConfig(setting2);
+        assertInfoGenerator(config2, "");
     }
     
     @Nested
@@ -213,14 +228,14 @@ public final class ConfigLoaderTest {
                     "order=path filename desc size asc");
             assertOrder(config, I3, I1, I2);
             final Config config2 = loadConfig(
-                    "order=modified hash desc");
+                    "order=modified md5 desc");
             assertOrder(config2, I1, I3, I2);
         }
         
         @Test
         @DisplayName("Order: invalid order")
         public void test2() throws IOException {
-            assertOrder(loadConfig("order=wtf hash"), I1, I2, I3);
+            assertOrder(loadConfig("order=wtf md5"), I1, I2, I3);
         }
     }
     
@@ -246,7 +261,7 @@ public final class ConfigLoaderTest {
                     fieldReadAssertion(MockInfo.FILENAME_FIELD_NAME, true),
                     fieldReadAssertion(MockInfo.SIZE_FIELD_NAME,     true),
                     fieldReadAssertion(MockInfo.MODIFIED_FIELD_NAME, true),
-                    fieldReadAssertion(MockInfo.HASH_FIELD_NAME,     true));
+                    fieldReadAssertion(MockInfo.MD5_FIELD_NAME,      true));
         }
     }
     
@@ -310,8 +325,12 @@ public final class ConfigLoaderTest {
             final String... expectedFieldNames) {
         
         final Info info = config.getInfoGenerator().apply(new File(filename));
-        final var expected = new TreeSet<String>(Set.of(expectedFieldNames));
-        final var actual = new TreeSet<String>(Set.of(info.getFieldNames()));
+        final var expected = Stream.of(expectedFieldNames)
+                .sorted()
+                .collect(toList());
+        final var actual = Stream.of(info.getFieldNames())
+                .sorted()
+                .collect(toList());
         assertEquals(expected, actual, "Field names");
     }
     

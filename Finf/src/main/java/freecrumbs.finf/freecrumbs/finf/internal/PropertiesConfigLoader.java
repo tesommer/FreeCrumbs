@@ -22,8 +22,8 @@ import freecrumbs.finf.Info;
  * Sample file:
  * <pre>
  * {@code
- * hash.algorithm=SHA-256
- * info.format=${path}${filename} ${size} ${modified} ${hash}
+ * hash.algorithms=md5 sha-256
+ * info.format=${path}${filename} ${size} ${modified} ${md5} ${sha-256}
  * date.format=yyyy-MM-dd HH:mm
  * file.filter=.*\.html
  * order=filename size asc modified desc
@@ -42,17 +42,18 @@ import freecrumbs.finf.Info;
  */
 public final class PropertiesConfigLoader implements ConfigLoader {
     
-    private static final String HASH_ALGORITHM_KEY = "hash.algorithm";
+    private static final String HASH_ALGORITHMS_KEY = "hash.algorithms";
     private static final String INFO_FORMAT_KEY = "info.format";
     private static final String DATE_FORMAT_KEY = "date.format";
     private static final String FILE_FILTER_KEY = "file.filter";
     private static final String ORDER_KEY = "order";
     private static final String COUNT_KEY = "count";
     
-    private static final String DEFAULT_HASH_ALGORITHM = "MD5";
+    private static final String DEFAULT_HASH_ALGORITHMS = "md5 sha-1 sha-256";
     private static final String DEFAULT_INFO_FORMAT = "${filename}";
     private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm";
     
+    private static final String HASH_ALGORITHM_DELIMITER = "[ |\\t]+";
     private static final int BUFFER_SIZE = 2048;
     private static final int REGEX_FLAGS = 0;
     
@@ -117,11 +118,21 @@ public final class PropertiesConfigLoader implements ConfigLoader {
     private AvailableFields getAvailableFields(final Properties props)
             throws IOException {
         
-        final String hashAlgorithm = props.getProperty(
-                HASH_ALGORITHM_KEY, DEFAULT_HASH_ALGORITHM);
+        final String[] hashAlgorithms = getHashAlgorithms(props);
         final String dateFormat = props.getProperty(
                 DATE_FORMAT_KEY, DEFAULT_DATE_FORMAT);
-        return new AvailableFields(locale, dateFormat, hashAlgorithm);
+        return new AvailableFields(locale, dateFormat, hashAlgorithms);
+    }
+
+    private static String[] getHashAlgorithms(final Properties props) {
+        return Stream.of(
+                props.getProperty(HASH_ALGORITHMS_KEY, DEFAULT_HASH_ALGORITHMS)
+                    .split(HASH_ALGORITHM_DELIMITER))
+                        .map(String::trim)
+                        .map(String::toLowerCase)
+                        .filter(algorithm -> !algorithm.isEmpty())
+                        .distinct()
+                        .toArray(String[]::new);
     }
 
     private static String[] getUsedFieldNames(
