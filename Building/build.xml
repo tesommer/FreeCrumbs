@@ -12,7 +12,6 @@
     <property name="build.dir.home" value="${build.dir}/FreeCrumbs-${version}"/>
     
     <property name="finf.project.dir" value="../Finf"/>
-    <property name="hash.project.dir" value="../Hash"/>
     <property name="macro.project.dir" value="../Macro"/>
     <property name="macrec.project.dir" value="../Macrec"/>
     
@@ -32,9 +31,6 @@
             <fileset dir="${finf.project.dir}/src">
                 <include name="**/*.java"/>
             </fileset>
-            <fileset dir="${hash.project.dir}/src">
-                <include name="**/*.java"/>
-            </fileset>
             <fileset dir="${macro.project.dir}/src">
                 <include name="**/*.java"/>
             </fileset>
@@ -51,9 +47,6 @@
         <loadresource property="finf.help">
            <file file="${finf.project.dir}/finfhelp.txt"/>
         </loadresource>
-        <loadresource property="hash.help">
-           <file file="${hash.project.dir}/hashhelp.txt"/>
-        </loadresource>
         <loadresource property="macro.help">
            <file file="${macro.project.dir}/macrohelp.txt"/>
         </loadresource>
@@ -64,10 +57,6 @@
             file="${build.dir.src}/main/java/freecrumbs.finf/freecrumbs/finf/Main.java"
             token="@finfhelp@"
             value="${finf.help}"/>
-        <replace
-            file="${build.dir.src}/main/java/freecrumbs.hash/freecrumbs/hash/Hash.java"
-            token="@hashhelp@"
-            value="${hash.help}"/>
         <replace
             file="${build.dir.src}/main/java/freecrumbs.macro/freecrumbs/macro/Main.java"
             token="@macrohelp@"
@@ -109,12 +98,6 @@
         <mkdir dir="${build.dir.home}/lib"/>
         <jar destfile="${build.dir.home}/lib/freecrumbs.finf-${version}.jar">
             <fileset dir="${build.dir}/Temp/freecrumbs.finf">
-                <include name="**/*.class"/>
-            </fileset>
-            <fileset file="../LICENSE.txt"/>
-        </jar>
-        <jar destfile="${build.dir.home}/lib/freecrumbs.hash-${version}.jar">
-            <fileset dir="${build.dir}/Temp/freecrumbs.hash">
                 <include name="**/*.class"/>
             </fileset>
             <fileset file="../LICENSE.txt"/>
