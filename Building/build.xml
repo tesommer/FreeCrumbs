@@ -130,14 +130,12 @@
             <fileset dir="Home"/>
         </copy>
         
-        <!-- Copy LICENSE and README to BUILD_SRC and BUILD_HOME -->
+        <!-- Copy LICENSE to BUILD_SRC and BUILD_HOME -->
         <copy todir="${build.dir.src}">
             <fileset file="../LICENSE.txt"/>
-            <fileset file="../README.md"/>
         </copy>
         <copy todir="${build.dir.home}">
             <fileset file="../LICENSE.txt"/>
-            <fileset file="../README.md"/>
         </copy>
         
         <!-- Replace BULD_HOME tokens -->
