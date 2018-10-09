@@ -104,18 +104,17 @@ public final class FieldReader {
             final File file) throws IOException {
         
         try (final var in = new FileInputStream(file)) {
-            final var activeComps = new ArrayList<FieldComputation>(
+            final var active = new ArrayList<FieldComputation>(
                     List.of(computations));
             for (
                     int bytesRead = in.read(buffer);
                     bytesRead > 0;
                     bytesRead = in.read(buffer)) {
                 
-                for (int i = 0; i < activeComps.size(); i++) {
-                    final FieldComputation comp = activeComps.get(i);
-                    if (!comp.update(buffer, 0, bytesRead)) {
-                        activeComps.remove(i--);
-                        if (activeComps.isEmpty()) {
+                for (int i = 0; i < active.size(); i++) {
+                    if (!active.get(i).update(buffer, 0, bytesRead)) {
+                        active.remove(i--);
+                        if (active.isEmpty()) {
                             return;
                         }
                     }
