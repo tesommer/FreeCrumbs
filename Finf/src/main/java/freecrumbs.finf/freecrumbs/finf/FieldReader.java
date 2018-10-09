@@ -3,7 +3,9 @@ package freecrumbs.finf;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -102,13 +104,21 @@ public final class FieldReader {
             final File file) throws IOException {
         
         try (final var in = new FileInputStream(file)) {
+            final var activeComps = new ArrayList<FieldComputation>(
+                    List.of(computations));
             for (
                     int bytesRead = in.read(buffer);
                     bytesRead > 0;
                     bytesRead = in.read(buffer)) {
                 
-                for (final var computation : computations) {
-                    computation.update(buffer, 0, bytesRead);
+                for (int i = 0; i < activeComps.size(); i++) {
+                    final FieldComputation comp = activeComps.get(i);
+                    if (!comp.update(buffer, 0, bytesRead)) {
+                        activeComps.remove(i--);
+                        if (activeComps.isEmpty()) {
+                            return;
+                        }
+                    }
                 }
             }
         }

@@ -50,12 +50,13 @@ public final class Hash {
         }
 
         @Override
-        public void update(
+        public boolean update(
                 final byte[] input,
                 final int offset,
                 final int length) throws IOException {
             
             messageDigest.update(input, offset, length);
+            return true;
         }
 
         @Override
