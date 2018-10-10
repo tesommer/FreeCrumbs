@@ -38,12 +38,12 @@ public final class ConfigLoaderTest {
         assertInfoFormat(
                 config,
                 info,
-                "b",
+                "b${eol}",
                 fieldReadAssertion(MockInfo.PATH_FIELD_NAME,     true),
                 fieldReadAssertion(MockInfo.FILENAME_FIELD_NAME, true),
                 fieldReadAssertion(MockInfo.SIZE_FIELD_NAME,     true),
                 fieldReadAssertion(MockInfo.MODIFIED_FIELD_NAME, true),
-                fieldReadAssertion(MockInfo.MD5_FIELD_NAME,     true));
+                fieldReadAssertion(MockInfo.MD5_FIELD_NAME,      true));
     }
     
     @Test

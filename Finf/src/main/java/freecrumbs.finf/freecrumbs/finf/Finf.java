@@ -93,7 +93,7 @@ public final class Finf {
         for (int i = 0; (config.getCount() < 0 || i < config.getCount())
                 && i < items.size(); i++) {
             final Info info = informer.provide(items.get(i));
-            out.println(config.getInfoFormat().toString(info));
+            out.print(config.getInfoFormat().toString(info));
         }
     }
     

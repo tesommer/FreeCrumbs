@@ -1,12 +1,14 @@
 package freecrumbs.finf.internal;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
 import freecrumbs.finf.Field;
 import freecrumbs.finf.FieldReader;
+import freecrumbs.finf.field.Eol;
 import freecrumbs.finf.field.Filename;
 import freecrumbs.finf.field.Hash;
 import freecrumbs.finf.field.Modified;
@@ -30,14 +32,30 @@ public final class AvailableFields {
             final String... hashAlgorithms) throws IOException {
         
         this.fields = Stream.concat(
-                Stream.of(
-                        Path.FIELD,
-                        Filename.FIELD,
-                        Size.FIELD,
-                        Modified.getField(dateFormat, locale)),
-                Stream.of(hashAlgorithms)
-                    .map(algorithm -> Hash.getField(algorithm, algorithm)))
-                .toArray(Field[]::new);
+                Stream.concat(
+                    Stream.of(
+                            Path.FIELD,
+                            Filename.FIELD,
+                            Size.FIELD,
+                            Modified.getField(dateFormat, locale)),
+                    hashFields(hashAlgorithms)),
+                Stream.of(Eol.getFields()))
+            .toArray(Field[]::new);
+    }
+    
+    private static Stream<Field> hashFields(final String[] hashAlgorithms) {
+        final var hashFields = new HashMap<String, Field>();
+        for (final String algorithm : hashAlgorithms) {
+            final String trimmed = algorithm.trim();
+            if (trimmed.isEmpty()) {
+                continue;
+            }
+            final String trimmedAndLowerCase = trimmed.toLowerCase();
+            hashFields.put(
+                    trimmedAndLowerCase,
+                    Hash.getField(trimmedAndLowerCase, trimmed));
+        }
+        return hashFields.values().stream();
     }
     
     /**

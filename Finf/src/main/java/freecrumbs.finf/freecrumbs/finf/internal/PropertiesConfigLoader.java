@@ -22,8 +22,8 @@ import freecrumbs.finf.Info;
  * Sample file:
  * <pre>
  * {@code
- * hash.algorithms=md5 sha-256
- * info.format=${path}${filename} ${size} ${modified} ${md5} ${sha-256}
+ * hash.algorithms=MD5 SHA-256
+ * info.format=${path}${filename} ${size} ${modified} ${md5} ${sha-256}${eol}
  * date.format=yyyy-MM-dd HH:mm
  * file.filter=.*\.html
  * order=filename size asc modified desc
@@ -50,7 +50,7 @@ public final class PropertiesConfigLoader implements ConfigLoader {
     private static final String COUNT_KEY = "count";
     
     private static final String DEFAULT_HASH_ALGORITHMS = "md5 sha-1 sha-256";
-    private static final String DEFAULT_INFO_FORMAT = "${filename}";
+    private static final String DEFAULT_INFO_FORMAT = "${filename}${eol}";
     private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm";
     
     private static final String HASH_ALGORITHM_DELIMITER = "[ |\\t]+";
@@ -125,14 +125,8 @@ public final class PropertiesConfigLoader implements ConfigLoader {
     }
 
     private static String[] getHashAlgorithms(final Properties props) {
-        return Stream.of(
-                props.getProperty(HASH_ALGORITHMS_KEY, DEFAULT_HASH_ALGORITHMS)
-                    .split(HASH_ALGORITHM_DELIMITER))
-                        .map(String::trim)
-                        .map(String::toLowerCase)
-                        .filter(algorithm -> !algorithm.isEmpty())
-                        .distinct()
-                        .toArray(String[]::new);
+        return props.getProperty(HASH_ALGORITHMS_KEY, DEFAULT_HASH_ALGORITHMS)
+                .split(HASH_ALGORITHM_DELIMITER);
     }
 
     private static String[] getUsedFieldNames(
