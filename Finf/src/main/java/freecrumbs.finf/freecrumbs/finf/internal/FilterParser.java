@@ -14,7 +14,7 @@ import freecrumbs.finf.Info;
 
 /**
  * <p>
- * Parses the file-filter config-setting.
+ * Parses the filter config-setting.
  * Two setting styles are supported: regex and format pattern.
  * </p>
  * <p>
@@ -30,7 +30,7 @@ import freecrumbs.finf.Info;
  * 
  * @author Tone Sommerland
  */
-public final class FileFilterParser {
+public final class FilterParser {
     
     private static final String
     DELIM_PATTERN = "(\\+\\+([^+]|$))|(\\-\\-([^-]|$))";
@@ -44,10 +44,10 @@ public final class FileFilterParser {
     private final TokenInfoFormat infoFormat;
     
     /**
-     * Parses the file-filter setting.
-     * @param setting the file-filter setting (nullable)
+     * Parses the filter setting.
+     * @param setting the filter setting (nullable)
      */
-    public FileFilterParser(final String setting) throws IOException {
+    public FilterParser(final String setting) throws IOException {
         this.setting = setting;
         if (setting == null) {
             this.infoFormat = null;
@@ -77,7 +77,7 @@ public final class FileFilterParser {
     }
     
     /**
-     * Returns the field names used by the file-filter setting.
+     * Returns the field names used by the filter setting.
      */
     public String[] getUsedFieldNames(final String[] availableFieldNames) {
         return infoFormat == null

@@ -23,17 +23,17 @@ import freecrumbs.finf.Info;
  * <pre>
  * {@code
  * hash.algorithms=MD5 SHA-256
- * info.format=${path}${filename} ${size} ${modified} ${md5} ${sha-256}${eol}
+ * output=${path}${filename} ${size} ${modified} ${md5} ${sha-256}${eol}
  * date.format=yyyy-MM-dd HH:mm
- * file.filter=.*\.html
+ * filter=.*\.html
  * order=filename size asc modified desc
  * count=100
  * }
  * </pre>
- * Alternative file filter &ndash; format pattern:
+ * Alternative filter &ndash; format pattern:
  * <pre>
  * {@code
- * file.filter=${filename}++.+\.html--index\..{3,4}
+ * filter=${filename}++.+\.html--index\..{3,4}
  * }
  * </pre>
  * ({@code ++} precedes inclusion patterns and {@code --} exclusion patterns.)
@@ -42,18 +42,18 @@ import freecrumbs.finf.Info;
  */
 public final class PropertiesConfigLoader implements ConfigLoader {
 
-    private static final String PREFILTER_KEY = "prefilter";
     private static final String HASH_ALGORITHMS_KEY = "hash.algorithms";
-    private static final String INFO_FORMAT_KEY = "info.format";
+    private static final String OUTPUT_KEY = "output";
     private static final String DATE_FORMAT_KEY = "date.format";
-    private static final String FILE_FILTER_KEY = "file.filter";
+    private static final String FILTER_KEY = "filter";
+    private static final String PREFILTER_KEY = "prefilter";
     private static final String ORDER_KEY = "order";
     private static final String COUNT_KEY = "count";
     
-    private static final String DEFAULT_PREFILTER = "1";
     private static final String DEFAULT_HASH_ALGORITHMS = "md5 sha-1 sha-256";
-    private static final String DEFAULT_INFO_FORMAT = "${filename}${eol}";
+    private static final String DEFAULT_OUTPUT = "${filename}${eol}";
     private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm";
+    private static final String DEFAULT_PREFILTER = "1";
     
     private static final String HASH_ALGORITHM_DELIMITER = "[ |\\t]+";
     private static final int BUFFER_SIZE = 2048;
@@ -81,17 +81,17 @@ public final class PropertiesConfigLoader implements ConfigLoader {
         final AvailableFields availableFields = getAvailableFields(props);
         final String[] availableFieldNames = availableFields.getNames();
         final TokenInfoFormat infoFormat = getInfoFormat(props);
-        final FileFilterParser fileFilterParser = getFileFilterParser(props);
+        final FilterParser filterParser = getFilterParser(props);
         final OrderParser orderParser = getOrderParser(
                 props, availableFieldNames);
         final InfoGenerators infoGenerators = getInfoGenerators(
                 props,
                 availableFields,
                 infoFormat,
-                fileFilterParser,
+                filterParser,
                 orderParser);
         return new Config.Builder(infoGenerators.main, infoFormat)
-                .setFileFilter(fileFilterParser.getFileFilter(
+                .setFileFilter(filterParser.getFileFilter(
                         REGEX_FLAGS, infoGenerators.filter))
                 .setOrder(orderParser.getOrder())
                 .setCount(getCount(props))
@@ -135,41 +135,41 @@ public final class PropertiesConfigLoader implements ConfigLoader {
             final Properties props,
             final AvailableFields availableFields,
             final TokenInfoFormat infoFormat,
-            final FileFilterParser fileFilterParser,
+            final FilterParser filterParser,
             final OrderParser orderParser) {
         
         final String[] availableFieldNames = availableFields.getNames();
-        final String[] usedByInfoFormat = infoFormat.getUsedFieldNames(
+        final String[] usedByOutput = infoFormat.getUsedFieldNames(
                 availableFieldNames);
-        final String[] usedByFileFilter = fileFilterParser.getUsedFieldNames(
+        final String[] usedByFilter = filterParser.getUsedFieldNames(
                 availableFieldNames);
         final String[] usedByOrder = orderParser.getUsedFieldNames();
         if (isTrue(props.getProperty(PREFILTER_KEY, DEFAULT_PREFILTER))) {
             return getPrefilteringInfoGenerators(
                     availableFields,
-                    usedByInfoFormat,
-                    usedByFileFilter,
+                    usedByOutput,
+                    usedByFilter,
                     usedByOrder);
         }
         return getNonPrefilteringInfoGenerators(
                 availableFields,
-                usedByInfoFormat,
-                usedByFileFilter,
+                usedByOutput,
+                usedByFilter,
                 usedByOrder);
     }
 
     private static InfoGenerators getPrefilteringInfoGenerators(
             final AvailableFields availableFields,
-            final String[] usedByInfoFormat,
-            final String[] usedByFileFilter,
+            final String[] usedByOutput,
+            final String[] usedByFilter,
             final String[] usedByOrder) {
         
         final FieldReader mainReader = availableFields.getReader(
                 BUFFER_SIZE,
-                concat(usedByInfoFormat, usedByOrder));
+                concat(usedByOutput, usedByOrder));
         final FieldReader filterReader = availableFields.getReader(
                 BUFFER_SIZE,
-                usedByFileFilter);
+                usedByFilter);
         final var mainCache = new HashMap<File, Info>();
         final var filterCache = new HashMap<File, Info>();
         return new InfoGenerators(
@@ -181,13 +181,13 @@ public final class PropertiesConfigLoader implements ConfigLoader {
 
     private static InfoGenerators getNonPrefilteringInfoGenerators(
             final AvailableFields availableFields,
-            final String[] usedByInfoFormat,
-            final String[] usedByFileFilter,
+            final String[] usedByOutput,
+            final String[] usedByFilter,
             final String[] usedByOrder) {
         
         final FieldReader mainReader = availableFields.getReader(
                 BUFFER_SIZE,
-                concat(usedByInfoFormat, usedByFileFilter, usedByOrder));
+                concat(usedByOutput, usedByFilter, usedByOrder));
         final var mainCache = new HashMap<File, Info>();
         return new InfoGenerators(
                 file -> CachedInfo.getInstance(mainReader, file, mainCache));
@@ -195,7 +195,7 @@ public final class PropertiesConfigLoader implements ConfigLoader {
 
     private static TokenInfoFormat getInfoFormat(final Properties props) {
         return new TokenInfoFormat(
-                props.getProperty(INFO_FORMAT_KEY, DEFAULT_INFO_FORMAT));
+                props.getProperty(OUTPUT_KEY, DEFAULT_OUTPUT));
     }
 
     private static int getCount(final Properties props) throws IOException {
@@ -206,11 +206,11 @@ public final class PropertiesConfigLoader implements ConfigLoader {
         }
     }
 
-    private static FileFilterParser getFileFilterParser(final Properties props)
+    private static FilterParser getFilterParser(final Properties props)
             throws IOException {
         
-        final String setting = props.getProperty(FILE_FILTER_KEY);
-        return new FileFilterParser(setting);
+        final String setting = props.getProperty(FILTER_KEY);
+        return new FilterParser(setting);
     }
     
     private static OrderParser getOrderParser(

@@ -81,8 +81,8 @@ public final class ConfigLoaderTest {
     public void test6() throws IOException {
         final Config config = loadConfig(
                   "prefilter=0\n"
-                + "info.format=${filename}\n"
-                + "file.filter=${path}++\n"
+                + "output=${filename}\n"
+                + "filter=${path}++\n"
                 + "order=md5 size desc");
         final String filename = "§|@#£¤$%&/{([)]=}?+`´";
         assertInfoGenerator(
@@ -99,8 +99,8 @@ public final class ConfigLoaderTest {
     public void test7() throws IOException {
         final Config config = loadConfig(
                 "prefilter=1\n"
-              + "info.format=${filename}\n"
-              + "file.filter=${path}++\n"
+              + "output=${filename}\n"
+              + "filter=${path}++\n"
               + "order=md5 size desc");
         final String filename = "´`+?}=])[({/&%$¤£#@|§";
         assertInfoGenerator(
@@ -115,12 +115,12 @@ public final class ConfigLoaderTest {
     @DisplayName("getDefault(Map): Each Config has its own info cache")
     public void test8() throws IOException {
         final String filename = "thecommonfilename.txt";
-        final Config config1 = loadConfig("info.format=${filename}");
+        final Config config1 = loadConfig("output=${filename}");
         assertInfoGenerator(
                 config1,
                 filename,
                 MockInfo.FILENAME_FIELD_NAME);
-        final Config config2 = loadConfig("info.format=${path} ${filename}");
+        final Config config2 = loadConfig("output=${path} ${filename}");
         assertInfoGenerator(
                 config2,
                 filename,
@@ -133,19 +133,19 @@ public final class ConfigLoaderTest {
     public void test9() throws IOException {
         final String setting
             = "hash.algorithms= md5  sha-512, \tnothanx md5 MD5 \n"
-            + "info.format="
+            + "output="
             + "${md5} ${sha-512,} ${nothanx} ${} ${ }  ${MD5}${\t}";
         final Config config = loadConfig(setting);
         assertInfoGenerator(config, "", "md5", "sha-512,", "nothanx");
         final String setting2
             = "hash.algorithms= \n"
-            + "info.format=${md5} ${sha-512,} ${nothanx} ${} ${ } ${\t}";
+            + "output=${md5} ${sha-512,} ${nothanx} ${} ${ } ${\t}";
         final Config config2 = loadConfig(setting2);
         assertInfoGenerator(config2, "");
     }
     
     @Nested
-    @DisplayName("ConfigLoader.getDefault(Map): file.filter")
+    @DisplayName("ConfigLoader.getDefault(Map): filter")
     public static final class GetDefaultTest_FileFilter {
 
         public GetDefaultTest_FileFilter() {
@@ -154,7 +154,7 @@ public final class ConfigLoaderTest {
         @Test
         @DisplayName("Regex")
         public void test1() throws IOException {
-            final Config config = loadConfig("file.filter=a\\\\d*");
+            final Config config = loadConfig("filter=a\\\\d*");
             assertFileFilter(config, "abc", false);
             assertFileFilter(config, "a23", true);
         }
@@ -164,14 +164,14 @@ public final class ConfigLoaderTest {
         public void test2() {
             assertThrows(
                     IOException.class,
-                    () -> loadConfig("file.filter=.{@,"));
+                    () -> loadConfig("filter=.{@,"));
         }
         
         @Test
         @DisplayName("Format pattern")
         public void test3() throws IOException {
             final String setting
-                = "file.filter=${filename}"
+                = "filter=${filename}"
                 + "--^.{14,}$++(.*\\\\.html?$|.*\\\\.php$)--^index\\\\..{3,4}$";
             final Config config = loadConfig(setting);
             assertFileFilter(config, "ununpentium.txt", false);
@@ -187,8 +187,8 @@ public final class ConfigLoaderTest {
         @Test
         @DisplayName("Format pattern: empty format")
         public void test4() throws IOException {
-            final Config config1 = loadConfig("file.filter=++.*");
-            final Config config2 = loadConfig("file.filter=++.+");
+            final Config config1 = loadConfig("filter=++.*");
+            final Config config2 = loadConfig("filter=++.+");
             final String filename1 = "element115.txt";
             final String filename2 = "";
             assertFileFilter(config1, filename1, true);
@@ -201,7 +201,7 @@ public final class ConfigLoaderTest {
         @DisplayName("Format pattern: pattern with trailing delim char")
         public void test5() throws IOException {
             final Config config = loadConfig(
-                    "file.filter=${filename}++\\\\d+++\\\\w+");
+                    "filter=${filename}++\\\\d+++\\\\w+");
             assertFileFilter(config, "123", true);
             assertFileFilter(config, "abc", false);
         }
@@ -209,7 +209,7 @@ public final class ConfigLoaderTest {
         @Test
         @DisplayName("Format pattern: trailing empty pattern")
         public void test6() throws IOException {
-            final Config config = loadConfig("file.filter=${filename}++.?++");
+            final Config config = loadConfig("filter=${filename}++.?++");
             assertFileFilter(config, "", true);
             assertFileFilter(config, "a", false);
         }
@@ -219,7 +219,7 @@ public final class ConfigLoaderTest {
         public void test7() {
             assertThrows(
                     IOException.class,
-                    () -> loadConfig("file.filter=${filename}++.{@,"));
+                    () -> loadConfig("filter=${filename}++.{@,"));
         }
     }
     
@@ -258,7 +258,7 @@ public final class ConfigLoaderTest {
     }
     
     @Nested
-    @DisplayName("ConfigLoader.getDefault(Map): info.format")
+    @DisplayName("ConfigLoader.getDefault(Map): output")
     public static final class GetDefaultTest_InfoFormat {
 
         public GetDefaultTest_InfoFormat() {
@@ -268,7 +268,7 @@ public final class ConfigLoaderTest {
         @DisplayName("Info format")
         public void test1() throws IOException {
             final Config config = loadConfig(
-                    "info.format=${modified}|${filename}: ${path} -- ${size}");
+                    "output=${modified}|${filename}: ${path} -- ${size}");
             final MockInfo info = MockInfo.getInstance(
                     "cat", "al", "ey", "a", "Z");
             assertInfoFormat(
