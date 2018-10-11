@@ -43,17 +43,17 @@ import freecrumbs.finf.Info;
 public final class PropertiesConfigLoader implements ConfigLoader {
 
     private static final String HASH_ALGORITHMS_KEY = "hash.algorithms";
-    private static final String OUTPUT_KEY = "output";
     private static final String DATE_FORMAT_KEY = "date.format";
-    private static final String FILTER_KEY = "filter";
     private static final String PREFILTER_KEY = "prefilter";
+    private static final String OUTPUT_KEY = "output";
+    private static final String FILTER_KEY = "filter";
     private static final String ORDER_KEY = "order";
     private static final String COUNT_KEY = "count";
     
     private static final String DEFAULT_HASH_ALGORITHMS = "md5 sha-1 sha-256";
-    private static final String DEFAULT_OUTPUT = "${filename}${eol}";
     private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm";
     private static final String DEFAULT_PREFILTER = "1";
+    private static final String DEFAULT_OUTPUT = "${filename}${eol}";
     
     private static final String HASH_ALGORITHM_DELIMITER = "[ |\\t]+";
     private static final int BUFFER_SIZE = 2048;
