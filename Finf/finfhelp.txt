@@ -63,7 +63,7 @@
 + "------------------\n"
 + "\n"
 + "hash.algorithms=SHA-512\n"
-+ "output=${path}${filename} ${size} ${modified} ${sha-512}\n"
++ "output=${path}${filename} ${size} ${modified} ${sha-512}${eol}\n"
 + "date.format=yyyy-MM-dd HH:mm\n"
 + "filter=.*\\.html\n"
 + "order=filename size asc modified desc\n"
