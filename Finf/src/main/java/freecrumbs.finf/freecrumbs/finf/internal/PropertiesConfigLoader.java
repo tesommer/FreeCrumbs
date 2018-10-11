@@ -22,7 +22,7 @@ import freecrumbs.finf.Info;
  * Sample file:
  * <pre>
  * {@code
- * hash.algorithms=MD5 SHA-256
+ * hash.algorithms=MD5 SHA-1 SHA-256
  * output=${path}${filename} ${size} ${modified} ${md5} ${sha-256}${eol}
  * date.format=yyyy-MM-dd HH:mm
  * filter=.*\.html
@@ -221,9 +221,7 @@ public final class PropertiesConfigLoader implements ConfigLoader {
     }
     
     private static boolean isTrue(final String propertyValue) {
-        return
-                   !"0".equals(propertyValue)
-                && !"false".equalsIgnoreCase(propertyValue);
+        return !"0".equals(propertyValue);
     }
     
     private static String[] concat(final String[] arr1, final String[] arr2) {
