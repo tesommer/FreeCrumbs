@@ -41,7 +41,8 @@ import freecrumbs.finf.Info;
  * @author Tone Sommerland
  */
 public final class PropertiesConfigLoader implements ConfigLoader {
-    
+
+    private static final String PREFILTER_KEY = "prefilter";
     private static final String HASH_ALGORITHMS_KEY = "hash.algorithms";
     private static final String INFO_FORMAT_KEY = "info.format";
     private static final String DATE_FORMAT_KEY = "date.format";
@@ -49,6 +50,7 @@ public final class PropertiesConfigLoader implements ConfigLoader {
     private static final String ORDER_KEY = "order";
     private static final String COUNT_KEY = "count";
     
+    private static final String DEFAULT_PREFILTER = "1";
     private static final String DEFAULT_HASH_ALGORITHMS = "md5 sha-1 sha-256";
     private static final String DEFAULT_INFO_FORMAT = "${filename}${eol}";
     private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm";
@@ -82,15 +84,15 @@ public final class PropertiesConfigLoader implements ConfigLoader {
         final FileFilterParser fileFilterParser = getFileFilterParser(props);
         final OrderParser orderParser = getOrderParser(
                 props, availableFieldNames);
-        final String[] usedFieldNames = getUsedFieldNames(
-                availableFieldNames, infoFormat, fileFilterParser, orderParser);
-        final FieldReader fieldReader = availableFields.getReader(
-                BUFFER_SIZE, usedFieldNames);
-        final Function<File, Info> infoGenerator = getInfoGenerator(
-                fieldReader);
-        return new Config.Builder(infoGenerator, infoFormat)
+        final InfoGenerators infoGenerators = getInfoGenerators(
+                props,
+                availableFields,
+                infoFormat,
+                fileFilterParser,
+                orderParser);
+        return new Config.Builder(infoGenerators.main, infoFormat)
                 .setFileFilter(fileFilterParser.getFileFilter(
-                        REGEX_FLAGS, infoGenerator))
+                        REGEX_FLAGS, infoGenerators.filter))
                 .setOrder(orderParser.getOrder())
                 .setCount(getCount(props))
                 .build();
@@ -128,32 +130,67 @@ public final class PropertiesConfigLoader implements ConfigLoader {
         return props.getProperty(HASH_ALGORITHMS_KEY, DEFAULT_HASH_ALGORITHMS)
                 .split(HASH_ALGORITHM_DELIMITER);
     }
-
-    private static String[] getUsedFieldNames(
-            final String[] availableFieldNames,
+    
+    private static InfoGenerators getInfoGenerators(
+            final Properties props,
+            final AvailableFields availableFields,
             final TokenInfoFormat infoFormat,
             final FileFilterParser fileFilterParser,
             final OrderParser orderParser) {
         
+        final String[] availableFieldNames = availableFields.getNames();
         final String[] usedByInfoFormat = infoFormat.getUsedFieldNames(
                 availableFieldNames);
         final String[] usedByFileFilter = fileFilterParser.getUsedFieldNames(
                 availableFieldNames);
         final String[] usedByOrder = orderParser.getUsedFieldNames();
-        return Stream.concat(
-                Stream.concat(
-                        Stream.of(usedByInfoFormat),
-                        Stream.of(usedByFileFilter)),
-                Stream.of(usedByOrder))
-                .distinct()
-                .toArray(String[]::new);
+        if (isTrue(props.getProperty(PREFILTER_KEY, DEFAULT_PREFILTER))) {
+            return getPrefilteringInfoGenerators(
+                    availableFields,
+                    usedByInfoFormat,
+                    usedByFileFilter,
+                    usedByOrder);
+        }
+        return getNonPrefilteringInfoGenerators(
+                availableFields,
+                usedByInfoFormat,
+                usedByFileFilter,
+                usedByOrder);
     }
 
-    private static Function<File, Info> getInfoGenerator(
-            final FieldReader fieldReader) {
+    private static InfoGenerators getPrefilteringInfoGenerators(
+            final AvailableFields availableFields,
+            final String[] usedByInfoFormat,
+            final String[] usedByFileFilter,
+            final String[] usedByOrder) {
         
-        final var cache = new HashMap<File, Info>();
-        return file -> CachedInfo.getInstance(fieldReader, file, cache);
+        final FieldReader mainReader = availableFields.getReader(
+                BUFFER_SIZE,
+                concat(usedByInfoFormat, usedByOrder));
+        final FieldReader filterReader = availableFields.getReader(
+                BUFFER_SIZE,
+                usedByFileFilter);
+        final var mainCache = new HashMap<File, Info>();
+        final var filterCache = new HashMap<File, Info>();
+        return new InfoGenerators(
+                file -> CachedInfo.getInstance(
+                        mainReader, file, mainCache),
+                file -> CachedInfo.getInstance(
+                        filterReader, file, filterCache));
+    }
+
+    private static InfoGenerators getNonPrefilteringInfoGenerators(
+            final AvailableFields availableFields,
+            final String[] usedByInfoFormat,
+            final String[] usedByFileFilter,
+            final String[] usedByOrder) {
+        
+        final FieldReader mainReader = availableFields.getReader(
+                BUFFER_SIZE,
+                concat(usedByInfoFormat, usedByFileFilter, usedByOrder));
+        final var mainCache = new HashMap<File, Info>();
+        return new InfoGenerators(
+                file -> CachedInfo.getInstance(mainReader, file, mainCache));
     }
 
     private static TokenInfoFormat getInfoFormat(final Properties props) {
@@ -181,6 +218,49 @@ public final class PropertiesConfigLoader implements ConfigLoader {
         
         final String setting = props.getProperty(ORDER_KEY);
         return new OrderParser(setting, availableFieldNames);
+    }
+    
+    private static boolean isTrue(final String propertyValue) {
+        return
+                   !"0".equals(propertyValue)
+                && !"false".equalsIgnoreCase(propertyValue);
+    }
+    
+    private static String[] concat(final String[] arr1, final String[] arr2) {
+        return Stream.concat(Stream.of(arr1), Stream.of(arr2))
+                .distinct()
+                .toArray(String[]::new);
+    }
+    
+    private static String[] concat(
+            final String[] arr1, final String[] arr2, String[] arr3) {
+        
+        return Stream.concat(
+                Stream.concat(Stream.of(arr1), Stream.of(arr2)),
+                Stream.of(arr3))
+                    .distinct()
+                    .toArray(String[]::new);
+    }
+    
+    private static final class InfoGenerators {
+        private final Function<? super File, ? extends Info> main;
+        private final Function<? super File, ? extends Info> filter;
+        
+        private InfoGenerators(
+                final Function<? super File, ? extends Info> main,
+                final Function<? super File, ? extends Info> filter) {
+            
+            assert main != null;
+            assert filter != null;
+            this.main = main;
+            this.filter = filter;
+        }
+
+        private InfoGenerators(
+                final Function<? super File, ? extends Info> main) {
+            
+            this(main, main);
+        }
     }
     
 }

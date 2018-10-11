@@ -77,10 +77,11 @@ public final class ConfigLoaderTest {
     }
     
     @Test
-    @DisplayName("getDefault(Map): Used fields")
+    @DisplayName("getDefault(Map): Used fields, not prefilter")
     public void test6() throws IOException {
         final Config config = loadConfig(
-                "info.format=${filename}\n"
+                  "prefilter=0\n"
+                + "info.format=${filename}\n"
                 + "file.filter=${path}++\n"
                 + "order=md5 size desc");
         final String filename = "§|@#£¤$%&/{([)]=}?+`´";
@@ -94,8 +95,25 @@ public final class ConfigLoaderTest {
     }
     
     @Test
-    @DisplayName("getDefault(Map): Each Config has its own info cache")
+    @DisplayName("getDefault(Map): Used fields, prefilter")
     public void test7() throws IOException {
+        final Config config = loadConfig(
+                "prefilter=1\n"
+              + "info.format=${filename}\n"
+              + "file.filter=${path}++\n"
+              + "order=md5 size desc");
+        final String filename = "´`+?}=])[({/&%$¤£#@|§";
+        assertInfoGenerator(
+                config,
+                filename,
+                MockInfo.FILENAME_FIELD_NAME,
+                MockInfo.SIZE_FIELD_NAME,
+                MockInfo.MD5_FIELD_NAME);
+    }
+    
+    @Test
+    @DisplayName("getDefault(Map): Each Config has its own info cache")
+    public void test8() throws IOException {
         final String filename = "thecommonfilename.txt";
         final Config config1 = loadConfig("info.format=${filename}");
         assertInfoGenerator(
@@ -112,7 +130,7 @@ public final class ConfigLoaderTest {
     
     @Test
     @DisplayName("getDefault(Map): hash.algorithms")
-    public void test8() throws IOException {
+    public void test9() throws IOException {
         final String setting
             = "hash.algorithms= md5  sha-512, \tnothanx md5 MD5 \n"
             + "info.format="
