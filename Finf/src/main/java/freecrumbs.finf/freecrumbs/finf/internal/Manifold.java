@@ -95,10 +95,7 @@ public final class Manifold {
         final String[] used1 = infoFormat.getUsedFieldNames(
                 availableFields.getNames());
         final String[] used2 = orderParser.getUsedFieldNames();
-        final FieldReader reader = availableFields.getReader(
-                BUFFER_SIZE, concatDistinct(used1, used2));
-        final var cache = new HashMap<File, Info>();
-        return file -> CachedInfo.getInstance(reader, file, cache);
+        return getInfoGenerator(availableFields, concatDistinct(used1, used2));
     }
     
     private static Function<File, Info> getNonPrefilterInfoGenerator(
@@ -115,10 +112,8 @@ public final class Manifold {
                 .map(parser -> parser.getUsedFieldNames(availableFieldNames))
                 .flatMap(Stream::of)
                 .toArray(String[]::new);
-        final FieldReader reader = availableFields.getReader(
-                BUFFER_SIZE, concatDistinct(used1, used2, used3));
-        final var cache = new HashMap<File, Info>();
-        return file -> CachedInfo.getInstance(reader, file, cache);
+        return getInfoGenerator(
+                availableFields, concatDistinct(used1, used2, used3));
     }
     
     private static Collection<FileFilter> getPrefilterFileFilters(
@@ -129,7 +124,7 @@ public final class Manifold {
         final var fileFilters = new ArrayList<FileFilter>(filterParsers.size());
         for (final var filterParser : filterParsers) {
             fileFilters.add(
-                    getPrefilterFileFilter(filterParser, availableFields));
+                    getPrefilterFileFilter(availableFields, filterParser));
         }
         return fileFilters;
     }
@@ -148,17 +143,23 @@ public final class Manifold {
     }
     
     private static FileFilter getPrefilterFileFilter(
-            final FilterParser filterParser,
-            final AvailableFields availableFields) throws IOException {
+            final AvailableFields availableFields,
+            final FilterParser filterParser) throws IOException {
         
-        final var cache = new HashMap<File, Info>();
         final String[] usedFieldNames = filterParser.getUsedFieldNames(
                 availableFields.getNames());
+        return filterParser.getFileFilter(
+                REGEX_FLAGS, getInfoGenerator(availableFields, usedFieldNames));
+    }
+    
+    private static Function<File, Info> getInfoGenerator(
+            final AvailableFields availableFields,
+            final String[] usedFieldNames) {
+        
         final FieldReader reader = availableFields.getReader(
                 BUFFER_SIZE, usedFieldNames);
-        final Function<File, Info> infoGenerator
-            = file -> CachedInfo.getInstance(reader, file, cache);
-        return filterParser.getFileFilter(REGEX_FLAGS, infoGenerator);
+        final var cache = new HashMap<File, Info>();
+        return file -> CachedInfo.getInstance(reader, file, cache);
     }
     
     private static FileFilter nullOrAsOne(
