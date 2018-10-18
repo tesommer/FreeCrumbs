@@ -1,6 +1,7 @@
 package freecrumbs.finf.internal;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.NoSuchElementException;
@@ -25,25 +26,46 @@ public final class AvailableFields {
 
     /**
      * Creates an instance containing available info fields.
+     * If the given date format is empty, timestamp formatting will be off.
      */
     public AvailableFields(
-            final Locale locale,
             final String dateFormat,
+            final Locale locale,
             final String... hashAlgorithms) throws IOException {
         
-        this.fields = Stream.concat(
-                Stream.concat(
-                    Stream.of(
-                            Path.FIELD,
-                            Filename.FIELD,
-                            Size.FIELD,
-                            Modified.getField(dateFormat, locale)),
-                    hashFields(hashAlgorithms)),
+        this.fields = concat(
+                Stream.of(
+                        Path.FIELD,
+                        Filename.FIELD,
+                        Size.FIELD,
+                        modifiedField(dateFormat, locale)),
+                hashFields(hashAlgorithms).stream(),
                 Stream.of(Eol.getFields()))
-            .toArray(Field[]::new);
+                .toArray(Field[]::new);
     }
     
-    private static Stream<Field> hashFields(final String[] hashAlgorithms) {
+    private static Stream<Field> concat(
+            Stream<Field> stream1,
+            Stream<Field> stream2,
+            Stream<Field> stream3) {
+        
+        return Stream.concat(
+                stream1,
+                Stream.concat(
+                        stream2,
+                        stream3));
+    }
+    
+    private static Field modifiedField(
+            final String dateFormat, final Locale locale) throws IOException {
+        
+        if (dateFormat.isEmpty()) {
+            return Modified.getField();
+        }
+        return Modified.getField(dateFormat, locale);
+    }
+    
+    private static Collection<Field> hashFields(final String[] hashAlgorithms) {
         final var hashFields = new HashMap<String, Field>();
         for (final String algorithm : hashAlgorithms) {
             final String trimmed = algorithm.trim();
@@ -55,7 +77,7 @@ public final class AvailableFields {
                     trimmedAndLowerCase,
                     Hash.getField(trimmedAndLowerCase, trimmed));
         }
-        return hashFields.values().stream();
+        return hashFields.values();
     }
     
     /**

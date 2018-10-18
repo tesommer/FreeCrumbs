@@ -27,6 +27,7 @@ public final class Settings {
     private static final String DEFAULT_OUTPUT = "${filename}${eol}";
     
     private static final String HASH_ALGORITHM_DELIMITER = "[ |\\t]+";
+    private static final String FILTER_KEY_PREFIX = FILTER_KEY + '.';
     
     private Settings() {
     }
@@ -37,7 +38,7 @@ public final class Settings {
         final String[] hashAlgorithms = getHashAlgorithms(props);
         final String dateFormat = props.getProperty(
                 DATE_FORMAT_KEY, DEFAULT_DATE_FORMAT);
-        return new AvailableFields(locale, dateFormat, hashAlgorithms);
+        return new AvailableFields(dateFormat, locale, hashAlgorithms);
     }
 
     public static TokenInfoFormat getOutput(final Properties props) {
@@ -79,8 +80,7 @@ public final class Settings {
     }
     
     private static boolean isFilterKey(final String key) {
-        final String filterKeyPrefix = FILTER_KEY + '.';
-        return FILTER_KEY.equals(key) || key.startsWith(filterKeyPrefix);
+        return FILTER_KEY.equals(key) || key.startsWith(FILTER_KEY_PREFIX);
     }
 
     private static String[] getHashAlgorithms(final Properties props) {

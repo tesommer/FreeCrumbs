@@ -17,18 +17,18 @@ import freecrumbs.finf.Info;
 import freecrumbs.finf.InfoFormat;
 
 /**
- * This class extracts, from the properties file, four parts of the config:
+ * This class extracts, from the properties file, four parts for the config:
  * {@code infoFormat},
  * {@code infoGenerator},
  * {@code fileFilter} and
  * {@code order}.
- * This is done according to the {@code prefilter} config-setting;
- * if the setting is turned on,
- * the fields referenced by the {@code output} and {@code order} settings
+ * This is done according to the {@code prefilter} setting:
+ * If the setting is turned on,
+ * the fields referenced by {@code output} and {@code order}
  * will have a combined field reader and info cache,
- * while each filter will have its own field reader and info cache.
- * Otherwise all fields referenced in the config
- * will share field reader/info cache.
+ * but each filter will have its own.
+ * Otherwise, all fields referenced by all settings
+ * will share one field reader and info cache.
  * 
  * @author Tone Sommerland
  */
@@ -56,18 +56,18 @@ public final class Manifold {
         if (Settings.isPrefilter(props)) {
             this.infoGenerator = getPrefilterInfoGenerator(
                     availableFields,
-                    infoFormat,
+                    this.infoFormat,
                     orderParser);
             this.fileFilter = nullOrAsOne(getPrefilterFileFilters(
                     filterParsers, availableFields));
         } else {
             this.infoGenerator = getNonPrefilterInfoGenerator(
                     availableFields,
-                    infoFormat,
+                    this.infoFormat,
                     orderParser,
                     filterParsers);
             this.fileFilter = nullOrAsOne(getNonPrefilterFileFilters(
-                    filterParsers, infoGenerator));
+                    filterParsers, this.infoGenerator));
         }
     }
     
@@ -92,12 +92,11 @@ public final class Manifold {
             final TokenInfoFormat infoFormat,
             final OrderParser orderParser) {
         
-        final String[] usedByOutput = infoFormat.getUsedFieldNames(
+        final String[] used1 = infoFormat.getUsedFieldNames(
                 availableFields.getNames());
-        final String[] usedByOrder = orderParser.getUsedFieldNames();
+        final String[] used2 = orderParser.getUsedFieldNames();
         final FieldReader reader = availableFields.getReader(
-                BUFFER_SIZE,
-                concat(usedByOutput, usedByOrder).distinctToArray());
+                BUFFER_SIZE, concatDistinct(used1, used2));
         final var cache = new HashMap<File, Info>();
         return file -> CachedInfo.getInstance(reader, file, cache);
     }
@@ -109,17 +108,15 @@ public final class Manifold {
             final Collection<FilterParser> filterParsers) {
         
         final String[] availableFieldNames = availableFields.getNames();
-        final String[] usedByOutput = infoFormat.getUsedFieldNames(
+        final String[] used1 = infoFormat.getUsedFieldNames(
                 availableFieldNames);
-        final String[] usedByOrder = orderParser.getUsedFieldNames();
-        final String[] usedByFilters = filterParsers.stream()
+        final String[] used2 = orderParser.getUsedFieldNames();
+        final String[] used3 = filterParsers.stream()
                 .map(parser -> parser.getUsedFieldNames(availableFieldNames))
                 .flatMap(Stream::of)
                 .toArray(String[]::new);
         final FieldReader reader = availableFields.getReader(
-                BUFFER_SIZE,
-                concat(usedByOutput, usedByOrder).concat(usedByFilters)
-                    .distinctToArray());
+                BUFFER_SIZE, concatDistinct(used1, used2, used3));
         final var cache = new HashMap<File, Info>();
         return file -> CachedInfo.getInstance(reader, file, cache);
     }
@@ -179,27 +176,28 @@ public final class Manifold {
         };
     }
     
-    private static Concatenator concat(String[] array1, String[] array2) {
-        return new Concatenator(
-                Stream.concat(Stream.of(array1), Stream.of(array2)));
+    private static String[] concatDistinct(
+            final String[] array1, final String[] array2) {
+        
+        return Stream.concat(
+                Stream.of(array1),
+                Stream.of(array2))
+                .distinct()
+                .toArray(String[]::new);
     }
     
-    private static final class Concatenator {
-        private final Stream<String> stream;
-
-        private Concatenator(final Stream<String> stream) {
-            assert stream != null;
-            this.stream = stream;
-        }
+    private static String[] concatDistinct(
+            final String[] array1,
+            final String[] array2,
+            final String[] array3) {
         
-        private Concatenator concat(final String[] arr) {
-            return new Concatenator(Stream.concat(stream, Stream.of(arr)));
-        }
-        
-        private String[] distinctToArray() {
-            return stream.distinct().toArray(String[]::new);
-        }
-        
+        return Stream.concat(
+                Stream.of(array1),
+                Stream.concat(
+                        Stream.of(array2),
+                        Stream.of(array3)))
+                .distinct()
+                .toArray(String[]::new);
     }
 
 }
