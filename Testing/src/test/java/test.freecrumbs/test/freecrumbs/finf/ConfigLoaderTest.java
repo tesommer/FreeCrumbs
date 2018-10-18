@@ -83,7 +83,8 @@ public final class ConfigLoaderTest {
                   "prefilter=0\n"
                 + "output=${filename}\n"
                 + "filter=${path}++\n"
-                + "order=md5 size desc");
+                + "filter.=${size}--\n"
+                + "order=md5 desc");
         final String filename = "§|@#£¤$%&/{([)]=}?+`´";
         assertInfoGenerator(
                 config,
@@ -100,14 +101,14 @@ public final class ConfigLoaderTest {
         final Config config = loadConfig(
                 "prefilter=1\n"
               + "output=${filename}\n"
-              + "filter=${path}++\n"
-              + "order=md5 size desc");
+              + "filter=${path}--\n"
+              + "filter.a=${size}++\n"
+              + "order=md5 desc");
         final String filename = "´`+?}=])[({/&%$¤£#@|§";
         assertInfoGenerator(
                 config,
                 filename,
                 MockInfo.FILENAME_FIELD_NAME,
-                MockInfo.SIZE_FIELD_NAME,
                 MockInfo.MD5_FIELD_NAME);
     }
     

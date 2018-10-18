@@ -2,20 +2,15 @@ package freecrumbs.finf.internal;
 
 import static java.util.Objects.requireNonNull;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 import freecrumbs.finf.Config;
 import freecrumbs.finf.ConfigLoader;
-import freecrumbs.finf.FieldReader;
-import freecrumbs.finf.Info;
 
 /**
  * Loads configuration from a properties file.
@@ -41,24 +36,6 @@ import freecrumbs.finf.Info;
  * @author Tone Sommerland
  */
 public final class PropertiesConfigLoader implements ConfigLoader {
-
-    private static final String HASH_ALGORITHMS_KEY = "hash.algorithms";
-    private static final String DATE_FORMAT_KEY = "date.format";
-    private static final String PREFILTER_KEY = "prefilter";
-    private static final String OUTPUT_KEY = "output";
-    private static final String FILTER_KEY = "filter";
-    private static final String ORDER_KEY = "order";
-    private static final String COUNT_KEY = "count";
-    
-    private static final String DEFAULT_HASH_ALGORITHMS = "md5 sha-1 sha-256";
-    private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm";
-    private static final String DEFAULT_PREFILTER = "1";
-    private static final String DEFAULT_OUTPUT = "${filename}${eol}";
-    
-    private static final String HASH_ALGORITHM_DELIMITER = "[ |\\t]+";
-    private static final int BUFFER_SIZE = 2048;
-    private static final int REGEX_FLAGS = 0;
-    
     private final Locale locale;
     private final Map<String, String> overrides;
 
@@ -78,24 +55,13 @@ public final class PropertiesConfigLoader implements ConfigLoader {
     @Override
     public Config loadConfig(final Reader reader) throws IOException {
         final Properties props = getProperties(reader);
-        final AvailableFields availableFields = getAvailableFields(props);
-        final String[] availableFieldNames = availableFields.getNames();
-        final TokenInfoFormat infoFormat = getInfoFormat(props);
-        final FilterParser filterParser = getFilterParser(props);
-        final OrderParser orderParser = getOrderParser(
-                props, availableFieldNames);
-        final InfoGenerators infoGenerators = getInfoGenerators(
-                props,
-                availableFields,
-                infoFormat,
-                filterParser,
-                orderParser);
-        return new Config.Builder(infoGenerators.main, infoFormat)
-                .setFileFilter(filterParser.getFileFilter(
-                        REGEX_FLAGS, infoGenerators.filter))
-                .setOrder(orderParser.getOrder())
-                .setCount(getCount(props))
-                .build();
+        final Manifold manifold = new Manifold(props, locale);
+        return new Config.Builder(
+                manifold.getInfoGenerator(), manifold.getInfoFormat())
+                    .setFileFilter(manifold.getFileFilter())
+                    .setOrder(manifold.getOrder())
+                    .setCount(Settings.getCount(props))
+                    .build();
     }
 
     private Properties getProperties(final Reader reader) throws IOException {
@@ -115,150 +81,6 @@ public final class PropertiesConfigLoader implements ConfigLoader {
                 props.put(key, value);
             }
         });
-    }
-    
-    private AvailableFields getAvailableFields(final Properties props)
-            throws IOException {
-        
-        final String[] hashAlgorithms = getHashAlgorithms(props);
-        final String dateFormat = props.getProperty(
-                DATE_FORMAT_KEY, DEFAULT_DATE_FORMAT);
-        return new AvailableFields(locale, dateFormat, hashAlgorithms);
-    }
-
-    private static String[] getHashAlgorithms(final Properties props) {
-        return props.getProperty(HASH_ALGORITHMS_KEY, DEFAULT_HASH_ALGORITHMS)
-                .split(HASH_ALGORITHM_DELIMITER);
-    }
-    
-    private static InfoGenerators getInfoGenerators(
-            final Properties props,
-            final AvailableFields availableFields,
-            final TokenInfoFormat infoFormat,
-            final FilterParser filterParser,
-            final OrderParser orderParser) {
-        
-        final String[] availableFieldNames = availableFields.getNames();
-        final String[] usedByOutput = infoFormat.getUsedFieldNames(
-                availableFieldNames);
-        final String[] usedByFilter = filterParser.getUsedFieldNames(
-                availableFieldNames);
-        final String[] usedByOrder = orderParser.getUsedFieldNames();
-        if (isTrue(props.getProperty(PREFILTER_KEY, DEFAULT_PREFILTER))) {
-            return getPrefilteringInfoGenerators(
-                    availableFields,
-                    usedByOutput,
-                    usedByFilter,
-                    usedByOrder);
-        }
-        return getNonPrefilteringInfoGenerators(
-                availableFields,
-                usedByOutput,
-                usedByFilter,
-                usedByOrder);
-    }
-
-    private static InfoGenerators getPrefilteringInfoGenerators(
-            final AvailableFields availableFields,
-            final String[] usedByOutput,
-            final String[] usedByFilter,
-            final String[] usedByOrder) {
-        
-        final FieldReader mainReader = availableFields.getReader(
-                BUFFER_SIZE,
-                concat(usedByOutput, usedByOrder));
-        final FieldReader filterReader = availableFields.getReader(
-                BUFFER_SIZE,
-                usedByFilter);
-        final var mainCache = new HashMap<File, Info>();
-        final var filterCache = new HashMap<File, Info>();
-        return new InfoGenerators(
-                file -> CachedInfo.getInstance(
-                        mainReader, file, mainCache),
-                file -> CachedInfo.getInstance(
-                        filterReader, file, filterCache));
-    }
-
-    private static InfoGenerators getNonPrefilteringInfoGenerators(
-            final AvailableFields availableFields,
-            final String[] usedByOutput,
-            final String[] usedByFilter,
-            final String[] usedByOrder) {
-        
-        final FieldReader mainReader = availableFields.getReader(
-                BUFFER_SIZE,
-                concat(usedByOutput, usedByFilter, usedByOrder));
-        final var mainCache = new HashMap<File, Info>();
-        return new InfoGenerators(
-                file -> CachedInfo.getInstance(mainReader, file, mainCache));
-    }
-
-    private static TokenInfoFormat getInfoFormat(final Properties props) {
-        return new TokenInfoFormat(
-                props.getProperty(OUTPUT_KEY, DEFAULT_OUTPUT));
-    }
-
-    private static int getCount(final Properties props) throws IOException {
-        try {
-            return Integer.parseInt(props.getProperty(COUNT_KEY, "-1"));
-        } catch (final NumberFormatException ex) {
-            throw new IOException(ex);
-        }
-    }
-
-    private static FilterParser getFilterParser(final Properties props)
-            throws IOException {
-        
-        final String setting = props.getProperty(FILTER_KEY);
-        return new FilterParser(setting);
-    }
-    
-    private static OrderParser getOrderParser(
-            final Properties props, final String[] availableFieldNames) {
-        
-        final String setting = props.getProperty(ORDER_KEY);
-        return new OrderParser(setting, availableFieldNames);
-    }
-    
-    private static boolean isTrue(final String propertyValue) {
-        return !"0".equals(propertyValue);
-    }
-    
-    private static String[] concat(final String[] arr1, final String[] arr2) {
-        return Stream.concat(Stream.of(arr1), Stream.of(arr2))
-                .distinct()
-                .toArray(String[]::new);
-    }
-    
-    private static String[] concat(
-            final String[] arr1, final String[] arr2, String[] arr3) {
-        
-        return Stream.concat(
-                Stream.concat(Stream.of(arr1), Stream.of(arr2)),
-                Stream.of(arr3))
-                    .distinct()
-                    .toArray(String[]::new);
-    }
-    
-    private static final class InfoGenerators {
-        private final Function<? super File, ? extends Info> main;
-        private final Function<? super File, ? extends Info> filter;
-        
-        private InfoGenerators(
-                final Function<? super File, ? extends Info> main,
-                final Function<? super File, ? extends Info> filter) {
-            
-            assert main != null;
-            assert filter != null;
-            this.main = main;
-            this.filter = filter;
-        }
-
-        private InfoGenerators(
-                final Function<? super File, ? extends Info> main) {
-            
-            this(main, main);
-        }
     }
     
 }
