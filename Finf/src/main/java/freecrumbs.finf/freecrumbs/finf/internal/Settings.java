@@ -35,10 +35,10 @@ public final class Settings {
     public static AvailableFields getAvailableFields(
             final Properties props, final Locale locale) throws IOException {
         
-        final String[] hashAlgorithms = getHashAlgorithms(props);
         final String dateFormat = props.getProperty(
                 DATE_FORMAT_KEY, DEFAULT_DATE_FORMAT);
-        return new AvailableFields(dateFormat, locale, hashAlgorithms);
+        return new AvailableFields(
+                dateFormat, locale, getHashAlgorithms(props));
     }
 
     public static TokenInfoFormat getOutput(final Properties props) {
@@ -61,6 +61,10 @@ public final class Settings {
         return new OrderParser(setting, availableFieldNames);
     }
 
+    /**
+     * If the filter setting is not present,
+     * the returned collection will be empty.
+     */
     public static List<FilterParser> getFilterParsers(final Properties props)
             throws IOException {
         

@@ -18,17 +18,17 @@ import freecrumbs.finf.InfoFormat;
 
 /**
  * This class extracts, from the properties file, four parts for the config:
- * {@code infoFormat},
  * {@code infoGenerator},
+ * {@code infoFormat},
  * {@code fileFilter} and
  * {@code order}.
  * This is done according to the {@code prefilter} setting:
  * If the setting is turned on,
  * the fields referenced by {@code output} and {@code order}
- * will have a combined field reader and info cache,
+ * will have a combined info generator,
  * but each filter will have its own.
  * Otherwise, all fields referenced by all settings
- * will share one field reader and info cache.
+ * will share one info generator.
  * 
  * @author Tone Sommerland
  */
@@ -37,8 +37,8 @@ public final class Manifold {
     private static final int BUFFER_SIZE = 2048;
     private static final int REGEX_FLAGS = 0;
 
-    private final TokenInfoFormat infoFormat;
     private final Function<File, Info> infoGenerator;
+    private final TokenInfoFormat infoFormat;
     private final FileFilter fileFilter;
     private final Comparator<Info> order;
 
@@ -117,9 +117,8 @@ public final class Manifold {
     }
     
     private static Collection<FileFilter> getPrefilterFileFilters(
-            final Collection<? extends FilterParser> filterParsers,
-            final AvailableFields availableFields)
-                    throws IOException {
+            final Collection<FilterParser> filterParsers,
+            final AvailableFields availableFields) throws IOException {
         
         final var fileFilters = new ArrayList<FileFilter>(filterParsers.size());
         for (final var filterParser : filterParsers) {
@@ -130,7 +129,7 @@ public final class Manifold {
     }
     
     private static Collection<FileFilter> getNonPrefilterFileFilters(
-            final Collection<? extends FilterParser> filterParsers,
+            final Collection<FilterParser> filterParsers,
             final Function<? super File, ? extends Info> infoGenerator)
                     throws IOException {
         
@@ -163,18 +162,16 @@ public final class Manifold {
     }
     
     private static FileFilter nullOrAsOne(
-            final Collection<? extends FileFilter> fileFilters) {
+            final Collection<FileFilter> fileFilters) {
         
         if (fileFilters.isEmpty()) {
             return null;
         }
-        return file -> {
-            return fileFilters.stream()
+        return file -> fileFilters.stream()
                 .filter(ff -> !ff.accept(file))
                 .findFirst()
                 .map(ff -> false)
                 .orElse(true);
-        };
     }
     
     private static String[] concatDistinct(
