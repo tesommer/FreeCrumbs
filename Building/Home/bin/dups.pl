@@ -10,8 +10,7 @@ my $config
 = "# This Perl script is used with Finf to print groups of file duplicates.\n"
 . "# Example: $script | finf -c - MyDirectory | $script x\n"
 . "# Here comes some Finf config:\n"
-. "hash.algorithms=md5\n"
-. "info.format=\${path}\${filename};\${md5}\n";
+. "output=\${path}\${filename};\${md5}\${lf}\n";
 
 my %hashes = ();
 
