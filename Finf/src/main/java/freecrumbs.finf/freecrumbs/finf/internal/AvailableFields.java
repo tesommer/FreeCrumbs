@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import freecrumbs.finf.Field;
 import freecrumbs.finf.FieldReader;
+import freecrumbs.finf.field.Classification;
 import freecrumbs.finf.field.Eol;
 import freecrumbs.finf.field.Filename;
 import freecrumbs.finf.field.Hash;
@@ -31,6 +32,7 @@ public final class AvailableFields {
     public AvailableFields(
             final String dateFormat,
             final Locale locale,
+            final Classification.Heuristic classHeuristic,
             final String... hashAlgorithms) throws IOException {
         
         this.fields = concat(
@@ -38,10 +40,13 @@ public final class AvailableFields {
                         Path.FIELD,
                         Filename.FIELD,
                         Size.FIELD,
-                        modifiedField(dateFormat, locale)),
+                        modifiedField(dateFormat, locale),
+                        Classification.getField(classHeuristic, String::valueOf)
+                    ),
                 hashFields(hashAlgorithms).stream(),
-                Stream.of(Eol.getFields()))
-                .toArray(Field[]::new);
+                Stream.of(Eol.getFields())
+            )
+            .toArray(Field[]::new);
     }
     
     private static Stream<Field> concat(

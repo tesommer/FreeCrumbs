@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
+import freecrumbs.finf.field.Classification;
+
 /**
  * Static config-settings methods.
  * 
@@ -38,7 +40,10 @@ public final class Settings {
         final String dateFormat = props.getProperty(
                 DATE_FORMAT_KEY, DEFAULT_DATE_FORMAT);
         return new AvailableFields(
-                dateFormat, locale, getHashAlgorithms(props));
+                dateFormat,
+                locale,
+                Classification.Heuristic.DEFAULT,
+                getHashAlgorithms(props));
     }
 
     public static TokenInfoFormat getOutput(final Properties props) {

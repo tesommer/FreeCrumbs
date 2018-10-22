@@ -32,10 +32,11 @@ public final class ClassificationTest {
     @Test
     @DisplayName("Empty")
     public void test1() throws IOException {
-        final var ups = new byte[][] {
-            new byte[0],
-        };
-        assertClassification(getInstance(), ups, 1, EMPTY);
+        final FieldComputation comp = getInstance(512, .3);
+        comp.reset();
+        assertEquals(EMPTY, comp.get(), "emtpy");
+        final FieldComputation comp2 = getInstance(512, .3);
+        assertClassification(comp2, new byte[][] {new byte[0]}, 1, EMPTY);
     }
     
     @Test
@@ -46,7 +47,7 @@ public final class ClassificationTest {
             new byte[] {T, 0, T},
             new byte[] {T, T, T},
         };
-        assertClassification(getInstance(), ups, 2, BINARY);
+        assertClassification(getInstance(512, .3), ups, 2, BINARY);
     }
     
     @Test
@@ -170,10 +171,6 @@ public final class ClassificationTest {
                 .withIsTextChar(ch -> ch == T);
         return Classification.getField(heuristic, String::valueOf)
                 .computation();
-    }
-    
-    private static FieldComputation getInstance() {
-        return getInstance(512, .3);
     }
 
 }

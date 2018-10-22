@@ -125,7 +125,7 @@ public final class Classification implements FieldComputation {
     public void reset() throws IOException {
         bytesRead = 0;
         binCount = 0;
-        category = null;
+        category = EMPTY;
     }
 
     @Override
@@ -134,10 +134,6 @@ public final class Classification implements FieldComputation {
             final int offset,
             final int length) throws IOException {
         
-        if (input.length == 0) {
-            category = EMPTY;
-            return false;
-        }
         final int offsetPlusLength = offset + length;
         for (int i = offset; i < offsetPlusLength; i++) {
             if (++bytesRead > heuristic.limit && heuristic.limit > 0) {
@@ -156,7 +152,7 @@ public final class Classification implements FieldComputation {
 
     @Override
     public String get() throws IOException {
-        if (category == null) {
+        if (category == EMPTY && bytesRead > 0) {
             category = binCount / (double)bytesRead > heuristic.threshold
                     ? BINARY : TEXT;
         }
