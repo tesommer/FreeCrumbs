@@ -11,7 +11,7 @@ import freecrumbs.finf.Field;
 import freecrumbs.finf.field.Eol;
 import test.freecrumbs.finf.FieldTesting;
 
-@DisplayName("ConfigLoader")
+@DisplayName("Eol")
 public final class EolTest {
     
     private static final String EOL_COUNT_FIELD_NAME = "eolcount";
