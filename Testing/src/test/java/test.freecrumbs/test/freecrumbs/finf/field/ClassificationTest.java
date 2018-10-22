@@ -36,7 +36,10 @@ public final class ClassificationTest {
         comp.reset();
         assertEquals(EMPTY, comp.get(), "emtpy");
         final FieldComputation comp2 = getInstance(512, .3);
-        assertClassification(comp2, new byte[][] {new byte[0]}, 1, EMPTY);
+        final var ups = new byte[][] {
+            new byte[0],
+        };
+        assertClassification(comp2, ups, 1, EMPTY);
     }
     
     @Test
