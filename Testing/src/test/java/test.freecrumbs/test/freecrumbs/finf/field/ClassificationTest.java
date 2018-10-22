@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import freecrumbs.finf.FieldComputation;
 import freecrumbs.finf.field.Classification;
+import freecrumbs.finf.field.Classification.Heuristic;
 
 @DisplayName("Classification")
 public final class ClassificationTest {
@@ -163,7 +164,7 @@ public final class ClassificationTest {
     private static FieldComputation getInstance(
             final int limit, final double threshold) {
         
-        final var heuristic = Classification.DEFAULT_HEURISTIC
+        final Heuristic heuristic = Heuristic.DEFAULT
                 .withLimit(limit)
                 .withThreshold(threshold)
                 .withIsTextChar(ch -> ch == T);

@@ -50,6 +50,15 @@ public final class Classification implements FieldComputation {
         DEFAULT_IS_TEXT_CHAR
             = ch -> IntStream.of(DEFAULT_TEXT_CHARS)
                 .anyMatch(i -> i == ch);
+            
+        /**
+         * The default heuristic uses a limit of 512 bytes,
+         * a threshold of .3 (30 percent)
+         * and chars 32–127 + \r, \n, \t, \b and \f to be text chars.
+         */
+        public static final Heuristic
+        DEFAULT = new Heuristic(
+                DEFAULT_LIMIT, DEFAULT_THRESHOLD, DEFAULT_IS_TEXT_CHAR);
         
         private final int limit;
         private final double threshold;
@@ -63,10 +72,6 @@ public final class Classification implements FieldComputation {
             this.limit = limit;
             this.threshold = threshold;
             this.isTextChar = requireNonNull(isTextChar, "isTextChar");
-        }
-        
-        private Heuristic() {
-            this(DEFAULT_LIMIT, DEFAULT_THRESHOLD, DEFAULT_IS_TEXT_CHAR);
         }
         
         public Heuristic withLimit(final int limit) {
@@ -92,13 +97,6 @@ public final class Classification implements FieldComputation {
         BINARY,
         EMPTY,
     }
-    
-    /**
-     * The default heuristic uses a limit of 512 bytes,
-     * a threshold of .3 (30 percent)
-     * and chars 32–127 + \r, \n, \t, \b and \f to be text chars.
-     */
-    public static final Heuristic DEFAULT_HEURISTIC = new Heuristic();
     
     private static final String NAME = "class";
     

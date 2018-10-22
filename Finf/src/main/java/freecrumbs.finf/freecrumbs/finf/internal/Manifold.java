@@ -167,11 +167,7 @@ public final class Manifold {
         if (fileFilters.isEmpty()) {
             return null;
         }
-        return file -> fileFilters.stream()
-                .filter(ff -> !ff.accept(file))
-                .findFirst()
-                .map(ff -> false)
-                .orElse(true);
+        return file -> !fileFilters.stream().anyMatch(ff -> !ff.accept(file));
     }
     
     private static String[] concatDistinct(
