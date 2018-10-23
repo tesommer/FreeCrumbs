@@ -4,7 +4,7 @@
 + "\n"
 + "Macro: Automation of human-like interaction.\n"
 + "\n"
-+ "Usage: macro [OPTION...] <SCRIPT_FILE>\n"
++ "Usage: macro [OPTION]... SCRIPT_FILE\n"
 + "\n"
 + "Options:\n"
 + "  -t    times to play\n"

@@ -6,6 +6,8 @@
 + "\n"
 + "Usage: macrec <-k|-m millis>\n"
 + "\n"
++ "Example: macrec -m 1000\n"
++ "\n"
 + "Arguments:\n"
 + "  -k    start key recorder\n"
 + "  -m    start mouse recorder after specified number of milliseconds\n"
@@ -16,6 +18,7 @@
 + "* P: mouse-button press/release-mode\n"
 + "* M: mouse-movement mode\n"
 + "* C: screen-capture mode\n"
++ "* S: show-x-y mode\n"
 + "* Esc: exit\n"
 + "When in screen-capture mode, one presses two points to select a sub image, which\n"
 + "is then saved to a PNG file in the current directory.\n

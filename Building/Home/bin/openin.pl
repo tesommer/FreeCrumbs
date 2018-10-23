@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use autodie;
+#use autodie;
 use File::Basename;
 use File::Temp qw/ tempfile tempdir /;
 
@@ -10,8 +10,8 @@ use File::Temp qw/ tempfile tempdir /;
 
 my $help
 = "Open in:\n"
-. "Usage: $script <program>\n"
-. "Writes STDIN to a tempfile, then invokes <program> with the tempfile as a\n"
+. "Usage: $script PROGRAM\n"
+. "Writes STDIN to a tempfile, then invokes PROGRAM with the tempfile as a\n"
 . "command-line argument.\n";
 
 if (scalar @ARGV == 1) {

@@ -53,14 +53,14 @@ FreeCrumbs
     +---- FinfConfigs # configs that go to the Finf program (described below)
 ```
 
-Programs included in FreeCrumbs
--------------------------------
+Included in FreeCrumbs
+----------------------
 
 * [Finf](#finf)
 * [Dups](#dups)
-* [Hash](#hash)
 * [Macro](#macro)
     * [Macrec](#macrec)
+* [OpenIn](#openin)
 
 <a name="finf"></a>Finf
 -----------------------
@@ -71,16 +71,25 @@ Finf is a command-line tool that prints file information to standard output. The
 * **finf.bat** for Windows
 * **finf** for Unix/GNU Linux
 
-A file-info unit may contain the following fields:
+A file-info unit might contain the following fields:
 
 * *path*: the path without the filename (ends with a file separator)
 * *filename*: the filename
 * *size*: the size in bytes
 * *modified*: the last-modified timestamp
-* *hash*: a checksum of the file's content
-
-Two files with the exact same content will have the same hash. It's possible,
-but extremely unlikely, that two different files will have equal hashes.
+* *md5*: MD5 checksum
+* *sha-1*: SHA-1 checksum
+* *sha-256*: SHA-256 checksum
+* *eol*: system line-terminator
+* *cr*: carriage return
+* *lf*: line feed
+* *crlf*: carriage-return-line-feed
+* *eolcount*: number of line terminators
+* *crcount*: number of carriage returns
+* *lfcount*: number of line feeds
+* *crlfcount*: number of carriage-return-line-feeds
+* *class*: heuristical classification of the file as either EMPTY, TEXT or
+  BINARY
 
 ### Basic usage
 
@@ -110,7 +119,7 @@ The ``-c`` option is used for specifying a config file, in this case
 **csv-list.properties**. This particular config makes Finf print each info unit
 as a semicolon-separated list on this format:
 
-    path;filename;size;modified;hash
+    path;filename;size;modified;md5
 
 The output looks something like this:
 
@@ -118,11 +127,11 @@ The output looks something like this:
     C:\MyDirectory\SubDir1\;anotherfile.pdf;364772;2016-12-19 00:21;d63d564892ec3be256e66f903f90f9c3
     C:\MyDirectory\SubDir2\;yet_another_file.pdf;364772;2016-12-19 00:21;3559ec37d3d6fd604d754942ab2ed6b3
 
-If the output is redirected to a CSV file …
+If the output is redirected to a CSV file &hellip;
 
     finf -c ..\FinfConfigs\csv-list.properties C:\SomeDirectory > myfile.csv
 
-… it can be opened in a spread sheet, such as OpenOffice Calc.
+&hellip; it can be opened in a spread sheet, such as OpenOffice Calc.
 ___
 
     finf -c ..\FinfConfigs\lmod.properties C:\SomeDirectory
@@ -133,7 +142,7 @@ ___
 
     finf -c - C:\SomeDirectory
 
-To read the config from standard in, use ``-`` (hyphen) instead of a config
+To read the config from standard input, use ``-`` (hyphen) instead of a config
 file.
 ___
 
@@ -142,56 +151,69 @@ ___
 The **FinfConfigs** directory contains some ready-to-use config files. A config
 file is a text file on the Java *properties* format. Here's a sample file:
 
-    hash.algorithm=SHA-256
-    info.format=${path}${filename}: size: ${size}, last modified: ${modified}, hash: ${hash}
+    hash.algorithms=SHA-1 SHA-512
+    output=${path}${filename}:${eol}Size: ${size}${eol}Last modified: ${modified}${eol}SHA-1: ${sha-1}${eol}SHA-512: ${sha-512}${eol}${eol}
     date.format=yyyy-MM-dd HH:mm
-    file.filter=.*\.html
+    filter=.*\.zip
+    filter.a=${size}--[\\d]{8,}
     order=filename size asc modified desc
     count=100
 
-* ``hash.algorithm`` is the algorithm used to generate the file hash. Default is
-  MD5.
+* ``output`` is the format of the outputted info. Occurrences of tokens on the
+  form *${field}* (such as *${path}*, *${filename}*, and so on) will be replaced
+  by the corresponding field value.
 
-* ``info.format`` is the format of the outputted info units. Occurrences of
-  tokens on the form *${field}* (such as *${path}*, *${filename}*, and so on)
-  will be replaced by the corresponding field value.
+* ``order`` specifies a sort order of the outputted info. It has the fields to
+  order by (path, filename, etc), with space in between. Each field may be
+  followed by ``asc`` or ``desc`` (ascending or descending). ``asc`` is default.
 
-* ``date.format`` specifies the timestamp format of the output. See
-  *java.txt.SimpleDateFormat* for details.
-
-* ``file.filter`` filters input files. If absent, all files are included. This
+* ``filter`` filters input files. If absent, all files are included. This
   setting may be on one of two forms:
   * _regex_: a regex pattern that matches the filenames to include as input
   * _format pattern_: an info format followed by one or more regex patterns,
     each preceded by either ``++`` to include matches or ``--`` to exclude
     matches. The format is applied to the file info, and the result is matched
     against the patterns. For example, the format pattern  
-  ``${filename}++.+\.html?--index\..{3,4}``  
-  includes files with extension _htm_ and _html_, but not index files.
-
-* ``order`` specifies a sort order of the outputted info. It has the fields to
-  order by (path, filename, etc), with space in between. Each field may be
-  followed by ``asc`` or ``desc`` (ascending or descending). ``asc`` is default.
+    ``${filename}++.+\.html?--index\..{3,4}``  
+    includes files with extension _htm_ and _html_, but not index files.
 
 * ``count`` sets a maximum number of outputted info units. If absent, all are
   outputted.
 
-If Finf doesn't get a config file, it will use this:
+* ``hash.algorithms`` is a whitespace-separated list of hash algorithms. Each
+  algorthm will be available as an info field with the name being the algorithm
+  in lowercase.
 
-    hash.algorithm=MD5
-    info.format=${filename}
+* ``date.format`` specifies the format applied to timestamp values. See
+  *java.txt.SimpleDateFormat* for details. An empty date format turns timestamp
+  formatting off.
+
+* ``prefilter`` specifies whether or not to filter files before acquiring field
+  values needed by other settings. Prefiltering is turned on by defult. A value
+  of ``0`` turns it off. When off, the values of all fields referenced in the
+  config will be acquired collectively for each file.
+
+Multiple filters are supported by appending a ``.`` and a suffix to the filters'
+keys (example: ``filter.2``). The filters are applied in sort order of their
+keys.
+
+If Finf doesn't get a config file, it'll use this:
+
+    hash.algorithms=MD5 SHA-1 SHA-256
+    output=${filename}${eol}
     date.format=yyyy-MM-dd HH:mm
+    prefilter=1
 
 ### Specifying config settings on the command line
 
-    finf -o "info.format=${hash}" -o "hash.algorithm=SHA-1" hypotheticalfile.zip
+    finf -o "output=${sha-512}${eol}" -o "hash.algorithms=SHA-512" hypotheticalfile.zip
 
 The ``-o`` option allows you to override a config setting. In this case no
 config file was given. But if the ``-c`` option is used, a setting given with
 ``-o`` trumps the same setting in the config file. The example above prints the
-SHA-1 checksum for **hypotheticalfile.zip**.
+SHA-512 checksum for **hypotheticalfile.zip**.
 
-Omitting `=value` unsets the setting (and thus reverts to the default):
+Omitting ``=value`` unsets the setting (and thus reverts to the default):
 
     finf -c csv-list.properties -o order
 
@@ -200,14 +222,14 @@ Omitting `=value` unsets the setting (and thus reverts to the default):
 
 **Note:** Requires Perl.
 
-Dups lists duplicate files. There are two executables in **bin**:
+Lists duplicate files. There are two executables in **bin**:
 
 * **dups.bat** for Windows
 * **dups** for Unix/GNU Linux
 
 Usage:
 
-    dups <file/directory list>
+    dups [file/directory] ...
 
 Example:
 ___
@@ -222,37 +244,6 @@ Sample output:
     \LotsOfStuff\Paper\draft10.odf
     \LotsOfStuff\Paper\paper.odf
     \LotsOfStuff\Trash\draft10.odf
-___
-
-<a name="hash"></a>Hash
------------------------
-
-Hash is a program that prints file checksums to standard out. There are two
-executables in **bin**:
-
-* **hash.bat** for Windows
-* **hash** for Unix/GNU Linux
-
-Usage:
-
-    hash <file> [algorithm list]
-
-Examples:
-___
-
-    hash some_file.zip
-
-Prints the MD5, SHA-1 and SHA-256 checksums of **some_file.zip**. Sample output:
-
-    MD5: 6bdc31914080db372341262e06ff8ea8
-    SHA-1: d4d34b1d5434fdfa77909e3c2fa92b7f50489425
-    SHA-256: c7a98f6a6e6bdeeb29139b18155d8c24fa940f63bad810f0622a7b20c06f2129
-
-___
-
-    hash xyz.iso md5 sha-512
-
-Prints the MD5 and SHA-512 checksums of **xyz.iso**.
 ___
 
 <a name="macro"></a>Macro
@@ -270,7 +261,7 @@ directory contains launchers for Macro:
 
 The procedure for executing a macro script is straight forward:
 
-    macro <script-file>
+    macro script-file
 
 The ``macro`` command permits a couple of options:
 
@@ -306,7 +297,7 @@ A script may contain two kinds of variables: integers and images. They have
 separate namespaces. The variables created in a script only persist during the
 given run of the script, regardless of which macros are played.
 
-#### Script and image locations
+#### Script- and image locations
 
 Locations referencing external scripts and images use forward slash (/). They
 may be relative to the executing script.
@@ -321,7 +312,7 @@ equals and a value denotes a default value for the parameter.
 
 * ``add_key_code_variables``:
   Creates script variables corresponding to constants in
-  *java.awt.event.KeyEvent* (VK_A, VK_ALT, VK_SPACE, …).
+  *java.awt.event.KeyEvent* (VK_A, VK_ALT, VK_SPACE, &hellip;).
 
 * ``beep``:
   Creates an audible alert.
@@ -456,9 +447,30 @@ delay in milliseconds, e.g.:
 After the delay, a fullscreen window opens showing a screen capture. This window
 have three modes that are activated by pressing the following keys:
 
-* P: Press mouse buttons to records mouse button presses and releases.
+* P: Press mouse buttons to records mouse-button presses and releases.
 * M: Click in the screen capture to records mouse movement.
 * C: Click on two points in the screen capture to select a portion of it. The
   selection is saved as PNG to the current directory.
-* S: Click a point to get the coordinates of that point.
+* S: Click a point to output the coordinates of that point.
 * Escape: Exit.
+
+<a name="openin"></a>OpenIn
+---------------------------
+
+**Note:** Requires Perl.
+
+Saves STDIN to a temporary file, then opens the temp file with a propgram
+specified as a command-line argument. There are two executables in **bin**:
+
+* **openin.bat** for Windows
+* **openin** for Unix/GNU Linux
+
+Usage:
+
+    openin PROGRAM
+
+Example:
+___
+
+    dir | openin notepad
+___
