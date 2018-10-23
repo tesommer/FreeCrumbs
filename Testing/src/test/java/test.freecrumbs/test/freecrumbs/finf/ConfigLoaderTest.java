@@ -77,7 +77,7 @@ public final class ConfigLoaderTest {
     }
     
     @Test
-    @DisplayName("getDefault(Map): Used fields, not prefilter")
+    @DisplayName("getDefault(Map): Used fields, prefilter off")
     public void test6() throws IOException {
         final Config config = loadConfig(
                   "prefilter=0\n"
@@ -96,7 +96,7 @@ public final class ConfigLoaderTest {
     }
     
     @Test
-    @DisplayName("getDefault(Map): Used fields, prefilter")
+    @DisplayName("getDefault(Map): Used fields, prefilter on")
     public void test7() throws IOException {
         final Config config = loadConfig(
                 "prefilter=1\n"
@@ -221,6 +221,20 @@ public final class ConfigLoaderTest {
             assertThrows(
                     IOException.class,
                     () -> loadConfig("filter=${filename}++.{@,"));
+        }
+        
+        @Test
+        @DisplayName("Multiple filters")
+        public void test8() throws IOException {
+            final String setting
+                = "filter=.{2,}\n"
+                + "filter.malt=${filename}--.{7,}\n"
+                + "filter.=${filename}++\\\\d+\n";
+            final Config config = loadConfig(setting);
+            assertFileFilter(config, "2",        false);
+            assertFileFilter(config, "12345678", false);
+            assertFileFilter(config, "xyz",      false);
+            assertFileFilter(config, "123",      true);
         }
     }
     
