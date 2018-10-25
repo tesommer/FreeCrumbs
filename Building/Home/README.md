@@ -1,7 +1,7 @@
 FreeCrumbs
 ==========
 
-A collection of tiny command-line tools.
+A collection of tiny command-line apps.
 
 ```
                                    //|\\      ///|\\\
@@ -25,6 +25,8 @@ A collection of tiny command-line tools.
                              /|\    /  | \
                             / | \
 ```
+
+_**Note:** Requires Perl and Java._
 
 Legal
 -----
@@ -57,10 +59,11 @@ Included in FreeCrumbs
 ----------------------
 
 * [Finf](#finf)
-* [Dups](#dups)
 * [Macro](#macro)
     * [Macrec](#macrec)
-* [OpenIn](#openin)
+* [Tiny crumbs](#tinycrumbs)
+    * [dups](#dups)
+    * [openin](#openin)
 
 <a name="finf"></a>Finf
 -----------------------
@@ -216,35 +219,6 @@ SHA-512 checksum for **hypotheticalfile.zip**.
 Omitting ``=value`` unsets the setting (and thus reverts to the default):
 
     finf -c csv-list.properties -o order
-
-<a name="dups"></a>Dups
------------------------
-
-**Note:** Requires Perl.
-
-Lists duplicate files. There are two executables in **bin**:
-
-* **dups.bat** for Windows
-* **dups** for Unix/GNU Linux
-
-Usage:
-
-    dups [file/directory] ...
-
-Example:
-___
-
-    dups \LotsOfStuff
-
-Sample output:
-
-    \LotsOfStuff\Pix\20150311(1).jpg
-    \LotsOfStuff\OldStuff\20150311(1).jpg
-
-    \LotsOfStuff\Paper\draft10.odf
-    \LotsOfStuff\Paper\paper.odf
-    \LotsOfStuff\Trash\draft10.odf
-___
 
 <a name="macro"></a>Macro
 -------------------------
@@ -454,16 +428,41 @@ have three modes that are activated by pressing the following keys:
 * S: Click a point to output the coordinates of that point.
 * Escape: Exit.
 
-<a name="openin"></a>OpenIn
----------------------------
+<a name="tinycrumbs"></a>Tiny crumbs
+------------------------------------
 
-**Note:** Requires Perl.
+Various tiny commands. Each has two files in **bin**:
+
+* a **.bat** file for Windows
+* a Bash script without extension for  GNU/Linux
+
+### <a name="dups"></a>dups
+
+Lists duplicate files.
+
+Usage:
+
+    dups [file/directory] ...
+
+Example:
+___
+
+    dups \LotsOfStuff
+
+Sample output:
+
+    \LotsOfStuff\Pix\20150311(1).jpg
+    \LotsOfStuff\OldStuff\20150311(1).jpg
+
+    \LotsOfStuff\Paper\draft10.odf
+    \LotsOfStuff\Paper\paper.odf
+    \LotsOfStuff\Trash\draft10.odf
+___
+
+### <a name="openin"></a>openin
 
 Saves STDIN to a temporary file, then opens the temp file with a propgram
-specified as a command-line argument. There are two executables in **bin**:
-
-* **openin.bat** for Windows
-* **openin** for Unix/GNU Linux
+specified as a command-line argument.
 
 Usage:
 
