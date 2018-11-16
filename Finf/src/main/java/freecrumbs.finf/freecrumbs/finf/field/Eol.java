@@ -1,5 +1,6 @@
 package freecrumbs.finf.field;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.function.Function;
 
@@ -79,7 +80,7 @@ public final class Eol {
         }
 
         @Override
-        public void reset() throws IOException {
+        public void reset(final File file) throws IOException {
             counter.reset(this);
         }
 

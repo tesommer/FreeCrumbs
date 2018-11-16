@@ -1,9 +1,12 @@
 package freecrumbs.finf.internal;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
@@ -20,75 +23,168 @@ import freecrumbs.finf.field.Path;
 import freecrumbs.finf.field.Size;
 
 /**
- * Contains available info fields.
- * The fields will have distinct names.
+ * Contains available info fields of which
+ * {@link #getReader(int, String...) readers} can be created.
+ * No two fields in an instance of this class have the same name.
+ * Each instance of this class has its own instances of the computed fields.
+ * This is so that readers from instance A
+ * will not interfere with readers from instance B.
  * 
  * @author Tone Sommerland
  */
 public final class AvailableFields {
+    
+    /**
+     * Field parameters.
+     * 
+     * @author Tone Sommerland
+     */
+    public static final class Params {
+        private final String dateFormat;
+        private final Locale locale;
+        private final Classification.Heuristic classHeuristic;
+        private final String[] hashAlgorithms;
+        
+        private Params(
+                final String dateFormat,
+                final Locale locale,
+                final Classification.Heuristic classHeuristic,
+                final String[] hashAlgorithms) {
+            
+            this.dateFormat = dateFormat;
+            this.locale = locale;
+            this.classHeuristic = classHeuristic;
+            this.hashAlgorithms = hashAlgorithms;
+        }
+        
+        public Params() {
+            this(null, null, null, null);
+        }
+        
+        /**
+         * If the given date format is empty, timestamp formatting will be off.
+         */
+        public Params withTime(final String dateFormat, final Locale locale) {
+            return new Params(
+                    requireNonNull(dateFormat, "dateFormat"),
+                    requireNonNull(locale, "locale"),
+                    this.classHeuristic,
+                    this.hashAlgorithms);
+        }
+        
+        public Params withClassification(
+                final Classification.Heuristic heuristic) {
+            
+            return new Params(
+                    this.dateFormat,
+                    this.locale,
+                    requireNonNull(heuristic, "heuristic"),
+                    this.hashAlgorithms);
+        }
+        
+        /**
+         * Algorithms will be trimmed.
+         * Empty algorithms and duplicates will be ignored.
+         * Field names will be the algorithms in lowercase.
+         */
+        public Params withHash(final String... algorithms) {
+            return new Params(
+                    this.dateFormat,
+                    this.locale,
+                    this.classHeuristic,
+                    algorithms.clone());
+        }
+        
+        private Field[] getFreshFields() throws IOException {
+            final var freshFields = new ArrayList<Field>(
+                    List.of(Path.FIELD, Filename.FIELD, Size.FIELD));
+            freshFields.addAll(List.of(Eol.getFields()));
+            if (dateFormat != null) {
+                freshFields.addAll(timeFields(dateFormat, locale));
+            }
+            if (classHeuristic != null) {
+                freshFields.add(classificationField(classHeuristic));
+            }
+            if (hashAlgorithms != null) {
+                freshFields.addAll(hashFields(hashAlgorithms));
+            }
+            return freshFields.stream()
+                    .filter(distinctByName())
+                    .toArray(Field[]::new);
+        }
+        
+        private static Predicate<Field> distinctByName() {
+            final var names = new HashSet<String>();
+            return field -> names.add(field.name());
+        }
+        
+        private static Collection<Field> timeFields(
+                final String dateFormat,
+                final Locale locale) throws IOException {
+
+            final Field modifiedField = dateFormat.isEmpty()
+                    ? Modified.getField()
+                    : Modified.getField(dateFormat, locale);
+            return List.of(modifiedField);
+        }
+        
+        private static Field classificationField(
+                final Classification.Heuristic heuristic) {
+            
+            return Classification.getField(heuristic, String::valueOf);
+        }
+        
+        private static Collection<Field> hashFields(final String[] algorithms) {
+            final var hashFields = new ArrayList<Field>();
+            for (final String algorithm : algorithms) {
+                final String trimmed = algorithm.trim();
+                if (trimmed.isEmpty()) {
+                    continue;
+                }
+                final String trimmedAndLowerCase = trimmed.toLowerCase();
+                hashFields.add(Hash.getField(trimmedAndLowerCase, trimmed));
+            }
+            return hashFields;
+        }
+    }
+    
+    private final FieldReader mother;
+    private final Params params;
     private final Field[] fields;
     
-    private AvailableFields(final Field[] initial, final Field... more) {
-        this.fields = Stream.concat(Stream.of(initial), Stream.of(more))
-                .filter(distinctByName())
-                .toArray(Field[]::new);
-    }
-    
-    private static Predicate<Field> distinctByName() {
-        final var names = new HashSet<String>();
-        return field -> names.add(field.name());
+    private AvailableFields(
+            final FieldReader mother,
+            final Params params) throws IOException {
+        
+        assert mother != null;
+        this.mother = mother;
+        this.params = params;
+        this.fields = params.getFreshFields();
     }
     
     /**
-     * Returns an instance containing initial fields:
-     * path, filename, size and EOL-fields.
+     * Creates an instance with its own cache.
+     * @param params field parameters
      */
-    public static AvailableFields getInitial() {
-        final var initial = new Field[] {
-                Path.FIELD,
-                Filename.FIELD,
-                Size.FIELD,
-        };
-        return new AvailableFields(initial, Eol.getFields());
+    public AvailableFields(final Params params) throws IOException {
+        this(FieldReader.getInstance(2), params);
     }
     
     /**
-     * If the given date format is empty, timestamp formatting will be off.
+     * The parameters for this instance's fields.
      */
-    public AvailableFields plusTimeFields(
-            final String dateFormat, final Locale locale) throws IOException {
+    public Params getParams() {
+        return params;
+    }
+    
+    /**
+     * Returns an instance that co-caches with this.
+     * @param params field parameters
+     */
+    public AvailableFields coCaching(final Params params)
+            throws IOException {
         
-        final Field modifiedField = dateFormat.isEmpty()
-                ? Modified.getField()
-                : Modified.getField(dateFormat, locale);
-        return new AvailableFields(this.fields, modifiedField);
-    }
-    
-    public AvailableFields plusClassification(
-            final Classification.Heuristic heuristic) {
-        
-        return new AvailableFields(
-                this.fields,
-                Classification.getField(heuristic, String::valueOf));
-    }
-    
-    public AvailableFields plusHashFields(final String... algorithms) {
-        return new AvailableFields(
-                this.fields,
-                hashFields(algorithms).stream().toArray(Field[]::new));
-    }
-    
-    private static Collection<Field> hashFields(final String[] algorithms) {
-        final var hashFields = new ArrayList<Field>();
-        for (final String algorithm : algorithms) {
-            final String trimmed = algorithm.trim();
-            if (trimmed.isEmpty()) {
-                continue;
-            }
-            final String trimmedAndLowerCase = trimmed.toLowerCase();
-            hashFields.add(Hash.getField(trimmedAndLowerCase, trimmed));
-        }
-        return hashFields;
+        return new AvailableFields(this.mother, params);
     }
 
     /**
@@ -100,15 +196,17 @@ public final class AvailableFields {
     
     /**
      * Returns a reader of only the fields that are actually used.
+     * Duplicate field names are ignored.
      * @throws NoSuchElementException
      * if any of the specified fields are unavailable
      */
     public FieldReader getReader(
             final int bufferSize, final String... usedFieldNames) {
         
-        return FieldReader.getInstance(
+        return mother.coCaching(
                 bufferSize,
                 Stream.of(usedFieldNames)
+                    .distinct()
                     .map(this::getField)
                     .toArray(Field[]::new));
     }

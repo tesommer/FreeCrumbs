@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import freecrumbs.finf.FieldComputation;
 import freecrumbs.finf.field.Classification;
 import freecrumbs.finf.field.Classification.Heuristic;
+import test.freecrumbs.finf.FieldTesting;
 
 @DisplayName("Classification")
 public final class ClassificationTest {
@@ -33,7 +34,7 @@ public final class ClassificationTest {
     @DisplayName("Empty")
     public void test1() throws IOException {
         final FieldComputation comp = getInstance(512, .3);
-        comp.reset();
+        comp.reset(FieldTesting.DUMMY_FILE);
         assertEquals(EMPTY, comp.get(), "emtpy");
         final FieldComputation comp2 = getInstance(512, .3);
         final var ups = new byte[][] {
@@ -153,7 +154,7 @@ public final class ClassificationTest {
             final int expectedEnough,
             final String expectedValue) throws IOException {
         
-        comp.reset();
+        comp.reset(FieldTesting.DUMMY_FILE);
         int actualEnough = updates.length;
         for (int i = 0; i < updates.length; i++) {
             if (!comp.update(updates[i], 0, updates[i].length)) {

@@ -39,10 +39,11 @@ public final class Settings {
         
         final String dateFormat = props.getProperty(
                 DATE_FORMAT_KEY, DEFAULT_DATE_FORMAT);
-        return AvailableFields.getInitial()
-                .plusTimeFields(dateFormat, locale)
-                .plusClassification(Classification.Heuristic.DEFAULT)
-                .plusHashFields(getHashAlgorithms(props));
+        final var params = new AvailableFields.Params()
+                .withTime(dateFormat, locale)
+                .withClassification(Classification.Heuristic.DEFAULT)
+                .withHash(getHashAlgorithms(props));
+        return new AvailableFields(params);
     }
 
     public static TokenInfoFormat getOutput(final Properties props) {

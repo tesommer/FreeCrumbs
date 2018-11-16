@@ -1,20 +1,17 @@
 package freecrumbs.finf.internal;
 
-import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
-import freecrumbs.finf.FieldReader;
 import freecrumbs.finf.Info;
 import freecrumbs.finf.InfoFormat;
+import freecrumbs.finf.InfoGenerator;
 
 /**
  * This class extracts, from the properties file, four parts for the config:
@@ -27,7 +24,7 @@ import freecrumbs.finf.InfoFormat;
  * the fields referenced by {@code output} and {@code order}
  * will have a combined info generator,
  * but each filter will have its own.
- * Otherwise, all fields referenced by all settings
+ * Otherwise, all fields referenced by these settings
  * will share one info generator.
  * 
  * @author Tone Sommerland
@@ -37,7 +34,7 @@ public final class Manifold {
     private static final int BUFFER_SIZE = 2048;
     private static final int REGEX_FLAGS = 0;
 
-    private final Function<File, Info> infoGenerator;
+    private final InfoGenerator infoGenerator;
     private final TokenInfoFormat infoFormat;
     private final FileFilter fileFilter;
     private final Comparator<Info> order;
@@ -71,7 +68,7 @@ public final class Manifold {
         }
     }
     
-    public Function<File, Info> getInfoGenerator() {
+    public InfoGenerator getInfoGenerator() {
         return infoGenerator;
     }
     
@@ -87,7 +84,7 @@ public final class Manifold {
         return order;
     }
     
-    private static Function<File, Info> getPrefilterInfoGenerator(
+    private static InfoGenerator getPrefilterInfoGenerator(
             final AvailableFields availableFields,
             final TokenInfoFormat infoFormat,
             final OrderParser orderParser) {
@@ -95,10 +92,10 @@ public final class Manifold {
         final String[] used1 = infoFormat.getUsedFieldNames(
                 availableFields.getNames());
         final String[] used2 = orderParser.getUsedFieldNames();
-        return getInfoGenerator(availableFields, concatDistinct(used1, used2));
+        return getInfoGenerator(availableFields, concat(used1, used2));
     }
     
-    private static Function<File, Info> getNonPrefilterInfoGenerator(
+    private static InfoGenerator getNonPrefilterInfoGenerator(
             final AvailableFields availableFields,
             final TokenInfoFormat infoFormat,
             final OrderParser orderParser,
@@ -112,8 +109,7 @@ public final class Manifold {
                 .map(parser -> parser.getUsedFieldNames(availableFieldNames))
                 .flatMap(Stream::of)
                 .toArray(String[]::new);
-        return getInfoGenerator(
-                availableFields, concatDistinct(used1, used2, used3));
+        return getInfoGenerator(availableFields, concat(used1, used2, used3));
     }
     
     private static Collection<FileFilter> getPrefilterFileFilters(
@@ -130,8 +126,7 @@ public final class Manifold {
     
     private static Collection<FileFilter> getNonPrefilterFileFilters(
             final Collection<FilterParser> filterParsers,
-            final Function<? super File, ? extends Info> infoGenerator)
-                    throws IOException {
+            final InfoGenerator infoGenerator) throws IOException {
         
         final var fileFilters = new ArrayList<FileFilter>(filterParsers.size());
         for (final var filterParser : filterParsers) {
@@ -151,14 +146,11 @@ public final class Manifold {
                 REGEX_FLAGS, getInfoGenerator(availableFields, usedFieldNames));
     }
     
-    private static Function<File, Info> getInfoGenerator(
+    private static InfoGenerator getInfoGenerator(
             final AvailableFields availableFields,
             final String[] usedFieldNames) {
         
-        final FieldReader reader = availableFields.getReader(
-                BUFFER_SIZE, usedFieldNames);
-        final var cache = new HashMap<File, Info>();
-        return file -> CachedInfo.getInstance(reader, file, cache);
+        return availableFields.getReader(BUFFER_SIZE, usedFieldNames);
     }
     
     private static FileFilter nullOrAsOne(
@@ -170,17 +162,16 @@ public final class Manifold {
         return file -> !fileFilters.stream().anyMatch(ff -> !ff.accept(file));
     }
     
-    private static String[] concatDistinct(
+    private static String[] concat(
             final String[] array1, final String[] array2) {
         
         return Stream.concat(
                 Stream.of(array1),
                 Stream.of(array2))
-                .distinct()
                 .toArray(String[]::new);
     }
     
-    private static String[] concatDistinct(
+    private static String[] concat(
             final String[] array1,
             final String[] array2,
             final String[] array3) {
@@ -190,7 +181,6 @@ public final class Manifold {
                 Stream.concat(
                         Stream.of(array2),
                         Stream.of(array3)))
-                .distinct()
                 .toArray(String[]::new);
     }
 

@@ -5,6 +5,7 @@ import static freecrumbs.finf.field.Classification.Category.EMPTY;
 import static freecrumbs.finf.field.Classification.Category.TEXT;
 import static java.util.Objects.requireNonNull;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
@@ -122,7 +123,7 @@ public final class Classification implements FieldComputation {
     }
 
     @Override
-    public void reset() throws IOException {
+    public void reset(final File file) throws IOException {
         bytesRead = 0;
         binCount = 0;
         category = EMPTY;

@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -56,18 +57,18 @@ public final class Finf {
                 items,
                 config,
                 out,
-                config.getInfoGenerator()::apply);
+                config.getInfoGenerator()::getInfo);
     }
     
     private static List<Info> filterAndSort(
             final Collection<? extends File> files,
-            final Config config) {
+            final Config config) throws IOException {
         
-        return files.stream()
-            .filter(file -> acceptsInput(file, config))
-            .map(config.getInfoGenerator())
-            .sorted(config.getOrder().get())
-            .collect(toList());
+        final var items = new ArrayList<Info>();
+        for (final File file : filter(files, config)) {
+            items.add(config.getInfoGenerator().getInfo(file));
+        }
+        return items.stream().sorted(config.getOrder().get()).collect(toList());
     }
 
     private static List<File> filter(
@@ -81,7 +82,7 @@ public final class Finf {
     
     @FunctionalInterface
     private interface Informer<T> {
-        public abstract Info provide(T item);
+        public abstract Info provide(T item) throws IOException;
     }
 
     private static <T> void output(

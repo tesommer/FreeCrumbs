@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static test.freecrumbs.finf.MockInfoGenerator.getInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.Test;
 
 import freecrumbs.finf.Config;
 import freecrumbs.finf.ConfigLoader;
+import freecrumbs.finf.FieldReader;
 import freecrumbs.finf.Info;
 
 @DisplayName("ConfigLoader")
@@ -34,16 +36,9 @@ public final class ConfigLoaderTest {
     public void test1() throws IOException {
         final Config config = loadConfig("");
         assertConfig(config, false, false, -1);
-        final MockInfo info = MockInfo.getInstance("a", "b", "2", "3", "c");
-        assertInfoFormat(
-                config,
-                info,
-                "b${eol}",
-                fieldReadAssertion(MockInfo.PATH_FIELD_NAME,     true),
-                fieldReadAssertion(MockInfo.FILENAME_FIELD_NAME, true),
-                fieldReadAssertion(MockInfo.SIZE_FIELD_NAME,     true),
-                fieldReadAssertion(MockInfo.MODIFIED_FIELD_NAME, true),
-                fieldReadAssertion(MockInfo.MD5_FIELD_NAME,      true));
+        final Info info = getInfo("a", "b", "2", "3", "c");
+        assertInfoFormat(config, info, "b${eol}");
+        assertInfoGenerator(config, "filename", "eol");
     }
     
     @Test
@@ -85,14 +80,7 @@ public final class ConfigLoaderTest {
                 + "filter=${path}++\n"
                 + "filter.=${size}--\n"
                 + "order=md5 desc");
-        final String filename = "§|@#£¤$%&/{([)]=}?+`´";
-        assertInfoGenerator(
-                config,
-                filename,
-                MockInfo.PATH_FIELD_NAME,
-                MockInfo.FILENAME_FIELD_NAME,
-                MockInfo.SIZE_FIELD_NAME,
-                MockInfo.MD5_FIELD_NAME);
+        assertInfoGenerator(config, "path", "filename", "size", "mdf");
     }
     
     @Test
@@ -104,45 +92,23 @@ public final class ConfigLoaderTest {
               + "filter=${path}--\n"
               + "filter.a=${size}++\n"
               + "order=md5 desc");
-        final String filename = "´`+?}=])[({/&%$¤£#@|§";
-        assertInfoGenerator(
-                config,
-                filename,
-                MockInfo.FILENAME_FIELD_NAME,
-                MockInfo.MD5_FIELD_NAME);
-    }
-    
-    @Test
-    @DisplayName("getDefault(Map): Each Config has its own info cache")
-    public void test8() throws IOException {
-        final String filename = "thecommonfilename.txt";
-        final Config config1 = loadConfig("output=${filename}");
-        assertInfoGenerator(
-                config1,
-                filename,
-                MockInfo.FILENAME_FIELD_NAME);
-        final Config config2 = loadConfig("output=${path} ${filename}");
-        assertInfoGenerator(
-                config2,
-                filename,
-                MockInfo.FILENAME_FIELD_NAME,
-                MockInfo.PATH_FIELD_NAME);
+        assertInfoGenerator(config, "filename", "md5");
     }
     
     @Test
     @DisplayName("getDefault(Map): hash.algorithms")
-    public void test9() throws IOException {
+    public void test8() throws IOException {
         final String setting
             = "hash.algorithms= md5  sha-512, \tnothanx md5 MD5 \n"
             + "output="
             + "${md5} ${sha-512,} ${nothanx} ${} ${ }  ${MD5}${\t}";
         final Config config = loadConfig(setting);
-        assertInfoGenerator(config, "", "md5", "sha-512,", "nothanx");
+        assertInfoGenerator(config, "md5", "sha-512,", "nothanx");
         final String setting2
             = "hash.algorithms= \n"
             + "output=${md5} ${sha-512,} ${nothanx} ${} ${ } ${\t}";
         final Config config2 = loadConfig(setting2);
-        assertInfoGenerator(config2, "");
+        assertInfoGenerator(config2);
     }
     
     @Nested
@@ -243,13 +209,13 @@ public final class ConfigLoaderTest {
     public static final class GetDefaultTest_Order {
         
         private static final Info
-        I1 = MockInfo.getInstance("p1", "f1", "1", "100", "h1");
+        I1 = getInfo("p1", "f1", "1", "100", "h1");
         
         private static final Info
-        I2 = MockInfo.getInstance("p1", "f1", "2", "102", "h2");
+        I2 = getInfo("p1", "f1", "2", "102", "h2");
         
         private static final Info
-        I3 = MockInfo.getInstance("p1", "f2", "3", "102", "h3");
+        I3 = getInfo("p1", "f2", "3", "102", "h3");
 
         public GetDefaultTest_Order() {
         }
@@ -284,17 +250,8 @@ public final class ConfigLoaderTest {
         public void test1() throws IOException {
             final Config config = loadConfig(
                     "output=${modified}|${filename}: ${path} -- ${size}");
-            final MockInfo info = MockInfo.getInstance(
-                    "cat", "al", "ey", "a", "Z");
-            assertInfoFormat(
-                    config,
-                    info,
-                    "a|al: cat -- ey",
-                    fieldReadAssertion(MockInfo.PATH_FIELD_NAME,     true),
-                    fieldReadAssertion(MockInfo.FILENAME_FIELD_NAME, true),
-                    fieldReadAssertion(MockInfo.SIZE_FIELD_NAME,     true),
-                    fieldReadAssertion(MockInfo.MODIFIED_FIELD_NAME, true),
-                    fieldReadAssertion(MockInfo.MD5_FIELD_NAME,      true));
+            final Info info = getInfo("cat", "al", "ey", "a", "Z");
+            assertInfoFormat(config, info, "a|al: cat -- ey");
         }
     }
     
@@ -326,12 +283,6 @@ public final class ConfigLoaderTest {
         return loadConfig(properties, Map.of());
     }
     
-    private static FieldReadAssertion fieldReadAssertion(
-            final String fieldName, final boolean expectedRead) {
-        
-        return new FieldReadAssertion(fieldName, expectedRead);
-    }
-    
     private static void assertConfig(
             final Config config,
             final boolean expectedFileFilterPresence,
@@ -354,14 +305,13 @@ public final class ConfigLoaderTest {
     
     private static void assertInfoGenerator(
             final Config config,
-            final String filename,
-            final String... expectedFieldNames) {
+            final String... expectedFieldNames) throws IOException {
         
-        final Info info = config.getInfoGenerator().apply(new File(filename));
+        final var reader = (FieldReader)config.getInfoGenerator();
         final var expected = Stream.of(expectedFieldNames)
                 .sorted()
                 .collect(toList());
-        final var actual = Stream.of(info.getFieldNames())
+        final var actual = Stream.of(reader.getFieldNames())
                 .sorted()
                 .collect(toList());
         assertEquals(expected, actual, "Field names");
@@ -369,17 +319,13 @@ public final class ConfigLoaderTest {
     
     private static void assertInfoFormat(
             final Config config,
-            final MockInfo info,
-            final String expectedFormattedInfo,
-            final FieldReadAssertion... fieldReadAssertions)
-                    throws IOException {
+            final Info info,
+            final String expectedFormattedInfo) throws IOException {
         
         final String actualFormattedInfo
             = config.getInfoFormat().toString(info);
         assertEquals(
                 expectedFormattedInfo, actualFormattedInfo, "Formatted info");
-        Stream.of(fieldReadAssertions).forEach(
-                assertion -> assertion.test(info));
     }
     
     private static void assertFileFilter(
@@ -401,26 +347,6 @@ public final class ConfigLoaderTest {
         actual.sort(config.getOrder().get());
         for (int i = 0; i < expected.length; i++) {
             assertSame(expected[i], actual.get(i), "Order: index " + i);
-        }
-    }
-    
-    private static final class FieldReadAssertion {
-        private final String fieldName;
-        private final boolean expectedRead;
-        
-        private FieldReadAssertion(
-                final String fieldName, final boolean expectedRead) {
-            
-            assert fieldName != null;
-            this.fieldName = fieldName;
-            this.expectedRead = expectedRead;
-        }
-        
-        private void test(final MockInfo info) {
-            assertEquals(
-                    expectedRead,
-                    info.isValueRead(fieldName),
-                    "Is " + fieldName + " read");
         }
     }
 

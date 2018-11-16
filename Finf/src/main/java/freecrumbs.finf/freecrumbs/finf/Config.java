@@ -2,11 +2,9 @@ package freecrumbs.finf;
 
 import static java.util.Objects.requireNonNull;
 
-import java.io.File;
 import java.io.FileFilter;
 import java.util.Comparator;
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * Finf config.
@@ -29,14 +27,14 @@ public final class Config {
      * @author Tone Sommerland
      */
     public static final class Builder {
-        private final Function<? super File, ? extends Info> infoGenerator;
+        private final InfoGenerator infoGenerator;
         private final InfoFormat infoFormat;
         private FileFilter fileFilter;
         private Comparator<? super Info> order;
         private int count = -1;
         
         public Builder(
-                final Function<? super File, ? extends Info> infoGenerator,
+                final InfoGenerator infoGenerator,
                 final InfoFormat infoFormat) {
             
             this.infoGenerator = requireNonNull(infoGenerator, "infoGenerator");
@@ -82,14 +80,14 @@ public final class Config {
         }
     }
     
-    private final Function<? super File, ? extends Info> infoGenerator;
+    private final InfoGenerator infoGenerator;
     private final InfoFormat infoFormat;
     private final FileFilter fileFilter;
     private final Comparator<? super Info> order;
     private final int count;
     
     private Config(
-        final Function<? super File, ? extends Info> infoGenerator,
+        final InfoGenerator infoGenerator,
         final InfoFormat infoFormat,
         final FileFilter fileFilter,
         final Comparator<? super Info> order,
@@ -104,7 +102,7 @@ public final class Config {
         this.count = count;
     }
     
-    public Function<? super File, ? extends Info> getInfoGenerator() {
+    public InfoGenerator getInfoGenerator() {
         return infoGenerator;
     }
     

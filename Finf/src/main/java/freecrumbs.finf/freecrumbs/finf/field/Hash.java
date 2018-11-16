@@ -2,6 +2,7 @@ package freecrumbs.finf.field;
 
 import static java.util.Objects.requireNonNull;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -41,7 +42,7 @@ public final class Hash {
         }
 
         @Override
-        public void reset() throws IOException {
+        public void reset(final File file) throws IOException {
             try {
                 messageDigest = MessageDigest.getInstance(algorithm);
             } catch (final NoSuchAlgorithmException ex) {

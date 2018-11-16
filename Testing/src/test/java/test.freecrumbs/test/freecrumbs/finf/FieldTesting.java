@@ -1,5 +1,6 @@
 package test.freecrumbs.finf;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,8 @@ import freecrumbs.finf.Field;
  * @author Tone Sommerland
  */
 public final class FieldTesting {
+    
+    public static final File DUMMY_FILE = new File("dummy");
 
     private FieldTesting() {
     }
@@ -38,7 +41,7 @@ public final class FieldTesting {
         
         for (final Field field : fields) {
             if (field.isComputed()) {
-                field.computation().reset();
+                field.computation().reset(DUMMY_FILE);
             }
         }
     }

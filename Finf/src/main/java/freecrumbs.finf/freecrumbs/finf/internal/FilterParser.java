@@ -1,16 +1,14 @@
 package freecrumbs.finf.internal;
 
-import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import freecrumbs.finf.Info;
+import freecrumbs.finf.InfoGenerator;
 
 /**
  * <p>
@@ -91,8 +89,7 @@ public final class FilterParser {
      */
     public FileFilter getFileFilter(
             final int regexFlags,
-            final Function<? super File, ? extends Info> infoGenerator)
-                    throws IOException {
+            final InfoGenerator infoGenerator) throws IOException {
         
         if (setting == null) {
             return null;

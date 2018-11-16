@@ -4,11 +4,11 @@ import static java.util.Objects.requireNonNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import freecrumbs.finf.Info;
 import freecrumbs.finf.InfoFormat;
+import freecrumbs.finf.InfoGenerator;
 
 /**
  * Instances of this class are used by
@@ -38,10 +38,10 @@ public final class FormatPattern {
      */
     public boolean includes(
             final File file,
-            final Function<? super File, ? extends Info> infoGenerator,
+            final InfoGenerator infoGenerator,
             final InfoFormat infoFormat) throws IOException {
         
-        final Info info = infoGenerator.apply(file);
+        final Info info = infoGenerator.getInfo(file);
         return pattern.matcher(infoFormat.toString(info)).matches() == include;
     }
     

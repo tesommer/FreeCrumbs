@@ -1,9 +1,10 @@
 package freecrumbs.finf;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
- * An field-value computation.
+ * A field-value computation.
  * 
  * @author Tone Sommerland
  */
@@ -11,8 +12,20 @@ public interface FieldComputation {
     
     /**
      * Resets the computation.
+     * @param file the file that is about to be
+     * {@link #update(byte[], int, int) served}
      */
-    public abstract void reset() throws IOException;
+    public abstract void reset(File file) throws IOException;
+    
+    /**
+     * Called after {@link #reset(File)}
+     * if this computation has been aborted.
+     * @param file the file that was given to {@link #reset(File)}
+     * @implSpec
+     * The default implementation does nothing.
+     */
+    public default void abort(final File file) {
+    }
     
     /**
      * Updates the computation with the given input.
