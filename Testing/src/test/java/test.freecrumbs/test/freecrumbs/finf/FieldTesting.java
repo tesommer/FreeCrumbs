@@ -1,9 +1,13 @@
 package test.freecrumbs.finf;
 
+import static java.util.stream.Collectors.toList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
@@ -70,6 +74,30 @@ public final class FieldTesting {
                 }
             }
             offset += length;
+        }
+    }
+    
+    public static void assertFieldValues(
+            final Map<String, String> expecteds,
+            final Field[] actuals) throws IOException {
+        
+        assertEquals(
+                expecteds.keySet().stream()
+                    .sorted()
+                    .collect(toList()),
+                Stream.of(actuals)
+                    .map(Field::name)
+                    .sorted()
+                    .collect(toList()),
+                "Field names");
+        for (final String key : expecteds.keySet()) {
+            final Field field = getField(key, actuals);
+            assertEquals(
+                    expecteds.get(key),
+                    field.isComputed()
+                        ? field.computation().get()
+                        : field.value().get(DUMMY_FILE),
+                    "Field '" + key + "'");
         }
     }
 

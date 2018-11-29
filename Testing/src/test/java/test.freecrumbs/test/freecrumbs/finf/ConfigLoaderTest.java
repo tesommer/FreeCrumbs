@@ -80,7 +80,7 @@ public final class ConfigLoaderTest {
                 + "filter=${path}++\n"
                 + "filter.=${size}--\n"
                 + "order=md5 desc");
-        assertInfoGenerator(config, "path", "filename", "size", "mdf");
+        assertInfoGenerator(config, "path", "filename", "size", "md5");
     }
     
     @Test

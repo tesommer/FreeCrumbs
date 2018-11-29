@@ -1,6 +1,7 @@
 package freecrumbs.finf.internal;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import freecrumbs.finf.field.Filename;
 import freecrumbs.finf.field.Hash;
 import freecrumbs.finf.field.Modified;
 import freecrumbs.finf.field.Path;
+import freecrumbs.finf.field.Search;
 import freecrumbs.finf.field.Size;
 
 /**
@@ -34,6 +36,8 @@ import freecrumbs.finf.field.Size;
  */
 public final class AvailableFields {
     
+    private static final int BUFFER_SIZE = 2048;
+    
     /**
      * Field parameters.
      * 
@@ -44,21 +48,26 @@ public final class AvailableFields {
         private final Locale locale;
         private final Classification.Heuristic classHeuristic;
         private final String[] hashAlgorithms;
+        private final Search.Params[] searchParams;
         
         private Params(
                 final String dateFormat,
                 final Locale locale,
                 final Classification.Heuristic classHeuristic,
-                final String[] hashAlgorithms) {
+                final String[] hashAlgorithms,
+                final Search.Params[] searchParams) {
             
             this.dateFormat = dateFormat;
             this.locale = locale;
             this.classHeuristic = classHeuristic;
-            this.hashAlgorithms = hashAlgorithms;
+            this.hashAlgorithms
+                = hashAlgorithms == null ? new String[0] : hashAlgorithms;
+            this.searchParams
+                = searchParams == null ? new Search.Params[0] : searchParams;
         }
         
         public Params() {
-            this(null, null, null, null);
+            this(null, null, null, null, null);
         }
         
         /**
@@ -69,7 +78,8 @@ public final class AvailableFields {
                     requireNonNull(dateFormat, "dateFormat"),
                     requireNonNull(locale, "locale"),
                     this.classHeuristic,
-                    this.hashAlgorithms);
+                    this.hashAlgorithms,
+                    this.searchParams);
         }
         
         public Params withClassification(
@@ -79,7 +89,8 @@ public final class AvailableFields {
                     this.dateFormat,
                     this.locale,
                     requireNonNull(heuristic, "heuristic"),
-                    this.hashAlgorithms);
+                    this.hashAlgorithms,
+                    this.searchParams);
         }
         
         /**
@@ -92,7 +103,19 @@ public final class AvailableFields {
                     this.dateFormat,
                     this.locale,
                     this.classHeuristic,
-                    algorithms.clone());
+                    algorithms.clone(),
+                    this.searchParams);
+        }
+        
+        public Params withAnotherSearch(final Search.Params params) {
+            return new Params(
+                    this.dateFormat,
+                    this.locale,
+                    this.classHeuristic,
+                    this.hashAlgorithms,
+                    Stream.concat(
+                            Stream.of(this.searchParams), Stream.of(params))
+                        .toArray(Search.Params[]::new));
         }
         
         private Field[] getFreshFields() throws IOException {
@@ -105,8 +128,11 @@ public final class AvailableFields {
             if (classHeuristic != null) {
                 freshFields.add(classificationField(classHeuristic));
             }
-            if (hashAlgorithms != null) {
+            if (hashAlgorithms.length > 0) {
                 freshFields.addAll(hashFields(hashAlgorithms));
+            }
+            if (searchParams.length > 0) {
+                freshFields.addAll(searchFields(searchParams));
             }
             return freshFields.stream()
                     .filter(distinctByName())
@@ -145,6 +171,15 @@ public final class AvailableFields {
                 hashFields.add(Hash.getField(trimmedAndLowerCase, trimmed));
             }
             return hashFields;
+        }
+        
+        private static Collection<Field> searchFields(
+                final Search.Params[] params) {
+            
+            return Stream.of(params)
+                    .map(Search::getFields)
+                    .flatMap(Stream::of)
+                    .collect(toList());
         }
     }
     
@@ -200,11 +235,9 @@ public final class AvailableFields {
      * @throws NoSuchElementException
      * if any of the specified fields are unavailable
      */
-    public FieldReader getReader(
-            final int bufferSize, final String... usedFieldNames) {
-        
+    public FieldReader getReader(final String... usedFieldNames) {
         return mother.coCaching(
-                bufferSize,
+                BUFFER_SIZE,
                 Stream.of(usedFieldNames)
                     .distinct()
                     .map(this::getField)

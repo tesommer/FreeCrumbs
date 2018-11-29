@@ -22,6 +22,7 @@ public final class Settings {
     private static final String FILTER_KEY = "filter";
     private static final String ORDER_KEY = "order";
     private static final String COUNT_KEY = "count";
+    private static final String SEARCH_KEY = "search";
     
     private static final String DEFAULT_HASH_ALGORITHMS = "md5 sha-1 sha-256";
     private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm";
@@ -30,6 +31,7 @@ public final class Settings {
     
     private static final String HASH_ALGORITHM_DELIMITER = "[ |\\t]+";
     private static final String FILTER_KEY_PREFIX = FILTER_KEY + '.';
+    private static final String SEARCH_KEY_PREFIX = SEARCH_KEY + '.';
     
     private Settings() {
     }
@@ -43,7 +45,23 @@ public final class Settings {
                 .withTime(dateFormat, locale)
                 .withClassification(Classification.Heuristic.DEFAULT)
                 .withHash(getHashAlgorithms(props));
-        return new AvailableFields(params);
+        return withSearchFields(new AvailableFields(params), props);
+    }
+    
+    private static AvailableFields withSearchFields(
+            final AvailableFields availableFields,
+            final Properties props) throws IOException {
+        
+        final String[] keys = props.stringPropertyNames().stream()
+                .filter(Settings::isSearchKey)
+                .sorted()
+                .toArray(String[]::new);
+        var result = availableFields;
+        for (final String key : keys) {
+            result = SearchParser.withAnotherSearch(
+                    result, key, props.getProperty(key));
+        }
+        return result;
     }
 
     public static TokenInfoFormat getOutput(final Properties props) {
@@ -90,6 +108,10 @@ public final class Settings {
     
     private static boolean isFilterKey(final String key) {
         return FILTER_KEY.equals(key) || key.startsWith(FILTER_KEY_PREFIX);
+    }
+    
+    private static boolean isSearchKey(final String key) {
+        return SEARCH_KEY.equals(key) || key.startsWith(SEARCH_KEY_PREFIX);
     }
 
     private static String[] getHashAlgorithms(final Properties props) {

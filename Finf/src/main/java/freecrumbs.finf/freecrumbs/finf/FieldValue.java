@@ -8,6 +8,7 @@ import java.io.IOException;
  * 
  * @author Tone Sommerland
  */
+@FunctionalInterface
 public interface FieldValue {
     
     /**

@@ -31,7 +31,6 @@ import freecrumbs.finf.InfoGenerator;
  */
 public final class Manifold {
     
-    private static final int BUFFER_SIZE = 2048;
     private static final int REGEX_FLAGS = 0;
 
     private final InfoGenerator infoGenerator;
@@ -150,7 +149,7 @@ public final class Manifold {
             final AvailableFields availableFields,
             final String[] usedFieldNames) {
         
-        return availableFields.getReader(BUFFER_SIZE, usedFieldNames);
+        return availableFields.getReader(usedFieldNames);
     }
     
     private static FileFilter nullOrAsOne(
