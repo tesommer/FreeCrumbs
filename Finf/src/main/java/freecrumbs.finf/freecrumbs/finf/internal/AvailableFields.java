@@ -26,7 +26,7 @@ import freecrumbs.finf.field.Size;
 
 /**
  * Contains available info fields of which
- * {@link #getReader(int, String...) readers} can be created.
+ * {@link #getReader(String...) readers} can be created.
  * No two fields in an instance of this class have the same name.
  * Each instance of this class has its own instances of the computed fields.
  * This is so that readers from instance A

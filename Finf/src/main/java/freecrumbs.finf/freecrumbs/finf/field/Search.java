@@ -82,6 +82,9 @@ public final class Search {
             this.regex = requireNonNull(regex, "regex");
         }
         
+        /**
+         * Creates parameters with the given regex.
+         */
         public Params(final DynamicValue regex) {
             this("", 0, Charset.defaultCharset(), 1, 0, regex);
         }
@@ -96,6 +99,15 @@ public final class Search {
                     this.regex);
         }
         
+        /**
+         * Sets the number of groups to include.
+         * For each group, three fields will be added,
+         * prefixed with the group number and a dash:
+         * input, start and end.
+         * If the groups exceed the group count,
+         * excess groups will have empty/-1 as their values.
+         * @throws IllegalArgumentException if groups is negative
+         */
         public Params withGroups(final int groups) {
             return new Params(
                     this.fieldNamePrefix,
@@ -116,6 +128,11 @@ public final class Search {
                     this.regex);
         }
         
+        /**
+         * The occurrence to search for.
+         * A negative occurrence searches from the bottom rather than the top.
+         * An occurrence of zero results in not found.
+         */
         public Params withOccurrence(final int occurrence) {
             return new Params(
                     this.fieldNamePrefix,
@@ -150,6 +167,9 @@ public final class Search {
     private Search() {
     }
     
+    /**
+     * Returns the fields of the search specified with the given parameters.
+     */
     public static Field[] getFields(final Params params) {
         final var searcher = new Searcher();
         final var fields = new ArrayList<Field>(4 + params.groups);
