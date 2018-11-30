@@ -10,6 +10,9 @@ import freecrumbs.finf.field.Search;
 
 /**
  * Parses search config-settings.
+ * Format: {@code /regex/param1,param2,...}.
+ * Parameters: occurrence, groups and charset.
+ * A default is used for empty parameters.
  * 
  * @author Tone Sommerland
  */
@@ -84,7 +87,7 @@ public final class SearchParser {
     private static int getOccurrence(
             final String[] params, final String message) throws IOException {
         
-        return /*params.length < 1 ||*/ params[0].isEmpty()
+        return params.length < 1 || params[0].isEmpty()
                 ? 1
                 : parseInt(params[0], "Occurrence: " + message);
     }

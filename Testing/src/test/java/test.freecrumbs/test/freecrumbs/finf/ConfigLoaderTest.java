@@ -269,6 +269,47 @@ public final class ConfigLoaderTest {
         }
     }
     
+    @Nested
+    @DisplayName("ConfigLoader.getDefault(Map): search")
+    public static final class GetDefaultTest_Search {
+
+        public GetDefaultTest_Search() {
+        }
+        
+        @Test
+        @DisplayName("Search")
+        public void test1() throws IOException {
+            loadConfig("search=/abc/");
+            loadConfig("search=/abc/1");
+            loadConfig("search=/abc/1,2");
+            loadConfig("search=/abc/1,2,UTF-8");
+            loadConfig("search=/abc/,2,");
+            loadConfig("search=/abc/,,");
+            loadConfig("search=/abc/,,,");
+            loadConfig("search=/abc/,,UTF-8,1");
+            loadConfig("search=/abc/,0");
+            loadConfig("search=//");
+            assertThrows(
+                    IOException.class,
+                    () -> loadConfig("search=abc/"));
+            assertThrows(
+                    IOException.class,
+                    () -> loadConfig("search=/abc"));
+            assertThrows(
+                    IOException.class,
+                    () -> loadConfig("search=/abc/a"));
+            assertThrows(
+                    IOException.class,
+                    () -> loadConfig("search=/abc/1,-1"));
+            assertThrows(
+                    IOException.class,
+                    () -> loadConfig("search=/abc/1,b,UTF-8"));
+            assertThrows(
+                    IOException.class,
+                    () -> loadConfig("search=/abc/1,1,abcdefghij"));
+        }
+    }
+    
     private static Config loadConfig(
             final String properties,
             final Map<String, String> overrides) throws IOException {
