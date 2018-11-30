@@ -29,9 +29,10 @@ public final class Settings {
     private static final String DEFAULT_PREFILTER = "1";
     private static final String DEFAULT_OUTPUT = "${filename}${eol}";
     
+    private static final char KEYSEP = '.';
     private static final String HASH_ALGORITHM_DELIMITER = "[ |\\t]+";
-    private static final String FILTER_KEY_PREFIX = FILTER_KEY + '.';
-    private static final String SEARCH_KEY_PREFIX = SEARCH_KEY + '.';
+    private static final String FILTER_KEY_PREFIX = FILTER_KEY + KEYSEP;
+    private static final String SEARCH_KEY_PREFIX = SEARCH_KEY + KEYSEP;
     
     private Settings() {
     }
@@ -59,7 +60,7 @@ public final class Settings {
         var result = availableFields;
         for (final String key : keys) {
             result = SearchParser.withAnotherSearch(
-                    result, key, props.getProperty(key));
+                    result, key +  KEYSEP, props.getProperty(key));
         }
         return result;
     }
