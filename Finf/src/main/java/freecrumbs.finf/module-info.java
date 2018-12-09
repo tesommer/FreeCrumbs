@@ -3,4 +3,5 @@ module freecrumbs.finf {
     requires com.calclipse.lib;
     exports freecrumbs.finf;
     exports freecrumbs.finf.field;
+    exports freecrumbs.finf.main;
 }

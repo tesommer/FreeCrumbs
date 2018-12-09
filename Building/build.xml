@@ -54,11 +54,11 @@
            <file file="${macrec.project.dir}/macrechelp.txt"/>
         </loadresource>
         <replace
-            file="${build.dir.src}/main/java/freecrumbs.finf/freecrumbs/finf/Main.java"
+            file="${build.dir.src}/main/java/freecrumbs.finf/freecrumbs/finf/main/Main.java"
             token="@finfhelp@"
             value="${finf.help}"/>
         <replace
-            file="${build.dir.src}/main/java/freecrumbs.macro/freecrumbs/macro/Main.java"
+            file="${build.dir.src}/main/java/freecrumbs.macro/freecrumbs/macro/main/Main.java"
             token="@macrohelp@"
             value="${macro.help}"/>
         <replace

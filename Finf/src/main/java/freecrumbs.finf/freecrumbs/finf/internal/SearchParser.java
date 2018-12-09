@@ -4,19 +4,24 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
+import java.util.Map;
 
 import freecrumbs.finf.field.DynamicValue;
 import freecrumbs.finf.field.Search;
 
 /**
  * Parses search config-settings.
- * Format: {@code /regex/param1,param2,...}.
- * Parameters: occurrence, groups and charset.
- * A default is used for empty parameters.
+ * Format: {@code /regex/key=value,key=value,...}.
+ * Key-value-parameters: o=occurrence, g=groups and c=charset.
+ * A default is used for missing parameters.
  * 
  * @author Tone Sommerland
  */
 public final class SearchParser {
+    
+    private static final String OCCURRENCE_KEY = "o";
+    private static final String GROUP_KEY = "g";
+    private static final String CHARSET_KEY = "c";
 
     private SearchParser() {
     }
@@ -36,19 +41,20 @@ public final class SearchParser {
             final String fieldNamePrefix,
             final String setting) throws IOException {
         
+        final var parameterizedSetting = new ParameterizedSetting(setting);
         final var searchParams = new Search.Params(
-                getRegex(availableFields, setting))
+                getRegex(availableFields, parameterizedSetting))
                     .withFieldNamePrefix(fieldNamePrefix);
         return availableFields.coCaching(availableFields.getParams()
-                .withAnotherSearch(
-                        remainingSearchParams(searchParams, setting)));
+                .withAnotherSearch(remainingSearchParams(
+                        searchParams, parameterizedSetting)));
     }
     
     private static DynamicValue getRegex(
             final AvailableFields availableFields,
-            final String setting) throws IOException {
+            final ParameterizedSetting setting) throws IOException {
         
-        final String regexString = getRegexString(setting);
+        final String regexString = setting.mainPart();
         final var regexFormat = new TokenInfoFormat(regexString);
         final String[] usedByRegex = regexFormat.getUsedFieldNames(
                 availableFields.getNames());
@@ -59,53 +65,43 @@ public final class SearchParser {
                 availableFields.getReader(usedByRegex), regexFormat);
     }
     
-    private static String getRegexString(final String setting)
-            throws IOException {
-        
-        if (!setting.startsWith("/")) {
-            throw new IOException(setting);
-        }
-        final int endOfRegex = setting.lastIndexOf('/');
-        if (endOfRegex < 1) {
-            throw new IOException(setting);
-        }
-        return setting.substring(1, endOfRegex);
-    }
-    
     private static Search.Params remainingSearchParams(
             final Search.Params searchParams,
-            final String setting) throws IOException {
+            final ParameterizedSetting setting) throws IOException {
         
-        final int endOfRegex = setting.lastIndexOf('/');
-        final String params[] = setting.substring(endOfRegex + 1).split(",");
+        final Map<String, String> params = setting.params();
         return searchParams
-                .withOccurrence(getOccurrence(params, setting))
-                .withGroups(getGroups(params, setting))
-                .withCharset(getCharset(params, setting));
+                .withOccurrence(getOccurrence(params, setting.whole()))
+                .withGroups(getGroups(params, setting.whole()))
+                .withCharset(getCharset(params, setting.whole()));
     }
     
     private static int getOccurrence(
-            final String[] params, final String message) throws IOException {
+            final Map<? super String, String> params,
+            final String message) throws IOException {
         
-        return params.length < 1 || params[0].isEmpty()
-                ? 1
-                : parseInt(params[0], "Occurrence: " + message);
+        return parseInt(
+                params.getOrDefault(OCCURRENCE_KEY, "1"),
+                "Occurrence: " + message);
     }
     
     private static int getGroups(
-            final String[] params, final String message) throws IOException {
+            final Map<? super String, String> params,
+            final String message) throws IOException {
         
-        return params.length < 2 || params[1].isEmpty()
-                ? 0
-                : requireZeroPlus(params[1], "Groups: " + message);
+        return requireZeroPlus(
+                params.getOrDefault(GROUP_KEY, "0"),
+                "Groups: " + message);
     }
     
     private static Charset getCharset(
-            final String[] params, final String message) throws IOException {
+            final Map<? super String, String> params,
+            final String message) throws IOException {
         
-        return params.length < 3 || params[2].isEmpty()
-                ? Charset.defaultCharset()
-                : parseCharset(params[2], "Charset: " + message);
+        if (params.containsKey(CHARSET_KEY)) {
+            return parseCharset(params.get(CHARSET_KEY), "Charset: " + message);
+        }
+        return Charset.defaultCharset();
     }
     
     private static int parseInt(final String param, final String message)
