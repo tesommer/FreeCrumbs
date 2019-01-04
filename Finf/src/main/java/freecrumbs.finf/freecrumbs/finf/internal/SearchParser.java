@@ -32,19 +32,18 @@ public final class SearchParser {
      * with additional search fields
      * resulting from parsing a search setting.
      * @param availableFields current available fields
-     * @param fieldNamePrefix field-name prefix
+     * @param initialSearchParams initial search parameters
      * @param setting the search setting
      * @return the available fields with the additional search
      */
     public static AvailableFields withAnotherSearch(
             final AvailableFields availableFields,
-            final String fieldNamePrefix,
+            final Search.Params initialSearchParams,
             final String setting) throws IOException {
         
         final var parameterizedSetting = new ParameterizedSetting(setting);
-        final var searchParams = new Search.Params(
-                getRegex(availableFields, parameterizedSetting))
-                    .withFieldNamePrefix(fieldNamePrefix);
+        final Search.Params searchParams = initialSearchParams.withRegex(
+                getRegex(availableFields, parameterizedSetting));
         return availableFields.coCaching(availableFields.getParams()
                 .withAnotherSearch(remainingSearchParams(
                         searchParams, parameterizedSetting)));

@@ -7,6 +7,8 @@ import java.util.Locale;
 import java.util.Properties;
 
 import freecrumbs.finf.field.Classification;
+import freecrumbs.finf.field.DynamicValue;
+import freecrumbs.finf.field.Search;
 
 /**
  * Static config-settings methods.
@@ -57,10 +59,13 @@ public final class Settings {
                 .filter(Settings::isSearchKey)
                 .sorted()
                 .toArray(String[]::new);
+        final var initialSearchParams = new Search.Params(DynamicValue.of(""));
         var result = availableFields;
         for (final String key : keys) {
             result = SearchParser.withAnotherSearch(
-                    result, key +  KEYSEP, props.getProperty(key));
+                    result,
+                    initialSearchParams.withFieldNamePrefix(key +  KEYSEP),
+                    props.getProperty(key));
         }
         return result;
     }
