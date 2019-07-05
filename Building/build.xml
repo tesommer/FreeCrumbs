@@ -14,11 +14,17 @@
     <property name="finf.project.dir" value="../Finf"/>
     <property name="macro.project.dir" value="../Macro"/>
     <property name="macrec.project.dir" value="../Macrec"/>
+    <property name="dependencies.project.dir" value="../Dependencies"/>
     
-    <property name="dependencies.dir" value="${finf.project.dir}/lib"/>
+    <property name="dependencies.dir" value="${dependencies.project.dir}/lib"/>
+    
+    <!-- Retrieves missing dependencies. -->
+    <target name="dependencies">
+        <ant dir="${dependencies.project.dir}"/>
+    </target>
     
     <!-- Makes source and binary distributions. -->
-    <target name="main">
+    <target name="main" depends="dependencies">
         
         <!-- Delete BUILD -->
         <delete dir="${build.dir}"/>
