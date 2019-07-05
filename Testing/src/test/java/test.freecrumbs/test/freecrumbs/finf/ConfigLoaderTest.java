@@ -280,33 +280,40 @@ public final class ConfigLoaderTest {
         @DisplayName("Search")
         public void test1() throws IOException {
             loadConfig("search=/abc/");
-            loadConfig("search=/abc/1");
-            loadConfig("search=/abc/1,2");
-            loadConfig("search=/abc/1,2,UTF-8");
-            loadConfig("search=/abc/,2,");
-            loadConfig("search=/abc/,,");
-            loadConfig("search=/abc/,,,");
-            loadConfig("search=/abc/,,UTF-8,1");
-            loadConfig("search=/abc/,0");
+            loadConfig("search=/abc/o=1");
+            loadConfig("search=/abc/o=1,g=2");
+            loadConfig("search=/abc/o=1,g=2,c=UTF-8");
+            loadConfig("search=/abc/g=2,");
+            loadConfig("search=/abc/,");
+            loadConfig("search=/abc/,,,,,,,");
+            loadConfig("search=/abc/c=UTF-8,o=1");
+            loadConfig("search=/abc/g=0");
             loadConfig("search=//");
+            loadConfig("search=/abc/xyz=UTX-8");
             assertThrows(
                     IOException.class,
-                    () -> loadConfig("search=abc/"));
+                    () -> loadConfig("search=abc/"),
+                    "abc/");
             assertThrows(
                     IOException.class,
-                    () -> loadConfig("search=/abc"));
+                    () -> loadConfig("search=/abc"),
+                    "/abc");
             assertThrows(
                     IOException.class,
-                    () -> loadConfig("search=/abc/a"));
+                    () -> loadConfig("search=/abc/a"),
+                    "/abc/a");
             assertThrows(
                     IOException.class,
-                    () -> loadConfig("search=/abc/1,-1"));
+                    () -> loadConfig("search=/abc/g=-1"),
+                    "/abc/g=-1");
             assertThrows(
                     IOException.class,
-                    () -> loadConfig("search=/abc/1,b,UTF-8"));
+                    () -> loadConfig("search=/abc/o=1,g=1,c=abcdefghij"),
+                    "/abc/o=1,g=1,c=abcdefghij");
             assertThrows(
                     IOException.class,
-                    () -> loadConfig("search=/abc/1,1,abcdefghij"));
+                    () -> loadConfig("search=/abc/,o=2"),
+                    "/abc/,o=2");
         }
     }
     
