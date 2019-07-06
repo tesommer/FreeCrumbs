@@ -281,7 +281,8 @@ public final class ConfigLoaderTest {
         public void test1() throws IOException {
             loadConfig("search=/abc/");
             loadConfig("search=/abc/o=1");
-            loadConfig("search=/abc/o=1,g=2");
+            loadConfig("search=/abc/o=0");
+            loadConfig("search=/abc/o=-1,g=2");
             loadConfig("search=/abc/o=1,g=2,c=UTF-8");
             loadConfig("search=/abc/g=2,");
             loadConfig("search=/abc/,");

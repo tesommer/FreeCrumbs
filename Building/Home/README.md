@@ -93,6 +93,8 @@ A file-info unit might contain the following fields:
 * *crlfcount*: number of carriage-return-line-feeds
 * *class*: heuristical classification of the file as either EMPTY, TEXT or
   BINARY
+* *space*: a space character
+* *tab*: a tab character
 
 ### Basic usage
 
@@ -107,7 +109,7 @@ ___
 
     finf -h
 
-This will print the Finf manual to standard output.
+This will print Finf documentation to standard output.
 ___
 
     finf C:\SomeDirectory
@@ -162,6 +164,8 @@ file is a text file on the Java *properties* format. Here's a sample file:
     order=filename size asc modified desc
     count=100
 
+#### Config settings
+
 * ``output`` is the format of the outputted info. Occurrences of tokens on the
   form *${field}* (such as *${path}*, *${filename}*, and so on) will be replaced
   by the corresponding field value.
@@ -196,9 +200,40 @@ file is a text file on the Java *properties* format. Here's a sample file:
   of ``0`` turns it off. When off, the values of all fields referenced in the
   config will be acquired collectively for each file.
 
-Multiple filters are supported by appending a ``.`` and a suffix to the filters'
-keys (example: ``filter.2``). The filters are applied in sort order of their
-keys.
+* ``search`` specifies parameters for a searche in the files' content for a
+  match against a regex pattern. The value of this setting has the following
+  format:  
+  ``/regex/o=occurrence,g=groups,c=charset``  
+  ``occurrence`` is the occurrence
+  to search for. A negative occurrence searches from the bottom rather than the
+  top. An occurrence of zero results in not found. ``groups`` is the number of
+  groups to include. ``charset`` is the character encoding to apply. This
+  settings makes the following fields available, but prefixed with this
+  setting's key:
+  
+    * ``found``: 0 or 1 depending on whether the a match was found or not
+    * ``groupcount``: number of regex groups, excluding group zero
+    * ``line``: one-based line number of matched regex (-1 if not found)
+    * ``input``: the matched input sequence (empty if not found)
+    * ``start``: zero-based char-index of the start of the matched sequence (-1
+      if not found)
+    * ``end``: the first zero-based char index after the matched sequence (-1 if
+      not found)
+  
+  For each included group, the following fields will be available, but prefixed
+  with this setting's key, the group number and a hyphen:
+  
+    * ``line`` one-based line number of match group (-1 if not found)
+    * ``start`` zero-based char index of the start of the matched group (-1 if
+      not found)
+    * ``end`` the first zero-based char index after the matched group (-1 if not
+      found)
+  
+  If included groups exceed the group count, excess groups will be not found.
+
+Multiple filters and searches are supported by appending a ``.`` and a suffix to
+the settings' keys (e.g. ``filter.2``, ``search.xyz`` etc.). The settings are
+applied in sort order of their keys.
 
 If Finf doesn't get a config file, it'll use this:
 
