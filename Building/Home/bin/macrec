@@ -1,2 +1,2 @@
-#!/bin/bash
+#!/bin/sh
 java -p `dirname $0`/../lib -m freecrumbs.macrec/freecrumbs.macrec.MacroRecorder $@

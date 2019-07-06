@@ -1,2 +1,2 @@
-#!/bin/bash
+#!/bin/sh
 `dirname $0`/dups.pl | finf -c - $@ | `dirname $0`/dups.pl x
