@@ -23,6 +23,7 @@ import freecrumbs.finf.field.Modified;
 import freecrumbs.finf.field.Path;
 import freecrumbs.finf.field.Search;
 import freecrumbs.finf.field.Size;
+import freecrumbs.finf.field.Whitespace;
 
 /**
  * Contains available info fields of which
@@ -122,6 +123,7 @@ public final class AvailableFields {
             final var freshFields = new ArrayList<Field>(
                     List.of(Path.FIELD, Filename.FIELD, Size.FIELD));
             freshFields.addAll(List.of(Eol.getFields()));
+            freshFields.addAll(List.of(Whitespace.getFields()));
             if (dateFormat != null) {
                 freshFields.addAll(timeFields(dateFormat, locale));
             }
