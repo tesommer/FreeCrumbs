@@ -154,15 +154,31 @@ ___
 ### Finf config files
 
 The **FinfConfigs** directory contains some ready-to-use config files. A config
-file is a text file on the Java *properties* format. Here's a sample file:
+file is a text file on the Java *properties* format.
 
-    hash.algorithms=SHA-1 SHA-512
-    output=${path}${filename}:${eol}Size: ${size}${eol}Last modified: ${modified}${eol}SHA-1: ${sha-1}${eol}SHA-512: ${sha-512}${eol}${eol}
-    date.format=yyyy-MM-dd HH:mm
-    filter=.*\.zip
-    filter.a=${size}--[\\d]{8,}
-    order=filename size asc modified desc
-    count=100
+#### Sample config file:
+
+```
+# Searches a Git repository for scripts with both shebang and CRLF line-endings.
+
+# exclude the .git dir
+filter.0=${path}--.*/\\.git/.*
+
+# include only non-empty text files
+filter.1=${class}++TEXT
+
+# include files containing CRLF
+filter.2=${crlfcount}--0
+
+# search for a shebang
+search.0=/^#!.*$/
+
+# include files containing a shebang
+filter.3=${search.0.found}++1
+
+# output each file along with the shebang they contain
+output=${path}${filename}${space}${search.0.input}${eol}
+```
 
 #### Config settings
 
@@ -204,14 +220,14 @@ file is a text file on the Java *properties* format. Here's a sample file:
   match against a regex pattern. The value of this setting has the following
   format:  
   ``/regex/o=occurrence,g=groups,c=charset``  
-  ``occurrence`` is the occurrence
-  to search for. A negative occurrence searches from the bottom rather than the
-  top. An occurrence of zero results in not found. ``groups`` is the number of
-  groups to include. ``charset`` is the character encoding to apply. This
-  settings makes the following fields available, but prefixed with this
-  setting's key:
+  ``occurrence`` is the occurrence to search for (default is 1). A negative
+  occurrence searches from the bottom rather than the top. An occurrence of zero
+  results in not found. ``groups`` is the number of regex groups to include
+  (default is 0). ``charset`` is the character encoding to apply (default is the
+  local default charset). This setting makes the following fields available, but
+  prefixed with this setting's key and a period (.):
   
-    * ``found``: 0 or 1 depending on whether the a match was found or not
+    * ``found``: 0 or 1 depending on whether a match was found or not
     * ``groupcount``: number of regex groups, excluding group zero
     * ``line``: one-based line number of matched regex (-1 if not found)
     * ``input``: the matched input sequence (empty if not found)
@@ -221,9 +237,9 @@ file is a text file on the Java *properties* format. Here's a sample file:
       not found)
   
   For each included group, the following fields will be available, but prefixed
-  with this setting's key, the group number and a hyphen:
+  with this setting's key, a period (.), the group number and a hyphen (-):
   
-    * ``line`` one-based line number of match group (-1 if not found)
+    * ``line`` one-based line number of matched group (-1 if not found)
     * ``start`` zero-based char index of the start of the matched group (-1 if
       not found)
     * ``end`` the first zero-based char index after the matched group (-1 if not
