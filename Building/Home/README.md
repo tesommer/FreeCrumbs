@@ -183,7 +183,7 @@ output=${path}${filename}${space}${search.0.input}${eol}
 #### Config settings
 
 * ``output`` is the format of the outputted info. Occurrences of tokens on the
-  form *${field}* (such as *${path}*, *${filename}*, and so on) will be replaced
+  form *${field}* (such as *${path}*, *${filename}* and so on) will be replaced
   by the corresponding field value.
 
 * ``order`` specifies a sort order of the outputted info. It has the fields to
@@ -216,9 +216,8 @@ output=${path}${filename}${space}${search.0.input}${eol}
   of ``0`` turns it off. When off, the values of all fields referenced in the
   config will be acquired collectively for each file.
 
-* ``search`` specifies parameters for a searche in the files' content for a
-  match against a regex pattern. The value of this setting has the following
-  format:  
+* ``search`` specifies parameters for a search in the files' content for a match
+  against a regex pattern. The value of this setting has the following format:  
   ``/regex/o=occurrence,g=groups,c=charset``  
   ``occurrence`` is the occurrence to search for (default is 1). A negative
   occurrence searches from the bottom rather than the top. An occurrence of zero
