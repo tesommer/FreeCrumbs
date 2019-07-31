@@ -40,9 +40,9 @@ This will create the untracked directory **FreeCrumbs.git/Build**.
 License
 -------
 
-See **LISENCE.txt**.
+See [LICENSE.txt](https://github.com/tesommer/FreeCrumbs/blob/master/LICENSE.txt).
 
 Manual
 ------
 
-See **Building/Home/README.md**.
+See [Building/Home/README.md](https://github.com/tesommer/FreeCrumbs/blob/master/Building/Home/README.md).

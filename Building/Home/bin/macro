@@ -1,2 +1,2 @@
 #!/bin/sh
-java -p `dirname $0`/../lib -m freecrumbs.macro/freecrumbs.macro.main.Main $@
+java -p `dirname $0`/../lib -m freecrumbs.macro/freecrumbs.macro.main.Main "$@"
