@@ -2,7 +2,7 @@
 
 <project name="FreeCrumbs" default="main" basedir=".">
     
-    <property name="version" value="3.0.1"/>
+    <property name="version" value="3.2.0"/>
     <property name="product.and.version" value="FreeCrumbs version ${version}"/>
     <property name="copyright.year.owner" value="2019 Tone Sommerland"/>
     <property name="copyright" value="Copyright (C) ${copyright.year.owner}"/>
@@ -14,6 +14,7 @@
     <property name="finf.project.dir" value="../Finf"/>
     <property name="macro.project.dir" value="../Macro"/>
     <property name="macrec.project.dir" value="../Macrec"/>
+    <property name="viewscreen.project.dir" value="../ViewScreen"/>
     <property name="dependencies.project.dir" value="../Dependencies"/>
     
     <property name="dependencies.dir" value="${dependencies.project.dir}/lib"/>
@@ -41,6 +42,9 @@
                 <include name="**/*.java"/>
             </fileset>
             <fileset dir="${macrec.project.dir}/src">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="${viewscreen.project.dir}/src">
                 <include name="**/*.java"/>
             </fileset>
             <!-- Prepend source header -->
@@ -116,6 +120,12 @@
         </jar>
         <jar destfile="${build.dir.home}/lib/freecrumbs.macrec-${version}.jar">
             <fileset dir="${build.dir}/Temp/freecrumbs.macrec">
+                <include name="**/*.class"/>
+            </fileset>
+            <fileset file="../LICENSE.txt"/>
+        </jar>
+        <jar destfile="${build.dir.home}/lib/freecrumbs.viewscreen-${version}.jar">
+            <fileset dir="${build.dir}/Temp/freecrumbs.viewscreen">
                 <include name="**/*.class"/>
             </fileset>
             <fileset file="../LICENSE.txt"/>
