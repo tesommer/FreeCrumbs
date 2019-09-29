@@ -8,8 +8,8 @@ import javax.swing.SwingUtilities;
 
 import com.calclipse.lib.dispatch.Dispatcher;
 
-import freecrumbs.viewscreen.CommandContext;
-import freecrumbs.viewscreen.CommandParser;
+import freecrumbs.viewscreen.Context;
+import freecrumbs.viewscreen.Executor;
 import freecrumbs.viewscreen.ViewScreen;
 
 public final class Main {
@@ -18,7 +18,7 @@ public final class Main {
     }
     
     public static void main(final String[] args) throws IOException {
-        final var context = new CommandContext(
+        final var context = new Context(
                 new ViewScreen(),
                 Dispatcher.of(
                         SwingUtilities::isEventDispatchThread,
@@ -39,10 +39,10 @@ public final class Main {
     }
     
     private static void processInput(
-            final String input, final CommandContext context) {
+            final String input, final Context context) {
         
         try {
-            CommandParser.parse(input).execute(context);
+            Executor.execute(input, context);
         } catch (final IOException ex) {
             context.handle(ex);
         }

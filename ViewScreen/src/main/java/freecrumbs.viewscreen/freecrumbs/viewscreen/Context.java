@@ -9,7 +9,7 @@ import java.util.function.BiConsumer;
 
 import com.calclipse.lib.dispatch.Dispatcher;
 
-public final class CommandContext {
+public final class Context {
     
     @FunctionalInterface
     public static interface Task {
@@ -25,7 +25,7 @@ public final class CommandContext {
     private final BiConsumer<? super IOException, ? super PrintStream>
     errorHandler;
 
-    public CommandContext(
+    public Context(
             final ViewScreen viewScreen,
             final Dispatcher dispatcher,
             final InputStream in,
@@ -42,6 +42,9 @@ public final class CommandContext {
         this.errorHandler = requireNonNull(errorHandler, "errorHandler");
     }
     
+    /**
+     * Schedules a task to be performed on the EDT ASAP.
+     */
     public void schedule(final Task task) {
         requireNonNull(task, "task");
         dispatcher.schedule(() -> {
@@ -53,8 +56,11 @@ public final class CommandContext {
         });
     }
     
+    /**
+     * Schedules the error to be handled on the EDT.
+     */
     public void handle(final IOException ex) {
-        errorHandler.accept(ex, err);
+        dispatcher.schedule(() -> errorHandler.accept(ex, err));
     }
 
     public ViewScreen getViewScreen() {

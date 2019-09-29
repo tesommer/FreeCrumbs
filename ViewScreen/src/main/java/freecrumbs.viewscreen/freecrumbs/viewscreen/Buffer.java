@@ -4,6 +4,9 @@ import static java.util.Objects.requireNonNull;
 
 import java.awt.image.BufferedImage;
 
+/**
+ * Accessed from the EDT.
+ */
 public final class Buffer {
     private final BufferedImage image;
     private final String variable;
