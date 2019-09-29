@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public final class Executor {
+    
     private static final String PREFIX = "vsc:";
+    
     private static final String CMD_BACKGROUND = "background";
     private static final String CMD_UPLOAD     = "upload";
     private static final String CMD_MKBUFFER   = "mkbuffer";
@@ -42,50 +44,67 @@ public final class Executor {
         final String command = parts[0];
         final String[] args = Arrays.copyOfRange(parts, 1, parts.length);
         if (CMD_BACKGROUND.equals(command)) {
-            // TODO
+            execBackground(input, context, args);
         } else if (CMD_UPLOAD.equals(command)) {
-            // TODO
+            execUpload(input, context, args);
         } else if (CMD_MKBUFFER.equals(command)) {
-            execMkbuffer(context, input, args);
+            execMkbuffer(input, context, args);
         } else if (CMD_RMBUFFER.equals(command)) {
-            // TODO
+            execRmbuffer(input, context, args);
         } else if (CMD_POSITION.equals(command)) {
-            // TODO
+            execPosition(input, context, args);
         } else if (CMD_VISIBLE.equals(command)) {
-            execVisible(context, input, args);
+            execVisible(input, context, args);
         } else if (CMD_INDEX.equals(command)) {
-            // TODO
+            execIndex(input, context, args);
         } else if (CMD_BUFFER.equals(command)) {
-            // TODO
+            execBuffer(input, context, args);
         } else if (CMD_COLOR.equals(command)) {
-            // TODO
+            execColor(input, context, args);
         } else if (CMD_FONT.equals(command)) {
-            // TODO
+            execFont(input, context, args);
         } else if (CMD_CLIP.equals(command)) {
-            // TODO
+            execClip(input, context, args);
         } else if (CMD_MOVE.equals(command)) {
-            // TODO
+            execMove(input, context, args);
         } else if (CMD_LINE.equals(command)) {
-            // TODO
+            execLine(input, context, args);
         } else if (CMD_RECTANGLE.equals(command)) {
-            // TODO
+            execRectangle(input, context, args);
         } else if (CMD_POLYGON.equals(command)) {
-            // TODO
+            execPolygon(input, context, args);
         } else if (CMD_OVAL.equals(command)) {
-            // TODO
+            execOval(input, context, args);
         } else if (CMD_TEXT.equals(command)) {
-            // TODO
+            execText(input, context, args);
         } else if (CMD_IMAGE.equals(command)) {
-            // TODO
+            execImage(input, context, args);
         } else if (CMD_REFRESH.equals(command)) {
-            // TODO
+            execRefresh(input, context, args);
+        } else {
+            throw new IOException("Invalid command: " + command);
         }
-        throw new IOException("Invalid command: " + command);
+    }
+    
+    /**********************
+     * Command executions *
+     **********************/
+    
+    private static void execBackground(
+            final String input,
+            final Context context,
+            final String[] args) throws IOException {
+    }
+    
+    private static void execUpload(
+            final String input,
+            final Context context,
+            final String[] args) throws IOException {
     }
     
     private static void execMkbuffer(
-            final Context context,
             final String input,
+            final Context context,
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 3, 3, args);
@@ -93,9 +112,21 @@ public final class Executor {
                 args[0], parseInt(args[1]), parseInt(args[2])));
     }
     
-    private static void execVisible(
-            final Context context,
+    private static void execRmbuffer(
             final String input,
+            final Context context,
+            final String[] args) throws IOException {
+    }
+    
+    private static void execPosition(
+            final String input,
+            final Context context,
+            final String[] args) throws IOException {
+    }
+    
+    private static void execVisible(
+            final String input,
+            final Context context,
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 1, 2, args);
@@ -107,6 +138,88 @@ public final class Executor {
                     args[0], parseBoolean(args[1])));
         }
     }
+    
+    private static void execIndex(
+            final String input,
+            final Context context,
+            final String[] args) throws IOException {
+    }
+    
+    private static void execBuffer(
+            final String input,
+            final Context context,
+            final String[] args) throws IOException {
+    }
+    
+    private static void execColor(
+            final String input,
+            final Context context,
+            final String[] args) throws IOException {
+    }
+    
+    private static void execFont(
+            final String input,
+            final Context context,
+            final String[] args) throws IOException {
+    }
+    
+    private static void execClip(
+            final String input,
+            final Context context,
+            final String[] args) throws IOException {
+    }
+    
+    private static void execMove(
+            final String input,
+            final Context context,
+            final String[] args) throws IOException {
+    }
+    
+    private static void execLine(
+            final String input,
+            final Context context,
+            final String[] args) throws IOException {
+    }
+    
+    private static void execRectangle(
+            final String input,
+            final Context context,
+            final String[] args) throws IOException {
+    }
+    
+    private static void execPolygon(
+            final String input,
+            final Context context,
+            final String[] args) throws IOException {
+    }
+    
+    private static void execOval(
+            final String input,
+            final Context context,
+            final String[] args) throws IOException {
+    }
+    
+    private static void execText(
+            final String input,
+            final Context context,
+            final String[] args) throws IOException {
+    }
+    
+    private static void execImage(
+            final String input,
+            final Context context,
+            final String[] args) throws IOException {
+    }
+    
+    private static void execRefresh(
+            final String input,
+            final Context context,
+            final String[] args) throws IOException {
+    }
+    
+    /*********
+     * Misc. *
+     *********/
     
     private static void requireMinMaxArgs(
             final String input,
