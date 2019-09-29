@@ -8,7 +8,8 @@ import java.util.regex.Pattern;
 public final class Arguments {
     
     private static final Pattern
-    RGBA_COLOR_REGEX = Pattern.compile("rgba\\((\\d),(\\d),(\\d),(\\d)\\)");
+    RGBA_COLOR_REGEX = Pattern.compile(
+            "rgba\\((\\d{1,3}),(\\d{1,3}),(\\d{1,3}),(\\d{1,3})\\)");
     
     private static final Pattern
     HEX_COLOR_REGEX = Pattern.compile(
@@ -35,7 +36,7 @@ public final class Arguments {
             return Integer.parseInt(arg);
         } catch (final NumberFormatException ex) {
             try {
-                return Integer.parseInt("0x" + arg);
+                return Integer.parseInt(arg, 16);
             } catch (final NumberFormatException ex2) {
                 throw new IOException(ex2);
             }
@@ -50,14 +51,18 @@ public final class Arguments {
         } else {
             final Matcher hexMatcher = HEX_COLOR_REGEX.matcher(arg);
             if (!hexMatcher.matches()) {
-                throw new IOException("Invalid color: " + arg);
+                throw invalidColor(arg);
             }
             colorMatcher = hexMatcher;
         }
-        final int red   = parseInt(colorMatcher.group(1));
-        final int green = parseInt(colorMatcher.group(2));
-        final int blue  = parseInt(colorMatcher.group(3));
-        final int alpah = parseInt(colorMatcher.group(4));
+        final int red   = requireValidColorComponent(
+                parseInt(colorMatcher.group(1)), arg);
+        final int green = requireValidColorComponent(
+                parseInt(colorMatcher.group(2)), arg);
+        final int blue  = requireValidColorComponent(
+                parseInt(colorMatcher.group(3)), arg);
+        final int alpah = requireValidColorComponent(
+                parseInt(colorMatcher.group(4)), arg);
         return new Color(red, green, blue, alpah);
     }
     
@@ -68,6 +73,19 @@ public final class Arguments {
             throw new IOException(message);
         }
         return arg;
+    }
+    
+    private static int requireValidColorComponent(
+            final int component, final String arg) throws IOException {
+        
+        if (component < 0 || component > 255) {
+            throw invalidColor(arg);
+        }
+        return component;
+    }
+    
+    private static IOException invalidColor(final String arg) {
+        return new IOException("Invalid color: " + arg);
     }
 
 }
