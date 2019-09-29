@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -28,7 +29,8 @@ public final class ViewScreen {
     public ViewScreen() {
         frame.setContentPane(new BufferPanel());
         // TODO figure out if it's gonna be fullscreen, decorated, maximized and shit
-        frame.setSize(500, 500);
+        frame.setUndecorated(true);
+        frame.setExtendedState(Frame.MAXIMIZED_BOTH);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     

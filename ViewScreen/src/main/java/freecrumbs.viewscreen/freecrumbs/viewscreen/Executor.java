@@ -33,6 +33,7 @@ public final class Executor {
     private static final String CMD_TEXT       = "text";
     private static final String CMD_IMAGE      = "image";
     private static final String CMD_REFRESH    = "refresh";
+    private static final String CMD_EXIT       = "exit";
 
     private Executor() {
     }
@@ -85,6 +86,8 @@ public final class Executor {
             execImage(input, context, args);
         } else if (CMD_REFRESH.equals(command)) {
             execRefresh(input, context, args);
+        } else if (CMD_EXIT.equals(command)) {
+            System.exit(0);
         } else {
             throw new IOException("Invalid command: " + command);
         }
