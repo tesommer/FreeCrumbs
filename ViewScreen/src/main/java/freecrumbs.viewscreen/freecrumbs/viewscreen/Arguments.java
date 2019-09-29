@@ -66,7 +66,16 @@ public final class Arguments {
         return new Color(red, green, blue, alpah);
     }
     
-    public static int requireOnePluss(
+    public static int requireZeroPlus(
+            final int arg, final String message) throws IOException  {
+        
+        if (arg < 0) {
+            throw new IOException(message);
+        }
+        return arg;
+    }
+    
+    public static int requireOnePlus(
             final int arg, final String message) throws IOException  {
         
         if (arg < 1) {

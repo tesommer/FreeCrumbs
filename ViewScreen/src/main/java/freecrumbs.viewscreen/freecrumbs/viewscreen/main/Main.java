@@ -1,8 +1,6 @@
 package freecrumbs.viewscreen.main;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import javax.swing.SwingUtilities;
 
@@ -27,12 +25,10 @@ public final class Main {
                 System.out,
                 System.err,
                 (ex, err) -> err.println(ex.toString()));
-        final var reader = new BufferedReader(new InputStreamReader(
-                context.getIn()));
         for (
-                String line = reader.readLine();
+                String line = context.getReader().readLine();
                 line != null;
-                line = reader.readLine()) {
+                line = context.getReader().readLine()) {
             
             processInput(line, context);
         }

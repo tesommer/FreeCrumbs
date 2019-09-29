@@ -5,11 +5,13 @@ import static java.util.Objects.requireNonNull;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -33,6 +35,18 @@ public final class ViewScreen {
     /******************
      * Frame & buffer *
      ******************/
+    
+    public void upload(final String variable, final byte[] data) {
+        final Image image = new ImageIcon(data).getImage();
+        final var buffered = new BufferedImage(
+                image.getWidth(frame),
+                image.getHeight(frame),
+                BufferedImage.TYPE_INT_ARGB);
+        final Graphics g = buffered.getGraphics();
+        g.drawImage(image, 0, 0, frame);
+        g.dispose();
+        buffers.add(new Buffer(buffered, requireNonNull(variable, "variable")));
+    }
     
     public void makeBuffer(
             final String variable, final int width, final int height) {

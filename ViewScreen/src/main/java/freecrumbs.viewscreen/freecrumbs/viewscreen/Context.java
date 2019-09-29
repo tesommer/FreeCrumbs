@@ -2,8 +2,10 @@ package freecrumbs.viewscreen;
 
 import static java.util.Objects.requireNonNull;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.function.BiConsumer;
 
@@ -21,6 +23,7 @@ public final class Context {
     private final InputStream in;
     private final PrintStream out;
     private final PrintStream err;
+    private final BufferedReader reader;
     
     private final BiConsumer<? super IOException, ? super PrintStream>
     errorHandler;
@@ -40,6 +43,7 @@ public final class Context {
         this.out = requireNonNull(out, "out");
         this.err = requireNonNull(err, "err");
         this.errorHandler = requireNonNull(errorHandler, "errorHandler");
+        this.reader = new BufferedReader(new InputStreamReader(in));
     }
     
     /**
@@ -81,6 +85,10 @@ public final class Context {
 
     public PrintStream getErr() {
         return err;
+    }
+
+    public BufferedReader getReader() {
+        return reader;
     }
 
 }

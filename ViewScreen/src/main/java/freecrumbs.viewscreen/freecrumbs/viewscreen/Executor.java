@@ -8,6 +8,8 @@ import java.awt.Font;
 import java.io.IOException;
 import java.util.Arrays;
 
+import com.calclipse.lib.util.EncodingUtil;
+
 public final class Executor {
     
     private static final String PREFIX = "vsc:";
@@ -106,7 +108,11 @@ public final class Executor {
             final String input,
             final Context context,
             final String[] args) throws IOException {
-        // TODO something witchy
+        
+        requireMinMaxArgs(input, 2, 2, args);
+        final byte[] imageData = EncodingUtil.hexToBytes(args[1]);
+        context.schedule(() -> context.getViewScreen().upload(
+                args[0], imageData));
     }
     
     private static void execMkbuffer(
