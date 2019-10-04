@@ -11,10 +11,10 @@ import java.util.function.BiConsumer;
 
 import com.calclipse.lib.dispatch.Dispatcher;
 
-public final class Context {
+public final class ExecutionContext {
     
     @FunctionalInterface
-    public static interface Task {
+    static interface Task {
         public abstract void perform() throws IOException;
     }
     
@@ -28,7 +28,7 @@ public final class Context {
     private final BiConsumer<? super IOException, ? super PrintStream>
     errorHandler;
 
-    public Context(
+    public ExecutionContext(
             final ViewScreen viewScreen,
             final Dispatcher dispatcher,
             final InputStream in,

@@ -14,41 +14,46 @@ public final class Buffer {
     private int y;
     private boolean visible;
 
-    public Buffer(final BufferedImage image, final String variable) {
+    Buffer(final BufferedImage image, final String variable) {
         this.image = requireNonNull(image, "image");
         this.variable = requireNonNull(variable, "variable");
     }
 
-    public BufferedImage getImage() {
+    BufferedImage getImage() {
         return image;
     }
 
-    public String getVariable() {
+    String getVariable() {
         return variable;
     }
 
-    public int getX() {
+    int getX() {
         return x;
     }
 
-    public void setX(final int x) {
+    void setX(final int x) {
         this.x = x;
     }
 
-    public int getY() {
+    int getY() {
         return y;
     }
 
-    public void setY(final int y) {
+    void setY(final int y) {
         this.y = y;
     }
 
-    public boolean isVisible() {
+    boolean isVisible() {
         return visible;
     }
 
-    public void setVisible(final boolean visible) {
+    void setVisible(final boolean visible) {
         this.visible = visible;
+    }
+
+    @Override
+    public String toString() {
+        return Buffer.class.getSimpleName() + ": " + variable;
     }
 
 }

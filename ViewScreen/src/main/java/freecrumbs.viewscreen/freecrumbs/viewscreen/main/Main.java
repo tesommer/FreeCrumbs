@@ -6,7 +6,7 @@ import javax.swing.SwingUtilities;
 
 import com.calclipse.lib.dispatch.Dispatcher;
 
-import freecrumbs.viewscreen.Context;
+import freecrumbs.viewscreen.ExecutionContext;
 import freecrumbs.viewscreen.Executor;
 import freecrumbs.viewscreen.ViewScreen;
 
@@ -16,7 +16,7 @@ public final class Main {
     }
     
     public static void main(final String[] args) throws IOException {
-        final var context = new Context(
+        final var context = new ExecutionContext(
                 new ViewScreen(),
                 Dispatcher.of(
                         SwingUtilities::isEventDispatchThread,
@@ -35,7 +35,7 @@ public final class Main {
     }
     
     private static void processInput(
-            final String input, final Context context) {
+            final String input, final ExecutionContext context) {
         
         try {
             Executor.execute(input, context);

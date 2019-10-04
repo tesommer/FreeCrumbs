@@ -1,10 +1,7 @@
 package freecrumbs.viewscreen;
 
 import static freecrumbs.viewscreen.Arguments.parseBoolean;
-import static freecrumbs.viewscreen.Arguments.parseColor;
-import static freecrumbs.viewscreen.Arguments.parseInt;
 
-import java.awt.Font;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -15,6 +12,8 @@ public final class Executor {
     private static final String PREFIX = "vsc:";
     
     private static final String CMD_BACKGROUND = "background";
+    private static final String CMD_BEGIN      = "begin";
+    private static final String CMD_END        = "end";
     private static final String CMD_UPLOAD     = "upload";
     private static final String CMD_MKBUFFER   = "mkbuffer";
     private static final String CMD_RMBUFFER   = "rmbuffer";
@@ -39,7 +38,7 @@ public final class Executor {
     }
     
     public static void execute(
-            final String input, final Context context) throws IOException {
+            final String input, final ExecutionContext context) throws IOException {
         
         if (!input.startsWith(PREFIX)) {
             context.getOut().println(input);
@@ -50,6 +49,10 @@ public final class Executor {
         final String[] args = Arrays.copyOfRange(parts, 1, parts.length);
         if (CMD_BACKGROUND.equals(command)) {
             execBackground(input, context, args);
+        } else if (CMD_BEGIN.equals(command)) {
+            execBegin(input, context, args);
+        } else if (CMD_END.equals(command)) {
+            execEnd(input, context, args);
         } else if (CMD_UPLOAD.equals(command)) {
             execUpload(input, context, args);
         } else if (CMD_MKBUFFER.equals(command)) {
@@ -99,17 +102,35 @@ public final class Executor {
     
     private static void execBackground(
             final String input,
-            final Context context,
+            final ExecutionContext context,
             final String[] args) throws IOException {
         
-        requireMinMaxArgs(input, 1, 1, args);
+        requireMinMaxArgs(input, 3, 3, args);
         context.schedule(() -> context.getViewScreen().setBackground(
-                parseColor(args[0])));
+                args[0], args[1], args[2]));
+    }
+    
+    private static void execBegin(
+            final String input,
+            final ExecutionContext context,
+            final String[] args) throws IOException {
+        
+        requireMinMaxArgs(input, 0, 0, args);
+        context.schedule(() -> context.getViewScreen().begin());
+    }
+    
+    private static void execEnd(
+            final String input,
+            final ExecutionContext context,
+            final String[] args) throws IOException {
+        
+        requireMinMaxArgs(input, 0, 0, args);
+        context.schedule(() -> context.getViewScreen().end());
     }
     
     private static void execUpload(
             final String input,
-            final Context context,
+            final ExecutionContext context,
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 2, 2, args);
@@ -120,17 +141,17 @@ public final class Executor {
     
     private static void execMkbuffer(
             final String input,
-            final Context context,
+            final ExecutionContext context,
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 3, 3, args);
         context.schedule(() -> context.getViewScreen().makeBuffer(
-                args[0], parseInt(args[1]), parseInt(args[2])));
+                args[0], args[1], args[2]));
     }
     
     private static void execRmbuffer(
             final String input,
-            final Context context,
+            final ExecutionContext context,
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 1, 1, args);
@@ -139,22 +160,22 @@ public final class Executor {
     
     private static void execPosition(
             final String input,
-            final Context context,
+            final ExecutionContext context,
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 2, 3, args);
         if (args.length == 2) {
             context.schedule(() -> context.getViewScreen().setPosition(
-                    parseInt(args[0]), parseInt(args[1])));
+                    args[0], args[1]));
         } else {
             context.schedule(() -> context.getViewScreen().setPosition(
-                    args[0], parseInt(args[1]), parseInt(args[2])));
+                    args[0], args[1], args[2]));
         }
     }
     
     private static void execVisible(
             final String input,
-            final Context context,
+            final ExecutionContext context,
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 1, 2, args);
@@ -169,7 +190,7 @@ public final class Executor {
     
     private static void execIndex(
             final String input,
-            final Context context,
+            final ExecutionContext context,
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 2, 2, args);
@@ -179,7 +200,7 @@ public final class Executor {
     
     private static void execBuffer(
             final String input,
-            final Context context,
+            final ExecutionContext context,
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 1, 1, args);
@@ -188,98 +209,93 @@ public final class Executor {
     
     private static void execColor(
             final String input,
-            final Context context,
+            final ExecutionContext context,
             final String[] args) throws IOException {
         
-        requireMinMaxArgs(input, 1, 1, args);
-        context.schedule(() -> context.getViewScreen().setColor(
-                parseColor(args[0])));
+        requireMinMaxArgs(input, 3, 4, args);
+        if (args.length == 3) {
+            context.schedule(() -> context.getViewScreen().setColor(
+                    args[0], args[1], args[2]));
+        } else {
+            context.schedule(() -> context.getViewScreen().setColor(
+                    args[0], args[1], args[2], args[3]));
+        }
     }
     
     private static void execFont(
             final String input,
-            final Context context,
+            final ExecutionContext context,
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 4, 4, args);
-        int style = parseBoolean(args[2]) ? Font.BOLD : 0;
-        if (parseBoolean(args[3])) {
-            style |= Font.ITALIC;
-        }
-        final var font = new Font(args[0], parseInt(args[1]), style);
-        context.schedule(() -> context.getViewScreen().setFont(font));
+        context.schedule(() -> context.getViewScreen().setFont(
+                args[0],
+                args[1],
+                parseBoolean(args[2]),
+                parseBoolean(args[3])));
     }
     
     private static void execClip(
             final String input,
-            final Context context,
+            final ExecutionContext context,
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 4, 4, args);
         context.schedule(() -> context.getViewScreen().setClip(
-                parseInt(args[0]),
-                parseInt(args[1]),
-                parseInt(args[2]),
-                parseInt(args[3])));
+                args[0], args[1], args[2], args[3]));
     }
     
     private static void execMove(
             final String input,
-            final Context context,
+            final ExecutionContext context,
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 2, 2, args);
-        context.schedule(() -> context.getViewScreen().move(
-                parseInt(args[0]), parseInt(args[1])));
+        context.schedule(() -> context.getViewScreen().move(args[0], args[1]));
     }
     
     private static void execLine(
             final String input,
-            final Context context,
+            final ExecutionContext context,
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 2, 2, args);
-        context.schedule(() -> context.getViewScreen().line(
-                parseInt(args[0]), parseInt(args[1])));
+        context.schedule(() -> context.getViewScreen().line(args[0], args[1]));
     }
     
     private static void execRectangle(
             final String input,
-            final Context context,
+            final ExecutionContext context,
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 3, 3, args);
         context.schedule(() -> context.getViewScreen().rectangle(
-                parseBoolean(args[0]), parseInt(args[1]), parseInt(args[2])));
+                parseBoolean(args[0]), args[1], args[2]));
     }
     
     private static void execPolygon(
             final String input,
-            final Context context,
+            final ExecutionContext context,
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 1, Integer.MAX_VALUE, args);
-        final var xy = new int[args.length - 1];
-        for (int i = 1; i < args.length; i++) {
-            xy[i - 1] = parseInt(args[i]);
-        }
         context.schedule(() -> context.getViewScreen().polygon(
-                parseBoolean(args[0]), xy));
+                parseBoolean(args[0]), args));
     }
     
     private static void execOval(
             final String input,
-            final Context context,
+            final ExecutionContext context,
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 3, 3, args);
         context.schedule(() -> context.getViewScreen().oval(
-                parseBoolean(args[0]), parseInt(args[1]), parseInt(args[2])));
+                parseBoolean(args[0]), args[1], args[2]));
     }
     
     private static void execText(
             final String input,
-            final Context context,
+            final ExecutionContext context,
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 1, 1, args);
@@ -288,19 +304,23 @@ public final class Executor {
     
     private static void execImage(
             final String input,
-            final Context context,
+            final ExecutionContext context,
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 1, 3, args);
-        final int width = args.length > 1 ? parseInt(args[1]) : -1;
-        final int height = args.length > 2 ? parseInt(args[2]) : -1;
-        context.schedule(() -> context.getViewScreen().image(
-                args[0], width, height));
+        if (args.length == 1) {
+            context.schedule(() -> context.getViewScreen().image(
+                    args[0]));
+        } else if (args.length == 3) {
+            context.schedule(() -> context.getViewScreen().image(
+                    args[0], args[1], args[2]));
+        }
+        throw invalidArgList(input);
     }
     
     private static void execRefresh(
             final String input,
-            final Context context,
+            final ExecutionContext context,
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 0, 0, args);
