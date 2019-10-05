@@ -8,7 +8,7 @@ public final class Arguments {
     }
     
     static boolean parseBoolean(final String arg) {
-        if ("0".equals(arg) || "false".equals(arg)) {
+        if (arg.equals("0") || arg.equals("false")) {
             return false;
         }
         return true;

@@ -6,7 +6,6 @@ import static java.util.Objects.requireNonNull;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -22,8 +21,6 @@ import javax.swing.JPanel;
 
 /**
  * Accessed from the EDT.
- * 
- * @author Tone Sommerland
  */
 public final class ViewScreen {
     private final List<Buffer> buffers = new ArrayList<>();
@@ -31,19 +28,20 @@ public final class ViewScreen {
     private final JFrame frame = new JFrame();
     private DrawingContext context = new DrawingContext(null);
 
-    public ViewScreen() {
-        frame.setContentPane(new BufferPanel());
-        // TODO figure out if it's gonna be fullscreen, decorated, maximized and shit
-        frame.setUndecorated(true);
-        frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+    ViewScreen() {
+        final var panel = new BufferPanel();
+        panel.setBackground(Color.WHITE);
+        frame.setContentPane(panel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setUndecorated(true);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
     
     private final class BufferPanel extends JPanel {
         
         private static final long serialVersionUID = 1L;
 
-        BufferPanel() {
+        private BufferPanel() {
         }
 
         @Override
@@ -57,33 +55,28 @@ public final class ViewScreen {
                     buffer.getY(),
                     frame));
         }
-        
     }
     
-    void setBackground(final String red, final String green, final String blue)
-            throws IOException {
-        
-        frame.getContentPane().setBackground(getColor(red, green, blue));
-    }
+    /*************
+     * Variables *
+     *************/
     
-    void setVariable(final String name, final String[] args) {
-        // TODO something
-//        variables.put(requireNonNull(name, "name"), value);
-    }
+    // TODO undecorated, size, maximized, variable
+//    void setVariable(final String name, final String[] args) {
+//    }
     
     void removeVariable(final String name) {
         variables.remove(requireNonNull(name, "name"));
     }
     
-    void begin() {
-        this.context = new DrawingContext(this.context);
-    }
+    /******************
+     * Frame & buffer *
+     ******************/
     
-    void end() {
-        if (this.context.parent == null) {
-            return;
-        }
-        this.context = this.context.parent;
+    void setBackground(final String red, final String green, final String blue)
+            throws IOException {
+        
+        frame.getContentPane().setBackground(getColor(red, green, blue));
     }
     
     void upload(final String variable, final byte[] bytes) {
@@ -115,12 +108,6 @@ public final class ViewScreen {
         buffers.remove(index);
     }
     
-    void setPosition(final String x, final String y) throws IOException {
-        final int ix = getInt(x);
-        final int iy = getInt(y);
-        frame.setLocation(ix, iy);
-    }
-    
     void setPosition(final String variable, final String x, final String y)
             throws IOException {
         
@@ -131,14 +118,20 @@ public final class ViewScreen {
         buffer.setY(iy);
     }
     
-    void setVisible(final boolean visible) {
-        frame.setVisible(visible);
+    void setPosition(final String x, final String y) throws IOException {
+        final int ix = getInt(x);
+        final int iy = getInt(y);
+        frame.setLocation(ix, iy);
     }
     
     void setVisible(final String variable, final boolean visible)
             throws IOException {
         
         getBuffer(variable).setVisible(visible);
+    }
+    
+    void setVisible(final boolean visible) {
+        frame.setVisible(visible);
     }
     
     /**
@@ -151,7 +144,7 @@ public final class ViewScreen {
             throws IOException {
         
         final int currentIndex = getBufferIndex(variable);
-        if ("top".equals(index)) {
+        if (index.equals("top")) {
             buffers.add(buffers.remove(currentIndex));
         } else {
             final int newIndex;
@@ -166,6 +159,20 @@ public final class ViewScreen {
                 invalidIndex(index);
             }
             buffers.add(newIndex, buffers.remove(currentIndex));
+        }
+    }
+    
+    /*******************
+     * Drawing context *
+     *******************/
+    
+    void begin() {
+        this.context = new DrawingContext(this.context);
+    }
+    
+    void end() {
+        if (this.context.parent != null) {
+            this.context = this.context.parent;
         }
     }
 
@@ -235,6 +242,10 @@ public final class ViewScreen {
         context.g.setClip(ix, iy, iw, ih);
     }
     
+    /***********
+     * Drawing *
+     ***********/
+    
     void move(final String x, final String y) throws IOException {
         final int ix = getInt(x);
         final int iy = getInt(y);
@@ -270,19 +281,21 @@ public final class ViewScreen {
         if (xy.length % 2 != 0) {
             throw invalidPolygonCoordinates();
         }
-        final var xPoints = new int[xy.length / 2];
-        final var yPoints = new int[xy.length / 2];
+        final int vertices = xy.length / 2;
+        final var xPoints = new int[vertices];
+        final var yPoints = new int[vertices];
         for (int i = 0; i < xy.length - 1; i += 2) {
-            xPoints[i / 2] = getInt(xy[i]);
-            yPoints[i / 2] = getInt(xy[i + 1]);
+            final int j = i / 2;
+            xPoints[j] = getInt(xy[i]);
+            yPoints[j] = getInt(xy[i + 1]);
         }
         if (context.g == null) {
             return;
         }
         if (fill) {
-            context.g.fillPolygon(xPoints, yPoints, xy.length);
+            context.g.fillPolygon(xPoints, yPoints, vertices);
         } else {
-            context.g.drawPolygon(xPoints, yPoints, xy.length);
+            context.g.drawPolygon(xPoints, yPoints, vertices);
         }
     }
     
@@ -312,23 +325,15 @@ public final class ViewScreen {
             final String variable,
             final String width,
             final String height) throws IOException {
-
-        image(variable, getInt(width), getInt(height));
-    }
-    
-    void image(final String variable) throws IOException {
-        image(variable, -1, -1);
-    }
-    
-    private void image(final String variable, final int width, final int height)
-            throws IOException {
         
         final BufferedImage image = getBuffer(variable).getImage();
+        final int iw = getInt(width);
+        final int ih = getInt(height);
         if (context.g == null) {
             return;
         }
-        final int actualWidth = width < 1 ? image.getWidth() : width;
-        final int actualHeight = height < 1 ? image.getHeight() : height;
+        final int actualWidth = iw < 1 ? image.getWidth() : iw;
+        final int actualHeight = ih < 1 ? image.getHeight() : ih;
         context.g.drawImage(
                 image,
                 context.x,
@@ -338,10 +343,25 @@ public final class ViewScreen {
                 frame);
     }
     
+    void image(final String variable) throws IOException {
+        final BufferedImage image = getBuffer(variable).getImage();
+        if (context.g == null) {
+            return;
+        }
+        context.g.drawImage(
+                image,
+                context.x,
+                context.y,
+                frame);
+    }
+    
     void refresh() {
         frame.getContentPane().repaint();
     }
     
+    /*****************
+     * Private stuff *
+     *****************/
     
     private Buffer getBuffer(final String variable) throws IOException {
         return buffers.get(getBufferIndex(variable));

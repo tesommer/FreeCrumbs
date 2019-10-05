@@ -9,36 +9,39 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.function.BiConsumer;
 
+import javax.swing.SwingUtilities;
+
 import com.calclipse.lib.dispatch.Dispatcher;
 
 public final class ExecutionContext {
     
     @FunctionalInterface
-    static interface Task {
+    public static interface Task {
         public abstract void perform() throws IOException;
     }
     
-    private final ViewScreen viewScreen;
-    private final Dispatcher dispatcher;
+    private final ViewScreen viewScreen = new ViewScreen();
+    
+    private final Dispatcher
+    dispatcher = Dispatcher.of(
+            SwingUtilities::isEventDispatchThread, SwingUtilities::invokeLater);
+    
     private final InputStream in;
     private final PrintStream out;
     private final PrintStream err;
-    private final BufferedReader reader;
     
     private final BiConsumer<? super IOException, ? super PrintStream>
     errorHandler;
+    
+    private final BufferedReader reader;
 
     public ExecutionContext(
-            final ViewScreen viewScreen,
-            final Dispatcher dispatcher,
             final InputStream in,
             final PrintStream out,
             final PrintStream err,
             final BiConsumer<? super IOException, ? super PrintStream>
                   errorHandler) {
 
-        this.viewScreen = requireNonNull(viewScreen, "viewScreen");
-        this.dispatcher = requireNonNull(dispatcher, "dispatcher");
         this.in = requireNonNull(in, "in");
         this.out = requireNonNull(out, "out");
         this.err = requireNonNull(err, "err");
@@ -66,13 +69,13 @@ public final class ExecutionContext {
     public void handle(final IOException ex) {
         dispatcher.schedule(() -> errorHandler.accept(ex, err));
     }
+    
+    public String readLine() throws IOException {
+        return reader.readLine();
+    }
 
     public ViewScreen getViewScreen() {
         return viewScreen;
-    }
-
-    public Dispatcher getDispatcher() {
-        return dispatcher;
     }
 
     public InputStream getIn() {
@@ -85,10 +88,6 @@ public final class ExecutionContext {
 
     public PrintStream getErr() {
         return err;
-    }
-
-    public BufferedReader getReader() {
-        return reader;
     }
 
 }

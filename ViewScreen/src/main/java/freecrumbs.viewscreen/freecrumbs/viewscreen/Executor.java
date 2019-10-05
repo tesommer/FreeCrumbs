@@ -12,14 +12,14 @@ public final class Executor {
     private static final String PREFIX = "vsc:";
     
     private static final String CMD_BACKGROUND = "background";
-    private static final String CMD_BEGIN      = "begin";
-    private static final String CMD_END        = "end";
     private static final String CMD_UPLOAD     = "upload";
     private static final String CMD_MKBUFFER   = "mkbuffer";
     private static final String CMD_RMBUFFER   = "rmbuffer";
     private static final String CMD_POSITION   = "position";
     private static final String CMD_VISIBLE    = "visible";
     private static final String CMD_INDEX      = "index";
+    private static final String CMD_BEGIN      = "begin";
+    private static final String CMD_END        = "end";
     private static final String CMD_BUFFER     = "buffer";
     private static final String CMD_COLOR      = "color";
     private static final String CMD_FONT       = "font";
@@ -38,7 +38,8 @@ public final class Executor {
     }
     
     public static void execute(
-            final String input, final ExecutionContext context) throws IOException {
+            final String input,
+            final ExecutionContext context) throws IOException {
         
         if (!input.startsWith(PREFIX)) {
             context.getOut().println(input);
@@ -49,10 +50,6 @@ public final class Executor {
         final String[] args = Arrays.copyOfRange(parts, 1, parts.length);
         if (CMD_BACKGROUND.equals(command)) {
             execBackground(input, context, args);
-        } else if (CMD_BEGIN.equals(command)) {
-            execBegin(input, context, args);
-        } else if (CMD_END.equals(command)) {
-            execEnd(input, context, args);
         } else if (CMD_UPLOAD.equals(command)) {
             execUpload(input, context, args);
         } else if (CMD_MKBUFFER.equals(command)) {
@@ -65,6 +62,10 @@ public final class Executor {
             execVisible(input, context, args);
         } else if (CMD_INDEX.equals(command)) {
             execIndex(input, context, args);
+        } else if (CMD_BEGIN.equals(command)) {
+            execBegin(input, context, args);
+        } else if (CMD_END.equals(command)) {
+            execEnd(input, context, args);
         } else if (CMD_BUFFER.equals(command)) {
             execBuffer(input, context, args);
         } else if (CMD_COLOR.equals(command)) {
@@ -110,33 +111,19 @@ public final class Executor {
                 args[0], args[1], args[2]));
     }
     
-    private static void execBegin(
-            final String input,
-            final ExecutionContext context,
-            final String[] args) throws IOException {
-        
-        requireMinMaxArgs(input, 0, 0, args);
-        context.schedule(() -> context.getViewScreen().begin());
-    }
-    
-    private static void execEnd(
-            final String input,
-            final ExecutionContext context,
-            final String[] args) throws IOException {
-        
-        requireMinMaxArgs(input, 0, 0, args);
-        context.schedule(() -> context.getViewScreen().end());
-    }
-    
     private static void execUpload(
             final String input,
             final ExecutionContext context,
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 2, 2, args);
-        final byte[] imageData = EncodingUtil.hexToBytes(args[1]);
-        context.schedule(() -> context.getViewScreen().upload(
-                args[0], imageData));
+        try {
+            final byte[] imageData = EncodingUtil.hexToBytes(args[1]);
+            context.schedule(() -> context.getViewScreen().upload(
+                    args[0], imageData));
+        } catch (final IllegalArgumentException ex) {
+            throw new IOException(ex);
+        }
     }
     
     private static void execMkbuffer(
@@ -164,12 +151,12 @@ public final class Executor {
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 2, 3, args);
-        if (args.length == 2) {
-            context.schedule(() -> context.getViewScreen().setPosition(
-                    args[0], args[1]));
-        } else {
+        if (args.length == 3) {
             context.schedule(() -> context.getViewScreen().setPosition(
                     args[0], args[1], args[2]));
+        } else {
+            context.schedule(() -> context.getViewScreen().setPosition(
+                    args[0], args[1]));
         }
     }
     
@@ -179,12 +166,12 @@ public final class Executor {
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 1, 2, args);
-        if (args.length == 1) {
-            context.schedule(() -> context.getViewScreen().setVisible(
-                    parseBoolean(args[0])));
-        } else {
+        if (args.length == 2) {
             context.schedule(() -> context.getViewScreen().setVisible(
                     args[0], parseBoolean(args[1])));
+        } else {
+            context.schedule(() -> context.getViewScreen().setVisible(
+                    parseBoolean(args[0])));
         }
     }
     
@@ -196,6 +183,24 @@ public final class Executor {
         requireMinMaxArgs(input, 2, 2, args);
         context.schedule(() -> context.getViewScreen().setIndex(
                 args[0], args[1]));
+    }
+    
+    private static void execBegin(
+            final String input,
+            final ExecutionContext context,
+            final String[] args) throws IOException {
+        
+        requireMinMaxArgs(input, 0, 0, args);
+        context.schedule(() -> context.getViewScreen().begin());
+    }
+    
+    private static void execEnd(
+            final String input,
+            final ExecutionContext context,
+            final String[] args) throws IOException {
+        
+        requireMinMaxArgs(input, 0, 0, args);
+        context.schedule(() -> context.getViewScreen().end());
     }
     
     private static void execBuffer(
@@ -213,12 +218,12 @@ public final class Executor {
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 3, 4, args);
-        if (args.length == 3) {
-            context.schedule(() -> context.getViewScreen().setColor(
-                    args[0], args[1], args[2]));
-        } else {
+        if (args.length == 4) {
             context.schedule(() -> context.getViewScreen().setColor(
                     args[0], args[1], args[2], args[3]));
+        } else {
+            context.schedule(() -> context.getViewScreen().setColor(
+                    args[0], args[1], args[2]));
         }
     }
     
@@ -280,7 +285,8 @@ public final class Executor {
         
         requireMinMaxArgs(input, 1, Integer.MAX_VALUE, args);
         context.schedule(() -> context.getViewScreen().polygon(
-                parseBoolean(args[0]), args));
+                parseBoolean(args[0]),
+                Arrays.copyOfRange(args, 1, args.length)));
     }
     
     private static void execOval(
@@ -308,12 +314,12 @@ public final class Executor {
             final String[] args) throws IOException {
         
         requireMinMaxArgs(input, 1, 3, args);
-        if (args.length == 1) {
-            context.schedule(() -> context.getViewScreen().image(
-                    args[0]));
-        } else if (args.length == 3) {
+        if (args.length == 3) {
             context.schedule(() -> context.getViewScreen().image(
                     args[0], args[1], args[2]));
+        } else if (args.length == 1) {
+            context.schedule(() -> context.getViewScreen().image(
+                    args[0]));
         }
         throw invalidArgList(input);
     }
@@ -338,7 +344,15 @@ public final class Executor {
             final String[] args) throws IOException {
         
         if (args.length < min || args.length > max) {
-            throw invalidArgList(input);
+            throw new IOException(
+                    "Invalid number of arguments: "
+                            + args.length
+                            + " (expected min="
+                            + min
+                            + ", max="
+                            + max
+                            + "): "
+                            + input);
         }
     }
     
