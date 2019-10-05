@@ -8,13 +8,19 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -34,6 +40,7 @@ public final class ViewScreen {
         frame.setContentPane(panel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setUndecorated(true);
+        frame.setSize(Toolkit.getDefaultToolkit().getScreenSize());
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
     
@@ -61,34 +68,62 @@ public final class ViewScreen {
      * Variables *
      *************/
     
-    // TODO undecorated, size, maximized, variable
-//    void setVariable(final String name, final String[] args) {
-//    }
+    void setVariable(final String name, final String[] args)
+            throws IOException {
+        
+        variables.put(
+                name,
+                Variables.valueOf(args, frame, this::getBuffer, this::getInt));
+    }
     
     void removeVariable(final String name) {
         variables.remove(requireNonNull(name, "name"));
+    }
+    
+    /*********************
+     * Upload & download *
+     *********************/
+    
+    void upload(final String variable, final byte[] bytes) {
+        final Image image = new ImageIcon(bytes).getImage();
+        final BufferedImage buffered = createImage(
+                image.getWidth(frame), image.getHeight(frame));
+        final Graphics g = buffered.getGraphics();
+        g.drawImage(image, 0, 0, frame);
+        g.dispose();
+        buffers.add(new Buffer(buffered, variable));
+    }
+    
+    void download(
+            final String variable,
+            final String type,
+            final OutputStream out) throws IOException {
+        
+        writeImage(getBuffer(variable).getImage(), type, out);
+    }
+    
+    void download(final String type, final OutputStream out)
+            throws IOException {
+        
+        final BufferedImage image = createImage(
+                frame.getContentPane().getWidth(),
+                frame.getContentPane().getHeight());
+        final Graphics g = image.getGraphics();
+        frame.getContentPane().paint(g);
+        g.dispose();
+        writeImage(image, type, out);
     }
     
     /******************
      * Frame & buffer *
      ******************/
     
+    // TODO undecorated, size, maximized
+    
     void setBackground(final String red, final String green, final String blue)
             throws IOException {
         
         frame.getContentPane().setBackground(getColor(red, green, blue));
-    }
-    
-    void upload(final String variable, final byte[] bytes) {
-        final Image image = new ImageIcon(bytes).getImage();
-        final var buffered = new BufferedImage(
-                image.getWidth(frame),
-                image.getHeight(frame),
-                BufferedImage.TYPE_INT_ARGB);
-        final Graphics g = buffered.getGraphics();
-        g.drawImage(image, 0, 0, frame);
-        g.dispose();
-        buffers.add(new Buffer(buffered, variable));
     }
     
     void makeBuffer(
@@ -377,8 +412,11 @@ public final class ViewScreen {
     }
     
     private int getInt(final String arg) throws IOException {
-        requireNonNull(arg, "arg");
-        return variables.getOrDefault(arg, parseInt(arg));
+        final Integer value = variables.get(requireNonNull(arg, "arg"));
+        if (value == null) {
+            return parseInt(arg);
+        }
+        return value;
     }
     
     private Color getColor(
@@ -409,6 +447,30 @@ public final class ViewScreen {
         return getColor(red, green, blue, null);
     }
     
+    private static BufferedImage createImage(
+            final int width, final int height) {
+        
+        return new BufferedImage(
+                Math.max(1, width),
+                Math.max(1, height),
+                BufferedImage.TYPE_INT_ARGB);
+    }
+    
+    private static void writeImage(
+            final BufferedImage image,
+            final String type,
+            final OutputStream out) throws IOException {
+        
+        final Iterator<ImageWriter> it = ImageIO.getImageWritersBySuffix(type);
+        if (it.hasNext()) {
+            final ImageWriter writer = it.next();
+            writer.setOutput(new MemoryCacheImageOutputStream(out));
+            writer.write(image);
+        } else {
+            throw unsupportedImageType(type);
+        }
+    }
+    
     private static IOException noSuchBuffer(final String variable) {
         return new IOException("No such buffer: " + variable);
     }
@@ -419,6 +481,10 @@ public final class ViewScreen {
     
     private static IOException invalidPolygonCoordinates() {
         return new IOException("Invalid polygon coordinates");
+    }
+    
+    private static IOException unsupportedImageType(final String type) {
+        return new IOException("Unsupported image type: " + type);
     }
     
     private static final class DrawingContext {

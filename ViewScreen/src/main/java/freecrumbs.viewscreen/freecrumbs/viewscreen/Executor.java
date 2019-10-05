@@ -11,8 +11,11 @@ public final class Executor {
     
     private static final String PREFIX = "vsc:";
     
-    private static final String CMD_BACKGROUND = "background";
+    private static final String CMD_SETVAR     = "setvar";
+    private static final String CMD_RMVAR      = "rmvar";
     private static final String CMD_UPLOAD     = "upload";
+    private static final String CMD_DOWNLOAD   = "download";
+    private static final String CMD_BACKGROUND = "background";
     private static final String CMD_MKBUFFER   = "mkbuffer";
     private static final String CMD_RMBUFFER   = "rmbuffer";
     private static final String CMD_POSITION   = "position";
@@ -48,10 +51,16 @@ public final class Executor {
         final String[] parts = input.substring(PREFIX.length()).split(" ");
         final String command = parts[0];
         final String[] args = Arrays.copyOfRange(parts, 1, parts.length);
-        if (CMD_BACKGROUND.equals(command)) {
-            execBackground(input, context, args);
+        if (CMD_SETVAR.equals(command)) {
+            execSetvar(input, context, args);
+        } else if (CMD_RMVAR.equals(command)) {
+            execRmvar(input, context, args);
         } else if (CMD_UPLOAD.equals(command)) {
             execUpload(input, context, args);
+        } else if (CMD_DOWNLOAD.equals(command)) {
+            execDownload(input, context, args);
+        } else if (CMD_BACKGROUND.equals(command)) {
+            execBackground(input, context, args);
         } else if (CMD_MKBUFFER.equals(command)) {
             execMkbuffer(input, context, args);
         } else if (CMD_RMBUFFER.equals(command)) {
@@ -101,14 +110,23 @@ public final class Executor {
      * Command executions *
      **********************/
     
-    private static void execBackground(
+    private static void execSetvar(
             final String input,
             final ExecutionContext context,
             final String[] args) throws IOException {
         
-        requireMinMaxArgs(input, 3, 3, args);
-        context.schedule(() -> context.getViewScreen().setBackground(
-                args[0], args[1], args[2]));
+        requireMinMaxArgs(input, 2, Integer.MAX_VALUE, args);
+        context.schedule(() -> context.getViewScreen().setVariable(
+                args[0], Arrays.copyOfRange(args, 1, args.length)));
+    }
+    
+    private static void execRmvar(
+            final String input,
+            final ExecutionContext context,
+            final String[] args) throws IOException {
+        
+        requireMinMaxArgs(input, 1, 1, args);
+        context.schedule(() -> context.getViewScreen().removeVariable(args[0]));
     }
     
     private static void execUpload(
@@ -124,6 +142,31 @@ public final class Executor {
         } catch (final IllegalArgumentException ex) {
             throw new IOException(ex);
         }
+    }
+    
+    private static void execDownload(
+            final String input,
+            final ExecutionContext context,
+            final String[] args) throws IOException {
+        
+        requireMinMaxArgs(input, 1, 2, args);
+        if (args.length == 2) {
+            context.schedule(() -> context.getViewScreen().download(
+                    args[0], args[1], context.getOut()));
+        } else {
+            context.schedule(() -> context.getViewScreen().download(
+                    args[0], context.getOut()));
+        }
+    }
+    
+    private static void execBackground(
+            final String input,
+            final ExecutionContext context,
+            final String[] args) throws IOException {
+        
+        requireMinMaxArgs(input, 3, 3, args);
+        context.schedule(() -> context.getViewScreen().setBackground(
+                args[0], args[1], args[2]));
     }
     
     private static void execMkbuffer(
