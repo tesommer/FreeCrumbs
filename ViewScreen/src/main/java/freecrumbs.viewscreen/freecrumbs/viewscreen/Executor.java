@@ -114,7 +114,7 @@ public final class Executor {
         } else if (command.equals(CMD_REFRESH)) {
             execRefresh(input, context, args);
         } else if (command.equals(CMD_EXIT)) {
-            System.exit(0);
+            execExit(input, context, args);
         } else {
             throw new IOException("Invalid command: " + command);
         }
@@ -435,6 +435,15 @@ public final class Executor {
         
         requireMinMaxArgs(input, 0, 0, args);
         context.schedule(() -> context.getViewScreen().refresh());
+    }
+    
+    private static void execExit(
+            final String input,
+            final ExecutionContext context,
+            final String[] args) throws IOException {
+        
+        requireMinMaxArgs(input, 0, 0, args);
+        context.schedule(() -> System.exit(0));
     }
     
     /*********
