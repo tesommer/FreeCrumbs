@@ -2,7 +2,9 @@ package freecrumbs.viewscreen;
 
 import static freecrumbs.viewscreen.Arguments.parseBoolean;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
 
 import com.calclipse.lib.util.EncodingUtil;
@@ -161,13 +163,19 @@ public final class Executor {
             final ExecutionContext context,
             final String[] args) throws IOException {
         
-        requireMinMaxArgs(input, 1, 2, args);
-        if (args.length == 2) {
+        requireMinMaxArgs(input, 1, 3, args);
+        final OutputStream out;
+        if (args.length == 3) {
+            out = new FileOutputStream(args[2]);
+        } else {
+            out = context.getOut();
+        }
+        if (args.length >= 2) {
             context.schedule(() -> context.getViewScreen().download(
-                    args[0], args[1], context.getOut()));
+                    args[0], args[1], out));
         } else {
             context.schedule(() -> context.getViewScreen().download(
-                    args[0], context.getOut()));
+                    args[0], out));
         }
     }
     

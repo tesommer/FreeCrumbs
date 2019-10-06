@@ -250,9 +250,7 @@ public final class ViewScreen {
             final String alpha) throws IOException {
         
         final Color color = getColor(red, green, blue, alpha);
-        if (context.g == null) {
-            return;
-        }
+        require(context.g);
         context.g.setColor(color);
     }
     
@@ -262,9 +260,7 @@ public final class ViewScreen {
             final String blue) throws IOException {
         
         final Color color = getColor(red, green, blue);
-        if (context.g == null) {
-            return;
-        }
+        require(context.g);
         context.g.setColor(color);
     }
     
@@ -279,9 +275,7 @@ public final class ViewScreen {
             style |= Font.ITALIC;
         }
         final var font = new Font(name, getInt(size), style);
-        if (context.g == null) {
-            return;
-        }
+        require(context.g);
         context.g.setFont(font);
     }
     
@@ -295,9 +289,7 @@ public final class ViewScreen {
         final int iy = getInt(y);
         final int iw = getInt(width);
         final int ih = getInt(height);
-        if (context.g == null) {
-            return;
-        }
+        require(context.g);
         context.g.setClip(ix, iy, iw, ih);
     }
     
@@ -308,6 +300,7 @@ public final class ViewScreen {
     void move(final String x, final String y) throws IOException {
         final int ix = getInt(x);
         final int iy = getInt(y);
+        require(context.g);
         context.x = ix;
         context.y = iy;
     }
@@ -315,9 +308,7 @@ public final class ViewScreen {
     void line(final String x, final String y) throws IOException {
         final int ix = getInt(x);
         final int iy = getInt(y);
-        if (context.g == null) {
-            return;
-        }
+        require(context.g);
         context.g.drawLine(context.x, context.y, ix, iy);
     }
     
@@ -326,9 +317,7 @@ public final class ViewScreen {
         
         final int iw = getInt(width);
         final int ih = getInt(height);
-        if (context.g == null) {
-            return;
-        }
+        require(context.g);
         if (fill) {
             context.g.fillRect(context.x, context.y, iw, ih);
         } else {
@@ -348,9 +337,7 @@ public final class ViewScreen {
             xPoints[j] = getInt(xy[i]);
             yPoints[j] = getInt(xy[i + 1]);
         }
-        if (context.g == null) {
-            return;
-        }
+        require(context.g);
         if (fill) {
             context.g.fillPolygon(xPoints, yPoints, vertices);
         } else {
@@ -363,9 +350,7 @@ public final class ViewScreen {
         
         final int iw = getInt(width);
         final int ih = getInt(height);
-        if (context.g == null) {
-            return;
-        }
+        require(context.g);
         if (fill) {
             context.g.fillOval(context.x, context.y, iw, ih);
         } else {
@@ -373,10 +358,8 @@ public final class ViewScreen {
         }
     }
     
-    void text(final String str) {
-        if (context.g == null) {
-            return;
-        }
+    void text(final String str) throws IOException {
+        require(context.g);
         context.g.drawString(str, context.x, context.y);
     }
     
@@ -388,9 +371,7 @@ public final class ViewScreen {
         final BufferedImage image = getBuffer(variable).getImage();
         final int iw = getInt(width);
         final int ih = getInt(height);
-        if (context.g == null) {
-            return;
-        }
+        require(context.g);
         final int actualWidth = iw < 1 ? image.getWidth() : iw;
         final int actualHeight = ih < 1 ? image.getHeight() : ih;
         context.g.drawImage(
@@ -404,9 +385,7 @@ public final class ViewScreen {
     
     void image(final String variable) throws IOException {
         final BufferedImage image = getBuffer(variable).getImage();
-        if (context.g == null) {
-            return;
-        }
+        require(context.g);
         context.g.drawImage(
                 image,
                 context.x,
@@ -490,6 +469,16 @@ public final class ViewScreen {
         } else {
             throw unsupportedImageType(type);
         }
+    }
+    
+    private static void require(final Graphics g) throws IOException {
+        if (g == null) {
+            throw noBufferSelected();
+        }
+    }
+    
+    private static IOException noBufferSelected() {
+        return new IOException("No buffer selected");
     }
     
     private static IOException noSuchBuffer(final String variable) {
