@@ -163,14 +163,15 @@ public final class Executor {
             final ExecutionContext context,
             final String[] args) throws IOException {
         
-        requireMinMaxArgs(input, 1, 3, args);
+        requireMinMaxArgs(input, 2, 3, args);
+        final String file = args[args.length - 1];
         final OutputStream out;
-        if (args.length == 3) {
-            out = new FileOutputStream(args[2]);
-        } else {
+        if (file.equals("-")) {
             out = context.getOut();
+        } else {
+            out = new FileOutputStream(file);
         }
-        if (args.length >= 2) {
+        if (args.length == 3) {
             context.schedule(() -> context.getViewScreen().download(
                     args[0], args[1], out));
         } else {
