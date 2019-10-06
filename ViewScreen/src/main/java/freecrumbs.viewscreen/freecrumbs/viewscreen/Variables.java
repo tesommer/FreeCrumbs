@@ -67,6 +67,8 @@ public final class Variables {
             } catch (final ArithmeticException ex) {
                 throw new IOException(ex);
             }
+        } else if (second.equals("^")) {
+            return (int)Math.pow(arg2Int.getInt(first), arg2Int.getInt(third));
         }
         throw invalidVariableOperation(first, second, third);
     }

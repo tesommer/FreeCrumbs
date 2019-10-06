@@ -16,6 +16,10 @@ public final class Executor {
     private static final String CMD_UPLOAD     = "upload";
     private static final String CMD_DOWNLOAD   = "download";
     private static final String CMD_BACKGROUND = "background";
+    private static final String CMD_SIZE       = "size";
+    private static final String CMD_AREA       = "area";
+    private static final String CMD_MAXIMIZED  = "maximized";
+    private static final String CMD_DECORATED  = "decorated";
     private static final String CMD_MKBUFFER   = "mkbuffer";
     private static final String CMD_RMBUFFER   = "rmbuffer";
     private static final String CMD_POSITION   = "position";
@@ -51,55 +55,63 @@ public final class Executor {
         final String[] parts = input.substring(PREFIX.length()).split(" ");
         final String command = parts[0];
         final String[] args = Arrays.copyOfRange(parts, 1, parts.length);
-        if (CMD_SETVAR.equals(command)) {
+        if (command.equals(CMD_SETVAR)) {
             execSetvar(input, context, args);
-        } else if (CMD_RMVAR.equals(command)) {
+        } else if (command.equals(CMD_RMVAR)) {
             execRmvar(input, context, args);
-        } else if (CMD_UPLOAD.equals(command)) {
+        } else if (command.equals(CMD_UPLOAD)) {
             execUpload(input, context, args);
-        } else if (CMD_DOWNLOAD.equals(command)) {
+        } else if (command.equals(CMD_DOWNLOAD)) {
             execDownload(input, context, args);
-        } else if (CMD_BACKGROUND.equals(command)) {
+        } else if (command.equals(CMD_BACKGROUND)) {
             execBackground(input, context, args);
-        } else if (CMD_MKBUFFER.equals(command)) {
+        } else if (command.equals(CMD_SIZE)) {
+            execSize(input, context, args);
+        } else if (command.equals(CMD_AREA)) {
+            execArea(input, context, args);
+        } else if (command.equals(CMD_MAXIMIZED)) {
+            execMaximized(input, context, args);
+        } else if (command.equals(CMD_DECORATED)) {
+            execDecorated(input, context, args);
+        } else if (command.equals(CMD_MKBUFFER)) {
             execMkbuffer(input, context, args);
-        } else if (CMD_RMBUFFER.equals(command)) {
+        } else if (command.equals(CMD_RMBUFFER)) {
             execRmbuffer(input, context, args);
-        } else if (CMD_POSITION.equals(command)) {
+        } else if (command.equals(CMD_POSITION)) {
             execPosition(input, context, args);
-        } else if (CMD_VISIBLE.equals(command)) {
+        } else if (command.equals(CMD_VISIBLE)) {
             execVisible(input, context, args);
-        } else if (CMD_INDEX.equals(command)) {
+        } else if (command.equals(CMD_INDEX)) {
             execIndex(input, context, args);
-        } else if (CMD_BEGIN.equals(command)) {
+        } else if (command.equals(CMD_BEGIN)) {
             execBegin(input, context, args);
-        } else if (CMD_END.equals(command)) {
+        } else if (command.equals(CMD_END)) {
             execEnd(input, context, args);
-        } else if (CMD_BUFFER.equals(command)) {
+        } else if (command.equals(CMD_BUFFER)) {
             execBuffer(input, context, args);
-        } else if (CMD_COLOR.equals(command)) {
+        } else if (command.equals(CMD_COLOR)) {
             execColor(input, context, args);
-        } else if (CMD_FONT.equals(command)) {
+        } else if (command.equals(CMD_FONT)) {
             execFont(input, context, args);
-        } else if (CMD_CLIP.equals(command)) {
+        } else if (command.equals(CMD_CLIP)) {
             execClip(input, context, args);
-        } else if (CMD_MOVE.equals(command)) {
+        } else if (command.equals(CMD_MOVE)) {
             execMove(input, context, args);
-        } else if (CMD_LINE.equals(command)) {
+        } else if (command.equals(CMD_LINE)) {
             execLine(input, context, args);
-        } else if (CMD_RECTANGLE.equals(command)) {
+        } else if (command.equals(CMD_RECTANGLE)) {
             execRectangle(input, context, args);
-        } else if (CMD_POLYGON.equals(command)) {
+        } else if (command.equals(CMD_POLYGON)) {
             execPolygon(input, context, args);
-        } else if (CMD_OVAL.equals(command)) {
+        } else if (command.equals(CMD_OVAL)) {
             execOval(input, context, args);
-        } else if (CMD_TEXT.equals(command)) {
+        } else if (command.equals(CMD_TEXT)) {
             execText(input, context, args);
-        } else if (CMD_IMAGE.equals(command)) {
+        } else if (command.equals(CMD_IMAGE)) {
             execImage(input, context, args);
-        } else if (CMD_REFRESH.equals(command)) {
+        } else if (command.equals(CMD_REFRESH)) {
             execRefresh(input, context, args);
-        } else if (CMD_EXIT.equals(command)) {
+        } else if (command.equals(CMD_EXIT)) {
             System.exit(0);
         } else {
             throw new IOException("Invalid command: " + command);
@@ -167,6 +179,46 @@ public final class Executor {
         requireMinMaxArgs(input, 3, 3, args);
         context.schedule(() -> context.getViewScreen().setBackground(
                 args[0], args[1], args[2]));
+    }
+    
+    private static void execSize(
+            final String input,
+            final ExecutionContext context,
+            final String[] args) throws IOException {
+        
+        requireMinMaxArgs(input, 2, 2, args);
+        context.schedule(() -> context.getViewScreen().setSize(
+                args[0], args[1]));
+    }
+    
+    private static void execArea(
+            final String input,
+            final ExecutionContext context,
+            final String[] args) throws IOException {
+        
+        requireMinMaxArgs(input, 2, 2, args);
+        context.schedule(() -> context.getViewScreen().setArea(
+                args[0], args[1]));
+    }
+    
+    private static void execMaximized(
+            final String input,
+            final ExecutionContext context,
+            final String[] args) throws IOException {
+        
+        requireMinMaxArgs(input, 1, 1, args);
+        context.schedule(() -> context.getViewScreen().setMaximized(
+                parseBoolean(args[0])));
+    }
+    
+    private static void execDecorated(
+            final String input,
+            final ExecutionContext context,
+            final String[] args) throws IOException {
+        
+        requireMinMaxArgs(input, 1, 1, args);
+        context.schedule(() -> context.getViewScreen().setDecorated(
+                parseBoolean(args[0])));
     }
     
     private static void execMkbuffer(

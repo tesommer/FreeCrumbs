@@ -5,6 +5,7 @@ import static freecrumbs.viewscreen.Arguments.requireByte;
 import static java.util.Objects.requireNonNull;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -118,12 +119,35 @@ public final class ViewScreen {
      * Frame & buffer *
      ******************/
     
-    // TODO undecorated, size, maximized
-    
     void setBackground(final String red, final String green, final String blue)
             throws IOException {
         
         frame.getContentPane().setBackground(getColor(red, green, blue));
+    }
+    
+    void setSize(final String width, final String height) throws IOException {
+        frame.setSize(getInt(width), getInt(height));
+    }
+    
+    void setArea(final String width, final String height) throws IOException {
+        frame.getContentPane().setPreferredSize(
+                new Dimension(getInt(width), getInt(height)));
+        frame.pack();
+    }
+    
+    void setMaximized(final boolean maximized) {
+        if (maximized) {
+            frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        } else {
+            frame.setExtendedState(JFrame.NORMAL);
+        }
+    }
+    
+    void setDecorated(final boolean decorated) throws IOException {
+        if (frame.isDisplayable()) {
+            throw frameDisplayable();
+        }
+        frame.setUndecorated(!decorated);
     }
     
     void makeBuffer(
@@ -413,10 +437,7 @@ public final class ViewScreen {
     
     private int getInt(final String arg) throws IOException {
         final Integer value = variables.get(requireNonNull(arg, "arg"));
-        if (value == null) {
-            return parseInt(arg);
-        }
-        return value;
+        return value == null ? parseInt(arg) : value;
     }
     
     private Color getColor(
@@ -485,6 +506,10 @@ public final class ViewScreen {
     
     private static IOException unsupportedImageType(final String type) {
         return new IOException("Unsupported image type: " + type);
+    }
+    
+    private static IOException frameDisplayable() {
+        return new IOException("Frame is already displayable.");
     }
     
     private static final class DrawingContext {
