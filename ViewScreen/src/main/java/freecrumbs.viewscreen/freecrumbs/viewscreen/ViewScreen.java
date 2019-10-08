@@ -40,9 +40,6 @@ public final class ViewScreen {
         panel.setBackground(Color.WHITE);
         frame.setContentPane(panel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setUndecorated(true);
-        frame.setSize(Toolkit.getDefaultToolkit().getScreenSize());
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
     
     private final class BufferPanel extends JPanel {
@@ -55,14 +52,53 @@ public final class ViewScreen {
         @Override
         protected void paintComponent(final Graphics g) {
             super.paintComponent(g);
-            buffers.stream()
-            .filter(Buffer::isVisible)
-            .forEach(buffer -> g.drawImage(
-                    buffer.getImage(),
-                    buffer.getX(),
-                    buffer.getY(),
-                    frame));
+            paintBuffers(g);
         }
+        
+        private void paintBuffers(final Graphics g) {
+            buffers.stream()
+                .filter(Buffer::isVisible)
+                .forEach(buffer -> g.drawImage(
+                        buffer.getImage(),
+                        buffer.getX(),
+                        buffer.getY(),
+                        frame));
+        }
+    }
+    
+    /******************
+     * Initialization *
+     ******************/
+    
+    void init(
+            final boolean visible,
+            final boolean decorated,
+            final String width,
+            final String height) throws IOException {
+        
+        if (frame.isDisplayable()) {
+            throw tooLateForInit();
+        }
+        frame.setUndecorated(!decorated);
+        frame.getContentPane().setPreferredSize(
+                new Dimension(getInt(width), getInt(height)));
+        frame.pack();
+        frame.setVisible(visible);
+    }
+    
+    void init(final boolean visible, final boolean decorated)
+            throws IOException {
+        
+        if (frame.isDisplayable()) {
+            throw tooLateForInit();
+        }
+        frame.setUndecorated(!decorated);
+        final Dimension screenSize = Toolkit.getDefaultToolkit()
+                .getScreenSize();
+        frame.getContentPane().setPreferredSize(screenSize);
+        frame.pack();
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setVisible(visible);
     }
     
     /*************
@@ -81,9 +117,26 @@ public final class ViewScreen {
         variables.remove(requireNonNull(name, "name"));
     }
     
-    /*********************
-     * Upload & download *
-     *********************/
+    /***********
+     * Buffers *
+     ***********/
+    
+    void makeBuffer(
+            final String variable,
+            final String width,
+            final String height) throws IOException {
+        
+        final int iw = getInt(width);
+        final int ih = getInt(height);
+        buffers.add(new Buffer(
+                new BufferedImage(iw, ih, BufferedImage.TYPE_INT_ARGB),
+                variable));
+    }
+    
+    void removeBuffer(final String variable) throws IOException {
+        final int index = getBufferIndex(variable);
+        buffers.remove(index);
+    }
     
     void upload(final String variable, final byte[] bytes) {
         final Image image = new ImageIcon(bytes).getImage();
@@ -107,64 +160,23 @@ public final class ViewScreen {
             throws IOException {
         
         final BufferedImage image = createImage(
-                frame.getContentPane().getWidth(),
-                frame.getContentPane().getHeight());
+                frame.getWidth(), frame.getHeight());
         final Graphics g = image.getGraphics();
-        frame.getContentPane().paint(g);
+        g.setColor(frame.getContentPane().getBackground());
+        g.fillRect(0, 0, image.getWidth(), image.getHeight());
+        ((BufferPanel)frame.getContentPane()).paintBuffers(g);
         g.dispose();
         writeImage(image, type, out);
     }
     
-    /******************
-     * Frame & buffer *
-     ******************/
+    /*****************************
+     * Frame & buffer properties *
+     *****************************/
     
     void setBackground(final String red, final String green, final String blue)
             throws IOException {
         
         frame.getContentPane().setBackground(getColor(red, green, blue));
-    }
-    
-    void setSize(final String width, final String height) throws IOException {
-        frame.setSize(getInt(width), getInt(height));
-    }
-    
-    void setArea(final String width, final String height) throws IOException {
-        frame.getContentPane().setPreferredSize(
-                new Dimension(getInt(width), getInt(height)));
-        frame.pack();
-    }
-    
-    void setMaximized(final boolean maximized) {
-        if (maximized) {
-            frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        } else {
-            frame.setExtendedState(JFrame.NORMAL);
-        }
-    }
-    
-    void setDecorated(final boolean decorated) throws IOException {
-        if (frame.isDisplayable()) {
-            throw frameDisplayable();
-        }
-        frame.setUndecorated(!decorated);
-    }
-    
-    void makeBuffer(
-            final String variable,
-            final String width,
-            final String height) throws IOException {
-        
-        final int iw = getInt(width);
-        final int ih = getInt(height);
-        buffers.add(new Buffer(
-                new BufferedImage(iw, ih, BufferedImage.TYPE_INT_ARGB),
-                variable));
-    }
-    
-    void removeBuffer(final String variable) throws IOException {
-        final int index = getBufferIndex(variable);
-        buffers.remove(index);
     }
     
     void setPosition(final String variable, final String x, final String y)
@@ -187,10 +199,6 @@ public final class ViewScreen {
             throws IOException {
         
         getBuffer(variable).setVisible(visible);
-    }
-    
-    void setVisible(final boolean visible) {
-        frame.setVisible(visible);
     }
     
     /**
@@ -497,8 +505,8 @@ public final class ViewScreen {
         return new IOException("Unsupported image type: " + type);
     }
     
-    private static IOException frameDisplayable() {
-        return new IOException("Frame is already displayable.");
+    private static IOException tooLateForInit() {
+        return new IOException("Too late for initialization.");
     }
     
     private static final class DrawingContext {
