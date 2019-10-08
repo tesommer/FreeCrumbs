@@ -38,6 +38,7 @@ public final class Executor {
     private static final String CMD_OVAL       = "oval";
     private static final String CMD_TEXT       = "text";
     private static final String CMD_IMAGE      = "image";
+    private static final String CMD_CLEAR      = "clear";
     private static final String CMD_REFRESH    = "refresh";
     private static final String CMD_EXIT       = "exit";
 
@@ -105,6 +106,8 @@ public final class Executor {
             execText(input, context, args);
         } else if (command.equals(CMD_IMAGE)) {
             execImage(input, context, args);
+        } else if (command.equals(CMD_CLEAR)) {
+            execClear(input, context, args);
         } else if (command.equals(CMD_REFRESH)) {
             execRefresh(input, context, args);
         } else if (command.equals(CMD_EXIT)) {
@@ -426,6 +429,15 @@ public final class Executor {
         } else {
             throw invalidArgList(input);
         }
+    }
+    
+    private static void execClear(
+            final String input,
+            final ExecutionContext context,
+            final String[] args) throws IOException {
+        
+        requireMinMaxArgs(input, 2, 2, args);
+        context.schedule(() -> context.getViewScreen().clear(args[0], args[1]));
     }
     
     private static void execRefresh(

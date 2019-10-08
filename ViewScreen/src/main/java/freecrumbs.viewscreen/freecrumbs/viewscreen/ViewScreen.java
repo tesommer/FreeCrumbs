@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
@@ -30,6 +31,9 @@ import javax.swing.JPanel;
  * Accessed from the EDT.
  */
 public final class ViewScreen {
+    
+    private static final Color BUFFER_BG = new Color(0, 0, 0, 0);
+    
     private final List<Buffer> buffers = new ArrayList<>();
     private final Map<String, Integer> variables = new HashMap<>();
     private final JFrame frame = new JFrame();
@@ -273,7 +277,8 @@ public final class ViewScreen {
         if (context.g != null) {
             context.g.dispose();
         }
-        context.g = buffer.getImage().getGraphics();
+        context.g = buffer.getImage().createGraphics();
+        context.g.setBackground(BUFFER_BG);
     }
     
     void setColor(
@@ -426,6 +431,13 @@ public final class ViewScreen {
                 frame);
     }
     
+    void clear(final String width, final String height) throws IOException {
+        final int iw = getInt(width);
+        final int ih = getInt(height);
+        require(context.g);
+        context.g.clearRect(context.x, context.y, iw, ih);
+    }
+    
     void refresh() {
         frame.getContentPane().repaint();
     }
@@ -547,7 +559,7 @@ public final class ViewScreen {
     
     private static final class DrawingContext {
         private DrawingContext parent;
-        private Graphics g;
+        private Graphics2D g;
         private int x;
         private int y;
         
