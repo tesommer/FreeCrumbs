@@ -243,9 +243,14 @@ public final class Executor {
             final ExecutionContext context,
             final String[] args) throws IOException {
         
-        requireMinMaxArgs(input, 3, 3, args);
-        context.schedule(() -> context.getViewScreen().setBackground(
-                args[0], args[1], args[2]));
+        requireMinMaxArgs(input, 3, 4, args);
+        if (args.length == 4) {
+            context.schedule(() -> context.getViewScreen().setBackground(
+                    args[0], args[1], args[2], args[3]));
+        } else {
+            context.schedule(() -> context.getViewScreen().setBackground(
+                    args[0], args[1], args[2]));
+        }
     }
     
     private static void execPosition(

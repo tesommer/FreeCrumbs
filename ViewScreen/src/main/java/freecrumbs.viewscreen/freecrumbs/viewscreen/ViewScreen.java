@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.IllegalComponentStateException;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
@@ -201,6 +202,24 @@ public final class ViewScreen {
     /*****************************
      * Frame & buffer properties *
      *****************************/
+    
+    void setBackground(
+            final String red,
+            final String green,
+            final String blue,
+            final String alpha) throws IOException {
+        
+        final Color color = getColor(red, green, blue, alpha);
+        frame.setBackground(color);
+        if (color.getAlpha() < 255) {
+            try {
+                frame.setOpacity(color.getComponents(null)[3]);
+            } catch (final IllegalComponentStateException
+                          |UnsupportedOperationException ex) {
+                throw new IOException(ex);
+            }
+        }
+    }
     
     void setBackground(final String red, final String green, final String blue)
             throws IOException {
