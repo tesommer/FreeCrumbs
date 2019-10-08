@@ -128,9 +128,7 @@ public final class ViewScreen {
         
         final int iw = getInt(width);
         final int ih = getInt(height);
-        buffers.add(new Buffer(
-                new BufferedImage(iw, ih, BufferedImage.TYPE_INT_ARGB),
-                variable));
+        buffers.add(new Buffer(createImage(iw, ih), variable));
     }
     
     void removeBuffer(final String variable) throws IOException {
@@ -138,8 +136,12 @@ public final class ViewScreen {
         buffers.remove(index);
     }
     
-    void upload(final String variable, final byte[] bytes) {
-        final Image image = new ImageIcon(bytes).getImage();
+    void upload(final String variable, final byte[] bytes) throws IOException {
+        final var icon = new ImageIcon(bytes);
+        if (icon.getIconWidth() < 0 || icon.getIconHeight() < 0) {
+            throw unsupportedImageData();
+        }
+        final Image image = icon.getImage();
         final BufferedImage buffered = createImage(
                 image.getWidth(frame), image.getHeight(frame));
         final Graphics g = buffered.getGraphics();
@@ -501,12 +503,16 @@ public final class ViewScreen {
         return new IOException("Invalid polygon coordinates");
     }
     
+    private static IOException unsupportedImageData() {
+        return new IOException("Unsupported image data");
+    }
+    
     private static IOException unsupportedImageType(final String type) {
         return new IOException("Unsupported image type: " + type);
     }
     
     private static IOException tooLateForInit() {
-        return new IOException("Too late for initialization.");
+        return new IOException("Too late for initialization");
     }
     
     private static final class DrawingContext {
