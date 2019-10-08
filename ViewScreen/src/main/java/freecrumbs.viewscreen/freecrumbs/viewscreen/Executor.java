@@ -16,6 +16,7 @@ public final class Executor {
     private static final String CMD_INIT       = "init";
     private static final String CMD_SETVAR     = "setvar";
     private static final String CMD_RMVAR      = "rmvar";
+    private static final String CMD_SAMPLE     = "sample";
     private static final String CMD_MKBUFFER   = "mkbuffer";
     private static final String CMD_RMBUFFER   = "rmbuffer";
     private static final String CMD_UPLOAD     = "upload";
@@ -60,6 +61,8 @@ public final class Executor {
             execSetvar(input, context, args);
         } else if (command.equals(CMD_RMVAR)) {
             execRmvar(input, context, args);
+        } else if (command.equals(CMD_SAMPLE)) {
+            execSample(input, context, args);
         } else if (command.equals(CMD_MKBUFFER)) {
             execMkbuffer(input, context, args);
         } else if (command.equals(CMD_RMBUFFER)) {
@@ -156,6 +159,16 @@ public final class Executor {
         
         requireMinMaxArgs(input, 1, 1, args);
         context.schedule(() -> context.getViewScreen().removeVariable(args[0]));
+    }
+    
+    private static void execSample(
+            final String input,
+            final ExecutionContext context,
+            final String[] args) throws IOException {
+        
+        requireMinMaxArgs(input, 7, 7, args);
+        context.schedule(() -> context.getViewScreen().sample(
+                args[0], args[1], args[2], args[3], args[4], args[5], args[6]));
     }
     
     /***********

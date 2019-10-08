@@ -117,6 +117,29 @@ public final class ViewScreen {
         variables.remove(requireNonNull(name, "name"));
     }
     
+    void sample(
+            final String variable,
+            final String x,
+            final String y,
+            final String red,
+            final String green,
+            final String blue,
+            final String alpha) throws IOException {
+        
+        final int ix = getInt(x);
+        final int iy = getInt(y);
+        final BufferedImage image = getBuffer(variable).getImage();
+        if (ix < 0 || ix >= image.getWidth()
+                || iy < 0 || iy >= image.getHeight()) {
+            throw xyOutsideBuffer(ix, iy, image.getWidth(), image.getHeight());
+        }
+        final var color = new Color(image.getRGB(ix, iy));
+        variables.put(red,   color.getRed());
+        variables.put(green, color.getGreen());
+        variables.put(blue,  color.getBlue());
+        variables.put(alpha, color.getAlpha());
+    }
+    
     /***********
      * Buffers *
      ***********/
@@ -513,6 +536,13 @@ public final class ViewScreen {
     
     private static IOException tooLateForInit() {
         return new IOException("Too late for initialization");
+    }
+    
+    private static IOException xyOutsideBuffer(
+            final int x, final int y, final int width, final int height) {
+        
+        return new IOException("Coordinages outside of buffer: x="
+                + x + ", y=" + y + ", width=" + width + ", height=" + height);
     }
     
     private static final class DrawingContext {
