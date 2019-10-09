@@ -1,2 +1,0 @@
-#!/bin/sh
-java -p `dirname $0`/../lib -m freecrumbs.viewscreen/freecrumbs.viewscreen.main.Main "$@"
