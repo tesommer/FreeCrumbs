@@ -6,7 +6,7 @@
     <target name="main">
         <!-- CalclipseLib -->
         <get
-        src="https://bitbucket.org/tesommer/calclipselib/downloads/com.calclipse.lib-3.0.0.jar"
+        src="https://bitbucket.org/tesommer/calclipselib/downloads/com.calclipse.lib-3.1.0.jar"
         dest="lib"
         skipexisting="true"/>
     </target>

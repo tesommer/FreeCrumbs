@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 import freecrumbs.finf.Field;
 import freecrumbs.finf.FieldReader;
+import freecrumbs.finf.field.BinaryToText;
 import freecrumbs.finf.field.Classification;
 import freecrumbs.finf.field.Eol;
 import freecrumbs.finf.field.Filename;
@@ -124,6 +125,7 @@ public final class AvailableFields {
                     List.of(Path.FIELD, Filename.FIELD, Size.FIELD));
             freshFields.addAll(List.of(Eol.getFields()));
             freshFields.addAll(List.of(Whitespace.getFields()));
+            freshFields.addAll(List.of(BinaryToText.getFields()));
             if (dateFormat != null) {
                 freshFields.addAll(timeFields(dateFormat, locale));
             }

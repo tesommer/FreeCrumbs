@@ -95,6 +95,11 @@ A file-info unit might contain the following fields:
   BINARY
 * *space*: a space character
 * *tab*: a tab character
+* *hex*: binary to lowercase hexadecimal\n"
+* *HEX*: binary to uppercase hexadecimal\n"
+* *base64*: binary to base64\n"
+* *base64mime*: binary to multiline base64\n"
+* *base64ulr*: binary to URL/filename-safe base64\n"
 
 ### Basic usage
 
