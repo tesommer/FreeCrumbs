@@ -16,14 +16,16 @@ import freecrumbs.macro.Script;
 import freecrumbs.macro.Util;
 
 @DisplayName("Util")
-public final class UtilTest {
-
-    public UtilTest() {
+public final class UtilTest
+{
+    public UtilTest()
+    {
     }
     
     @Test
     @DisplayName("split(String)")
-    public void test1() {
+    public void test1()
+    {
         assertSplit("");
         assertSplit(" ");
         assertSplit("ab", "ab");
@@ -32,12 +34,13 @@ public final class UtilTest {
         assertSplit(" \tgh ", "gh");
         assertSplit("ij\t kl", "ij", "kl");
         assertSplit(" mn op  xyz\t", "mn", "op", "xyz");
-        assertSplit(" \n \r\ndir ¤#\t\rx", "dir", "¤#", "\rx");
+        assertSplit(" \n \r\ndir ï¿½#\t\rx", "dir", "ï¿½#", "\rx");
     }
     
     @Test
     @DisplayName("evaluateArithmetic")
-    public void test2() throws MacroException {
+    public void test2() throws MacroException
+    {
         final Script script = dummyScript();
         script.variables().set("x", 2);
         script.variables().set("y", 3);
@@ -71,13 +74,14 @@ public final class UtilTest {
                 "26 % 0");
         assertThrows(
                 MacroException.class,
-                () -> Util.evaluateArithmetic(script, "11", "£", "73"),
-                "11 £ 73");
+                () -> Util.evaluateArithmetic(script, "11", "ï¿½", "73"),
+                "11 ï¿½ 73");
     }
     
     @Test
     @DisplayName("evaluateLogical")
-    public void test3() throws MacroException {
+    public void test3() throws MacroException
+    {
         final Script script = dummyScript();
         script.variables().set("x", 7);
         script.variables().set("y", 11);
@@ -101,8 +105,8 @@ public final class UtilTest {
                 "3 > 2");
         assertThrows(
                 MacroException.class,
-                () -> Util.evaluateLogical(script, "37", "¤", "73"),
-                "37 ¤ 73");
+                () -> Util.evaluateLogical(script, "37", "ï¿½", "73"),
+                "37 ï¿½ 73");
         assertTrue(
                 Util.evaluateLogical(script, "x", "isset", "y"),
                 "x isset y");
@@ -119,7 +123,8 @@ public final class UtilTest {
     
     @Test
     @DisplayName("addKeyCodeVariables")
-    public void test4() {
+    public void test4()
+    {
         final Script script = dummyScript();
         Util.addKeyCodeVariables(script);
         Stream.of("VK_A", "VK_B", "VK_T")
@@ -128,17 +133,21 @@ public final class UtilTest {
                     "Missing variable: " + s));
     }
     
-    private static Script dummyScript() {
-        try {
+    private static Script dummyScript()
+    {
+        try
+        {
             return Script.load(MockLocation.DUMMY, MockLoader.DUMMY);
-        } catch (final MacroException ex) {
+        }
+        catch (final MacroException ex)
+        {
             throw new AssertionError(ex);
         }
     }
     
     private static void assertSplit(
-            final String line, final String... expecteds) {
-        
+            final String line, final String... expecteds)
+    {
         final String[] actuals = Util.split(line);
         assertArrayEquals(expecteds, actuals, "split(" + line + ")");
     }

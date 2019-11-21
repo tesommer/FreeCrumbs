@@ -17,13 +17,14 @@ import freecrumbs.finf.field.Search;
  * 
  * @author Tone Sommerland
  */
-public final class SearchParser {
-    
+public final class SearchParser
+{
     private static final String OCCURRENCE_KEY = "o";
     private static final String GROUP_KEY = "g";
     private static final String CHARSET_KEY = "c";
 
-    private SearchParser() {
+    private SearchParser()
+    {
     }
     
     /**
@@ -39,8 +40,8 @@ public final class SearchParser {
     public static AvailableFields withAnotherSearch(
             final AvailableFields availableFields,
             final Search.Params initialSearchParams,
-            final String setting) throws IOException {
-        
+            final String setting) throws IOException
+    {
         final var parameterizedSetting = new ParameterizedSetting(setting);
         final Search.Params searchParams = initialSearchParams.withRegex(
                 getRegex(availableFields, parameterizedSetting));
@@ -51,13 +52,14 @@ public final class SearchParser {
     
     private static DynamicValue getRegex(
             final AvailableFields availableFields,
-            final ParameterizedSetting setting) throws IOException {
-        
+            final ParameterizedSetting setting) throws IOException
+    {
         final String regexString = setting.mainPart();
         final var regexFormat = new TokenInfoFormat(regexString);
         final String[] usedByRegex = regexFormat.getUsedFieldNames(
                 availableFields.getNames());
-        if (usedByRegex.length == 0) {
+        if (usedByRegex.length == 0)
+        {
             return DynamicValue.of(regexString);
         }
         return DynamicValue.of(
@@ -66,8 +68,8 @@ public final class SearchParser {
     
     private static Search.Params remainingSearchParams(
             final Search.Params searchParams,
-            final ParameterizedSetting setting) throws IOException {
-        
+            final ParameterizedSetting setting) throws IOException
+    {
         final Map<String, String> params = setting.params();
         return searchParams
                 .withOccurrence(getOccurrence(params, setting.whole()))
@@ -77,8 +79,8 @@ public final class SearchParser {
     
     private static int getOccurrence(
             final Map<? super String, String> params,
-            final String message) throws IOException {
-        
+            final String message) throws IOException
+    {
         return parseInt(
                 params.getOrDefault(OCCURRENCE_KEY, "1"),
                 "Occurrence: " + message);
@@ -86,8 +88,8 @@ public final class SearchParser {
     
     private static int getGroups(
             final Map<? super String, String> params,
-            final String message) throws IOException {
-        
+            final String message) throws IOException
+    {
         return requireZeroPlus(
                 params.getOrDefault(GROUP_KEY, "0"),
                 "Groups: " + message);
@@ -95,41 +97,49 @@ public final class SearchParser {
     
     private static Charset getCharset(
             final Map<? super String, String> params,
-            final String message) throws IOException {
-        
-        if (params.containsKey(CHARSET_KEY)) {
+            final String message) throws IOException
+    {
+        if (params.containsKey(CHARSET_KEY))
+        {
             return parseCharset(params.get(CHARSET_KEY), "Charset: " + message);
         }
         return Charset.defaultCharset();
     }
     
     private static int parseInt(final String param, final String message)
-            throws IOException {
-        
-        try {
+            throws IOException
+    {
+        try
+        {
             return Integer.parseInt(param);
-        } catch (final NumberFormatException ex) {
+        }
+        catch (final NumberFormatException ex)
+        {
             throw new IOException(message, ex);
         }
     }
     
     private static int requireZeroPlus(final String param, final String message)
-            throws IOException {
-        
+            throws IOException
+    {
         final int i = parseInt(param, message);
-        if (i < 0) {
+        if (i < 0)
+        {
             throw new IOException(message);
         }
         return i;
     }
     
     private static Charset parseCharset(
-            final String param, final String message) throws IOException {
-        
-        try {
+            final String param, final String message) throws IOException
+    {
+        try
+        {
             return Charset.forName(param);
-        } catch (final IllegalCharsetNameException|
-                       UnsupportedCharsetException ex) {
+        }
+        catch (final IllegalCharsetNameException|
+                       UnsupportedCharsetException ex)
+        {
             throw new IOException(message, ex);
         }
     }

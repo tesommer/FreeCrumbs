@@ -12,14 +12,16 @@ import org.junit.jupiter.api.Test;
 import freecrumbs.macro.Scanner;
 
 @DisplayName("Scanner")
-public final class ScannerTest {
-
-    public ScannerTest() {
+public final class ScannerTest
+{
+    public ScannerTest()
+    {
     }
     
     @Test
     @DisplayName("Scan with limits spanning entire image")
-    public void test1() {
+    public void test1()
+    {
         final BufferedImage image = createImage(26, 26, 21, 22, 22, 23, 25, 25);
         final BufferedImage subImage = createImage(2, 1, 1, 0);
         final BufferedImage nonSubImage
@@ -35,7 +37,8 @@ public final class ScannerTest {
     
     @Test
     @DisplayName("Negative occurrence")
-    public void test2() {
+    public void test2()
+    {
         final BufferedImage image = createImage(26, 26);
         final Scanner scanner = new Scanner(image, 0, 0, 26, 26);
         assertThrows(
@@ -45,7 +48,8 @@ public final class ScannerTest {
     
     @Test
     @DisplayName("Negative limits")
-    public void test3() {
+    public void test3()
+    {
         final BufferedImage image
             = createImage(22, 22, 0, 0, 0, 21, 11, 11, 21, 21);
         final BufferedImage subImage = createImage(1, 1, 0, 0);
@@ -57,7 +61,8 @@ public final class ScannerTest {
     
     @Test
     @DisplayName("X limits out of bounds")
-    public void test4() {
+    public void test4()
+    {
         final BufferedImage image = createImage(23, 23, 7, 7, 11, 11, 22, 22);
         final BufferedImage subImage = createImage(1, 1, 0, 0);
         // |>|<
@@ -109,7 +114,8 @@ public final class ScannerTest {
     
     @Test
     @DisplayName("Y limits out of bounds")
-    public void test5() {
+    public void test5()
+    {
         final BufferedImage image = createImage(23, 23, 7, 7, 11, 11, 22, 22);
         final BufferedImage subImage = createImage(1, 1, 0, 0);
         // |>|<
@@ -160,25 +166,27 @@ public final class ScannerTest {
     }
     
     private static void assertXY(
-            final int expectedX, final int expectedY, final int[] actualXY) {
-        
+            final int expectedX, final int expectedY, final int[] actualXY)
+    {
         assertEquals(2, actualXY.length, "xy length");
         assertEquals(expectedX, actualXY[0], "x");
         assertEquals(expectedY, actualXY[1], "y");
     }
     
-    private static void assertNotFound(final int[] actualXY) {
+    private static void assertNotFound(final int[] actualXY)
+    {
         assertEquals(0, actualXY.length, "xy not empty");
     }
     
     private static BufferedImage createImage(
-            final int width, final int height, final int... xyDots) {
-        
+            final int width, final int height, final int... xyDots)
+    {
         assert xyDots.length % 2 == 0;
         final BufferedImage image
             = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         final Graphics g = image.getGraphics();
-        for (int i = 0; i < xyDots.length - 1; i += 2) {
+        for (int i = 0; i < xyDots.length - 1; i += 2)
+        {
             g.drawLine(xyDots[i], xyDots[i + 1], xyDots[i], xyDots[i + 1]);
         }
         g.dispose();

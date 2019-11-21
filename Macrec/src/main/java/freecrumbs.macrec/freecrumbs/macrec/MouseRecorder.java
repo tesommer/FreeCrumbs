@@ -44,8 +44,8 @@ import freecrumbs.macro.gesture.MouseRelease;
  * 
  * @author Tone Sommerland
  */
-public final class MouseRecorder extends ScreenCaptureFrame {
-    
+public final class MouseRecorder extends ScreenCaptureFrame
+{
     private static final long serialVersionUID = 1L;
     
     private static final Logger
@@ -84,7 +84,8 @@ public final class MouseRecorder extends ScreenCaptureFrame {
     private static final String
     CAPTURE_FILENAME_FORMAT = "capture{0}." + CAPTURE_FILENAME_EXTENSION;
     
-    private static enum State {
+    private static enum State
+    {
         RECORDING_PRESS_RELEASE,
         RECORDING_MOVE,
         RECORDING_CAPTURE,
@@ -102,8 +103,8 @@ public final class MouseRecorder extends ScreenCaptureFrame {
     private State state = State.RECORDING_PRESS_RELEASE;
 
     public MouseRecorder(final Consumer<? super String> receiver)
-            throws MacroException {
-        
+            throws MacroException
+    {
         this.receiver = requireNonNull(receiver, "receiver");
         final LayeredPane layeredPane = new LayeredPane(
                 new ImageLayer(screenCapture),
@@ -115,51 +116,75 @@ public final class MouseRecorder extends ScreenCaptureFrame {
     }
 
     @Override
-    public void keyPressed(final KeyEvent evt) {
+    public void keyPressed(final KeyEvent evt)
+    {
         clearMarks();
-        if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
+        if (evt.getKeyCode() == KeyEvent.VK_ESCAPE)
+        {
             System.exit(0);
-        } else if (evt.getKeyCode() == KeyEvent.VK_P) {
+        }
+        else if (evt.getKeyCode() == KeyEvent.VK_P)
+        {
             setState(State.RECORDING_PRESS_RELEASE);
-        } else if (evt.getKeyCode() == KeyEvent.VK_M) {
+        }
+        else if (evt.getKeyCode() == KeyEvent.VK_M)
+        {
             setState(State.RECORDING_MOVE);
-        } else if (evt.getKeyCode() == KeyEvent.VK_C) {
+        }
+        else if (evt.getKeyCode() == KeyEvent.VK_C)
+        {
             setState(State.RECORDING_CAPTURE);
-        } else if (evt.getKeyCode() == KeyEvent.VK_S) {
+        }
+        else if (evt.getKeyCode() == KeyEvent.VK_S)
+        {
             setState(State.SHOWING_XY);
-        } else {
+        }
+        else
+        {
             textLayer.setText("");
         }
     }
 
     @Override
-    public void mousePressed(final MouseEvent evt) {
-        if (state == State.RECORDING_PRESS_RELEASE) {
+    public void mousePressed(final MouseEvent evt)
+    {
+        if (state == State.RECORDING_PRESS_RELEASE)
+        {
             recordPress(evt);
-        } else if (state == State.RECORDING_MOVE) {
+        }
+        else if (state == State.RECORDING_MOVE)
+        {
             recordMove(evt);
-        } else if (state == State.RECORDING_CAPTURE) {
+        }
+        else if (state == State.RECORDING_CAPTURE)
+        {
             recordCapture(evt);
-        } else if (state == State.SHOWING_XY) {
+        }
+        else if (state == State.SHOWING_XY)
+        {
             showXY(evt);
         }
     }
 
     @Override
-    public void mouseReleased(final MouseEvent evt) {
-        if (state == State.RECORDING_PRESS_RELEASE) {
+    public void mouseReleased(final MouseEvent evt)
+    {
+        if (state == State.RECORDING_PRESS_RELEASE)
+        {
             recordRelease(evt);
         }
     }
     
-    private void setState(final State state) {
+    private void setState(final State state)
+    {
         this.state = state;
         final String text = MessageFormat.format(TEXT_FORMAT, state.name());
         textLayer.setText(text);
         repaint();
     }
 
-    private void addMark(final MouseEvent evt) {
+    private void addMark(final MouseEvent evt)
+    {
         markLayer.addMark(
                 evt.getPoint(),
                 MARK_COLOR,
@@ -167,50 +192,61 @@ public final class MouseRecorder extends ScreenCaptureFrame {
         repaint();
     }
 
-    private void clearMarks() {
+    private void clearMarks()
+    {
         markLayer.clearMarks();
         repaint();
     }
 
-    private void recordPress(final MouseEvent evt) {
+    private void recordPress(final MouseEvent evt)
+    {
         receiver.accept(MousePress.NAME + " " + evt.getButton());
         clearMarks();
         addMark(evt);
     }
 
-    private void recordRelease(final MouseEvent evt) {
+    private void recordRelease(final MouseEvent evt)
+    {
         receiver.accept(MouseRelease.NAME + " " + evt.getButton());
     }
 
-    private void recordMove(final MouseEvent evt) {
+    private void recordMove(final MouseEvent evt)
+    {
         receiver.accept(
                 MouseMove.NAME + " " + evt.getX() + " " + evt.getY());
         addMark(evt);
     }
 
-    private void recordCapture(final MouseEvent evt) {
+    private void recordCapture(final MouseEvent evt)
+    {
         addMark(evt);
-        if (markLayer.getMarkCount() == 2) {
+        if (markLayer.getMarkCount() == 2)
+        {
             final Point point1 = markLayer.getMarkPoint(0);
             final Point point2 = markLayer.getMarkPoint(1);
             final BufferedImage image = copyCapture(point1, point2);
-            try {
+            try
+            {
                 saveImage(image, generateCaptureFilename());
-            } catch (final IOException ex) {
+            }
+            catch (final IOException ex)
+            {
                 LOGGER.warning(ex.toString());
             }
             clearMarks();
         }
     }
     
-    private void showXY(final MouseEvent evt) {
+    private void showXY(final MouseEvent evt)
+    {
         final String coordinates = "(" + evt.getX() + ", " + evt.getY() + ")";
         receiver.accept(coordinates);
         textLayer.setText(coordinates);
         repaint();
     }
 
-    private BufferedImage copyCapture(final Point point1, final Point point2) {
+    private BufferedImage copyCapture(final Point point1, final Point point2)
+    {
         final int x = Math.min(point1.x, point2.x);
         final int y = Math.min(point1.y, point2.y);
         final int width = Math.abs(point2.x - point1.x);
@@ -223,11 +259,13 @@ public final class MouseRecorder extends ScreenCaptureFrame {
         return image;
     }
 
-    private static String generateCaptureFilename() {
+    private static String generateCaptureFilename()
+    {
         int number = 0;
         String filename = MessageFormat.format(
                 CAPTURE_FILENAME_FORMAT, number);
-        while (new File(filename).exists() && number <= Integer.MAX_VALUE) {
+        while (new File(filename).exists() && number <= Integer.MAX_VALUE)
+        {
             filename = MessageFormat.format(
                     CAPTURE_FILENAME_FORMAT, ++number);
         }
@@ -236,11 +274,12 @@ public final class MouseRecorder extends ScreenCaptureFrame {
 
     private static void saveImage(
             final BufferedImage image,
-            final String filename) throws IOException {
-        
+            final String filename) throws IOException
+    {
         final Iterator<ImageWriter> it
             = ImageIO.getImageWritersBySuffix(CAPTURE_FILENAME_EXTENSION);
-        if (it.hasNext()) {
+        if (it.hasNext())
+        {
             final ImageWriter writer = it.next();
             writer.setOutput(new FileImageOutputStream(new File(filename)));
             writer.write(image);

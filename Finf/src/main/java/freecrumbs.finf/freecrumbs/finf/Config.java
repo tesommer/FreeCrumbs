@@ -19,14 +19,15 @@ import java.util.Optional;
  *
  * @author Tone Sommerland
  */
-public final class Config {
-    
+public final class Config
+{
     /**
      * Builds config instances.
      * 
      * @author Tone Sommerland
      */
-    public static final class Builder {
+    public static final class Builder
+    {
         private final InfoGenerator infoGenerator;
         private final InfoFormat infoFormat;
         private FileFilter fileFilter;
@@ -35,8 +36,8 @@ public final class Config {
         
         public Builder(
                 final InfoGenerator infoGenerator,
-                final InfoFormat infoFormat) {
-            
+                final InfoFormat infoFormat)
+        {
             this.infoGenerator = requireNonNull(infoGenerator, "infoGenerator");
             this.infoFormat = requireNonNull(infoFormat, "infoFormat");
         }
@@ -46,7 +47,8 @@ public final class Config {
          * @param fileFilter the file filter (nullable)
          * @return {@code this}
          */
-        public Builder setFileFilter(final FileFilter fileFilter) {
+        public Builder setFileFilter(final FileFilter fileFilter)
+        {
             this.fileFilter = fileFilter;
             return this;
         }
@@ -56,7 +58,8 @@ public final class Config {
          * @param order the sorter (nullable)
          * @return {@code this}
          */
-        public Builder setOrder(final Comparator<? super Info> order) {
+        public Builder setOrder(final Comparator<? super Info> order)
+        {
             this.order = order;
             return this;
         }
@@ -66,7 +69,8 @@ public final class Config {
          * @param count the count ({@code < 0} to turn off)
          * @return {@code this}
          */
-        public Builder setCount(final int count) {
+        public Builder setCount(final int count)
+        {
             this.count = count;
             return this;
         }
@@ -74,7 +78,8 @@ public final class Config {
         /**
          * Builds the config instance.
          */
-        public Config build() {
+        public Config build()
+        {
             return new Config(
                     infoGenerator, infoFormat, fileFilter, order, count);
         }
@@ -91,8 +96,8 @@ public final class Config {
         final InfoFormat infoFormat,
         final FileFilter fileFilter,
         final Comparator<? super Info> order,
-        final int count) {
-
+        final int count)
+    {
         assert infoGenerator != null;
         assert infoFormat != null;
         this.infoGenerator = infoGenerator;
@@ -102,23 +107,28 @@ public final class Config {
         this.count = count;
     }
     
-    public InfoGenerator getInfoGenerator() {
+    public InfoGenerator getInfoGenerator()
+    {
         return infoGenerator;
     }
     
-    public InfoFormat getInfoFormat() {
+    public InfoFormat getInfoFormat()
+    {
         return infoFormat;
     }
     
-    public Optional<FileFilter> getFileFilter() {
+    public Optional<FileFilter> getFileFilter()
+    {
         return Optional.ofNullable(fileFilter);
     }
     
-    public Optional<Comparator<? super Info>> getOrder() {
+    public Optional<Comparator<? super Info>> getOrder()
+    {
         return Optional.ofNullable(order);
     }
     
-    public int getCount() {
+    public int getCount()
+    {
         return count;
     }
     

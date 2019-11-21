@@ -8,7 +8,7 @@ import java.io.IOException;
  * @author Tone Sommerland
  */
 @FunctionalInterface
-public interface InfoFormat {
-
+public interface InfoFormat
+{
     public abstract String toString(Info info) throws IOException;
 }

@@ -8,14 +8,15 @@ import freecrumbs.finf.Field;
  * 
  * @author Tone Sommerland
  */
-public final class Filename {
-    
+public final class Filename
+{
     private static final String NAME = "filename";
     
     public static final Field
     FIELD = Field.getInstance(NAME, file -> file.getName());
 
-    private Filename() {
+    private Filename()
+    {
     }
 
 }

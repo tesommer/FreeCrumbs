@@ -9,8 +9,8 @@ import java.awt.Robot;
  * @author Tone Sommerland
  */
 @FunctionalInterface
-public interface Gesture {
-    
+public interface Gesture
+{
     /**
      * Plays this gesture.
      * Any {@code IllegalArgumentException} or {@code SecurityException}

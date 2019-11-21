@@ -5,8 +5,8 @@ package freecrumbs.macro;
  * 
  * @author Tone Sommerland
  */
-public interface GestureParser {
-    
+public interface GestureParser
+{
     /**
      * Whether or not this parser supports the given line.
      */

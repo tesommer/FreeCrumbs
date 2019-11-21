@@ -10,7 +10,8 @@ import freecrumbs.finf.Info;
  * 
  * @author Tone Sommerland
  */
-public final class OrderParser {
+public final class OrderParser
+{
     private final OrderSpecInfoSorter order;
 
     /**
@@ -19,11 +20,14 @@ public final class OrderParser {
      * @param availableFieldNames names of all available fields
      */
     public OrderParser(
-            final String setting, final String[] availableFieldNames) {
-        
-        if (setting == null) {
+            final String setting, final String[] availableFieldNames)
+    {
+        if (setting == null)
+        {
             this.order = null;
-        } else {
+        }
+        else
+        {
             this.order = new OrderSpecInfoSorter(
                     getOrderSpecs(setting, availableFieldNames));
         }
@@ -32,7 +36,8 @@ public final class OrderParser {
     /**
      * Returns the field names used by the order setting.
      */
-    public String[] getUsedFieldNames() {
+    public String[] getUsedFieldNames()
+    {
         return order == null ? new String[0] : order.getUsedFieldNames();
     }
     
@@ -40,27 +45,34 @@ public final class OrderParser {
      * Return the info sorter.
      * @return null if the setting is null
      */
-    public Comparator<Info> getOrder() {
+    public Comparator<Info> getOrder()
+    {
         return order;
     }
     
     private static OrderSpec[] getOrderSpecs(
-            final String setting, final String[] availableFieldNames) {
-        
+            final String setting, final String[] availableFieldNames)
+    {
         final var orderSpecs = new ArrayList<OrderSpec>(
                 availableFieldNames.length);
-        for (final String fieldName : availableFieldNames) {
+        for (final String fieldName : availableFieldNames)
+        {
             boolean desc = false;
             int precedence = setting.indexOf(fieldName + " asc");
-            if (precedence < 0) {
+            if (precedence < 0)
+            {
                 precedence = setting.indexOf(fieldName + " desc");
-                if (precedence > -1) {
+                if (precedence > -1)
+                {
                     desc = true;
-                } else {
+                }
+                else
+                {
                     precedence = setting.indexOf(fieldName);
                 }
             }
-            if (precedence > -1) {
+            if (precedence > -1)
+            {
                 orderSpecs.add(new OrderSpec(fieldName, precedence, desc));
             }
         }

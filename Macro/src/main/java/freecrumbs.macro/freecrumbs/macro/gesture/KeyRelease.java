@@ -12,20 +12,21 @@ import freecrumbs.macro.MacroException;
  * 
  * @author Tone Sommerland
  */
-public final class KeyRelease extends Command {
-    
+public final class KeyRelease extends Command
+{
     public static final GestureParser INSTANCE = new KeyRelease();
     
     public static final String NAME = "key_release";
 
-    private KeyRelease() {
+    private KeyRelease()
+    {
         super(NAME, 1, 1);
     }
 
     @Override
     protected Gesture getGesture(final String line, final String[] params)
-            throws MacroException {
-        
+            throws MacroException
+    {
         return (script, robot)
                 -> robot.keyRelease(script.variables().value(params[0]));
     }

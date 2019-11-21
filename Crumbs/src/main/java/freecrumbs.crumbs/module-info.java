@@ -1,3 +1,4 @@
-module freecrumbs.crumbs {
+module freecrumbs.crumbs
+{
     requires java.datatransfer;
 }

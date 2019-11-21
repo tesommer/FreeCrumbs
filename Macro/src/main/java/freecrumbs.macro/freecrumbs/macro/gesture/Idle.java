@@ -20,27 +20,31 @@ import freecrumbs.macro.Script;
  * 
  * @author Tone Sommerland
  */
-public final class Idle extends Command {
-    
+public final class Idle extends Command
+{
     public static final GestureParser INSTANCE = new Idle();
     
     public static final String NAME = "idle";
     
     public static final String AUTO = "auto";
     
-    private Idle() {
+    private Idle()
+    {
         super(NAME, 0, 2);
     }
 
     @Override
     protected Gesture getGesture(final String line, final String[] params)
-            throws MacroException {
-        
-        if (params.length > 0) {
-            if (!AUTO.equals(params[0])) {
+            throws MacroException
+    {
+        if (params.length > 0)
+        {
+            if (!AUTO.equals(params[0]))
+            {
                 throw new MacroException(line);
             }
-            return (script, robot) -> {
+            return (script, robot) ->
+            {
                 setAutoWaitForIdle(script, robot, params);
             };
         }
@@ -50,17 +54,21 @@ public final class Idle extends Command {
     private static void setAutoWaitForIdle(
             final Script script,
             final Robot robot,
-            final String[] params) throws MacroException {
-        
+            final String[] params) throws MacroException
+    {
         final int onOffToggle
             = script.variables().value(paramOrDefault(params, 1, "1"));
         robot.setAutoWaitForIdle(isOn(robot, onOffToggle));
     }
 
-    private static boolean isOn(final Robot robot, final int onOffToggle) {
-        if (onOffToggle == 0) {
+    private static boolean isOn(final Robot robot, final int onOffToggle)
+    {
+        if (onOffToggle == 0)
+        {
             return false;
-        } else if (onOffToggle > 0) {
+        }
+        else if (onOffToggle > 0)
+        {
             return true;
         }
         return !robot.isAutoWaitForIdle();

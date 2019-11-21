@@ -28,8 +28,8 @@ import freecrumbs.finf.InfoGenerator;
  * 
  * @author Tone Sommerland
  */
-public final class FilterParser {
-    
+public final class FilterParser
+{
     private static final String
     DELIM_PATTERN = "(\\+\\+([^+]|$))|(\\-\\-([^-]|$))";
     
@@ -45,17 +45,24 @@ public final class FilterParser {
      * Parses the filter setting.
      * @param setting the filter setting (nullable)
      */
-    public FilterParser(final String setting) throws IOException {
+    public FilterParser(final String setting) throws IOException
+    {
         this.setting = setting;
-        if (setting == null) {
+        if (setting == null)
+        {
             this.infoFormat = null;
-        } else {
+        }
+        else
+        {
             final Matcher delimiter
                 = Pattern.compile(DELIM_PATTERN).matcher(setting);
             final Part formatPart = getFormatPart(setting, delimiter);
-            if (formatPart == null) {
+            if (formatPart == null)
+            {
                 this.infoFormat = null;
-            } else {
+            }
+            else
+            {
                 this.infoFormat = new TokenInfoFormat(formatPart.payload);
                 initFormatPatterns(setting, delimiter, formatPart);
             }
@@ -65,19 +72,22 @@ public final class FilterParser {
     private void initFormatPatterns(
             final String setting,
             final Matcher delimiter,
-            final Part formatPart) throws IOException {
-        
+            final Part formatPart) throws IOException
+    {
         Part part = formatPart;
-        do {
+        do
+        {
             part = getNextPatternPart(setting, delimiter, part);
             formatPatterns.add(getFormatPattern(part));
-        } while (!part.last);
+        }
+        while (!part.last);
     }
     
     /**
      * Returns the field names used by the filter setting.
      */
-    public String[] getUsedFieldNames(final String[] availableFieldNames) {
+    public String[] getUsedFieldNames(final String[] availableFieldNames)
+    {
         return infoFormat == null
                 ? new String[0]
                 : infoFormat.getUsedFieldNames(availableFieldNames);
@@ -89,13 +99,18 @@ public final class FilterParser {
      */
     public FileFilter getFileFilter(
             final int regexFlags,
-            final InfoGenerator infoGenerator) throws IOException {
-        
-        if (setting == null) {
+            final InfoGenerator infoGenerator) throws IOException
+    {
+        if (setting == null)
+        {
             return null;
-        } else if (infoFormat == null) {
+        }
+        else if (infoFormat == null)
+        {
             return new RegexFileFilter(setting, regexFlags);
-        } else {
+        }
+        else
+        {
             return new FormatPatternFileFilter(
                     infoGenerator,
                     infoFormat,
@@ -104,12 +119,15 @@ public final class FilterParser {
     }
     
     private static FormatPattern getFormatPattern(final Part patternPart)
-            throws IOException {
-        
-        try {
+            throws IOException
+    {
+        try
+        {
             final Pattern pattern = Pattern.compile(patternPart.payload);
             return new FormatPattern(pattern, isInclude(patternPart));
-        } catch (final PatternSyntaxException ex) {
+        }
+        catch (final PatternSyntaxException ex)
+        {
             throw new IOException(ex);
         }
     }
@@ -118,9 +136,10 @@ public final class FilterParser {
      * Returns null if the setting is not a format pattern.
      */
     private static Part getFormatPart(
-            final String setting, final Matcher delimiter) {
-        
-        if (delimiter.find()) {
+            final String setting, final Matcher delimiter)
+    {
+        if (delimiter.find())
+        {
             return new Part(
                     0, "", setting.substring(0, delimiter.start()), false);
         }
@@ -130,31 +149,36 @@ public final class FilterParser {
     private static Part getNextPatternPart(
             final String setting,
             final Matcher delimiter,
-            final Part previous) {
-        
+            final Part previous)
+    {
         final int start = startOfNextPart(previous);
         final int payloadStart = start + DELIM_LENGTH;
         final String prefix = setting.substring(start, payloadStart);
         final String payload;
         final boolean last;
-        if (delimiter.find(payloadStart)) {
+        if (delimiter.find(payloadStart))
+        {
             payload = setting.substring(payloadStart, delimiter.start());
             last = false;
-        } else {
+        }
+        else
+        {
             payload = setting.substring(payloadStart);
             last = true;
         }
         return new Part(start, prefix, payload, last);
     }
 
-    private static int startOfNextPart(final Part previous) {
+    private static int startOfNextPart(final Part previous)
+    {
         return
                 previous.start
                 + previous.prefix.length()
                 + previous.payload.length();
     }
     
-    private static boolean isInclude(final Part part) {
+    private static boolean isInclude(final Part part)
+    {
         return INCLUDE_DELIM.equals(part.prefix);
     }
     
@@ -171,7 +195,8 @@ public final class FilterParser {
      * The format part has an empty prefix.
      * - last is true for the last pattern part.
      */
-    private static final class Part {
+    private static final class Part
+    {
         final int start;
         final String prefix;
         final String payload;
@@ -181,8 +206,8 @@ public final class FilterParser {
                 final int start,
                 final String prefix,
                 final String payload,
-                final boolean last) {
-            
+                final boolean last)
+        {
             assert prefix != null;
             assert payload != null;
             this.start = start;

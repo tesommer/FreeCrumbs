@@ -12,19 +12,21 @@ import freecrumbs.finf.field.Eol;
 import test.freecrumbs.finf.FieldTesting;
 
 @DisplayName("Eol")
-public final class EolTest {
-    
+public final class EolTest
+{
     private static final String EOL_COUNT_FIELD_NAME = "eolcount";
     private static final String CR_COUNT_FIELD_NAME = "crcount";
     private static final String LF_COUNT_FIELD_NAME = "lfcount";
     private static final String CRLF_COUNT_FIELD_NAME = "crlfcount";
 
-    public EolTest() {
+    public EolTest()
+    {
     }
     
     @Test
     @DisplayName("EOL-counting: Mixed-EOL content, varying buffer size")
-    public void test1() throws IOException {
+    public void test1() throws IOException
+    {
         final String content = "ab\nc\r\nde\n\rf\rg";
         assertEolCounts(
                 "5",
@@ -48,7 +50,8 @@ public final class EolTest {
     
     @Test
     @DisplayName("EOL-counting: Serve two files to same field instances")
-    public void test2() throws IOException {
+    public void test2() throws IOException
+    {
         final String content1 = "a\nb\nc\nd\n";
         final String content2 = "z\r\ny\r\nx\r\n";
         final Field[] fields = Eol.getFields();
@@ -68,7 +71,8 @@ public final class EolTest {
     
     @Test
     @DisplayName("EOL-counting: Empty file")
-    public void test3() throws IOException {
+    public void test3() throws IOException
+    {
         final String content = "";
         assertEolCounts(
                 "0",
@@ -80,7 +84,8 @@ public final class EolTest {
     
     @Test
     @DisplayName("EOL-counting: Buffer-split CRLF")
-    public void test4() throws IOException {
+    public void test4() throws IOException
+    {
         final String content = "abc\r\nxyz";
         final int bufferSize = 4;
         assertEolCounts(
@@ -93,7 +98,8 @@ public final class EolTest {
     
     @Test
     @DisplayName("EOL-counting: Trailing CR")
-    public void test5() throws IOException {
+    public void test5() throws IOException
+    {
         final String content = "abc\r";
         assertEolCounts(
                 "1",
@@ -105,7 +111,8 @@ public final class EolTest {
     
     @Test
     @DisplayName("EOL-counting: Test master-slave behaviour")
-    public void test6() throws IOException {
+    public void test6() throws IOException
+    {
         final String content = "abc\r\nx\ny\rz";
         final Field[] fields = Eol.getFields();
         final Field eol = FieldTesting.getField(EOL_COUNT_FIELD_NAME, fields);
@@ -121,27 +128,29 @@ public final class EolTest {
     private static EolCounts getEolCounts(
             final String content,
             final int bufferSize,
-            final Field... fields) throws IOException {
-        
+            final Field... fields) throws IOException
+    {
         reset(fields);
         serve(content, bufferSize, fields);
         return finish(fields);
     }
 
-    private static void reset(final Field... fields) throws IOException {
+    private static void reset(final Field... fields) throws IOException
+    {
         FieldTesting.resetComputations(fields);
     }
 
     private static void serve(
             final String content,
             final int bufferSize,
-            final Field... fields) throws IOException {
-        
+            final Field... fields) throws IOException
+    {
         FieldTesting.updateComputations(
                 content.getBytes("UTF-8"), bufferSize, fields);
     }
     
-    private static EolCounts finish(final Field... fields) throws IOException {
+    private static EolCounts finish(final Field... fields) throws IOException
+    {
         final String eolCount = FieldTesting.getField(
                 EOL_COUNT_FIELD_NAME, fields).computation().get();
         final String crCount = FieldTesting.getField(
@@ -158,8 +167,8 @@ public final class EolTest {
             final String expectedCrCount,
             final String expectedLfCount,
             final String expectedCrlfCount,
-            final EolCounts actualCounts) {
-        
+            final EolCounts actualCounts)
+    {
         assertEquals(
                 expectedEolCount,
                 actualCounts.eolCount,
@@ -178,7 +187,8 @@ public final class EolTest {
                 CRLF_COUNT_FIELD_NAME);
     }
     
-    private static final class EolCounts {
+    private static final class EolCounts
+    {
         private final String eolCount;
         private final String crCount;
         private final String lfCount;
@@ -188,8 +198,8 @@ public final class EolTest {
                 final String eolCount,
                 final String crCount,
                 final String lfCount,
-                final String crlfCount) {
-            
+                final String crlfCount)
+        {
             assert eolCount != null;
             assert crCount != null;
             assert lfCount != null;

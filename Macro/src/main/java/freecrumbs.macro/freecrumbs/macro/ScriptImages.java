@@ -17,18 +17,21 @@ import javax.imageio.ImageIO;
  * 
  * @author Tone Sommerland
  */
-public final class ScriptImages {
+public final class ScriptImages
+{
     private final Map<String, BufferedImage> images = new HashMap<>();
     private final Location location;
 
-    ScriptImages(final Location location) {
+    ScriptImages(final Location location)
+    {
         this.location = requireNonNull(location, "location");
     }
     
     /**
      * The names of all images stored in the script.
      */
-    public Set<String> getNames() {
+    public Set<String> getNames()
+    {
         return Collections.unmodifiableSet(images.keySet());
     }
     
@@ -37,7 +40,8 @@ public final class ScriptImages {
      * Associates the image with the given name.
      * Replaces any image already associated with the name.
      */
-    public void set(final String name, final BufferedImage image) {
+    public void set(final String name, final BufferedImage image)
+    {
         images.put(
                 requireNonNull(name, "name"), requireNonNull(image, "image"));
     }
@@ -45,7 +49,8 @@ public final class ScriptImages {
     /**
      * Removes the image with the given name if it exists.
      */
-    public void remove(final String name) {
+    public void remove(final String name)
+    {
         images.remove(requireNonNull(name, "name"));
     }
     
@@ -53,8 +58,10 @@ public final class ScriptImages {
      * Returns the image with the given name.
      * @throws MacroException if the image was not found
      */
-    public BufferedImage get(final String name) throws MacroException {
-        if (images.containsKey(name)) {
+    public BufferedImage get(final String name) throws MacroException
+    {
+        if (images.containsKey(name))
+        {
             return images.get(name);
         }
         throw new MacroException("No such image: " + name);
@@ -66,11 +73,14 @@ public final class ScriptImages {
      * @throws MacroException if the image could not be loaded
      */
     public BufferedImage load(final String imageLocation)
-            throws MacroException {
-        
-        try (final InputStream in = location.refer(imageLocation).open()) {
+            throws MacroException
+    {
+        try (final InputStream in = location.refer(imageLocation).open())
+        {
             return ImageIO.read(in);
-        } catch (final IOException ex) {
+        }
+        catch (final IOException ex)
+        {
             throw new MacroException(ex);
         }
     }
@@ -82,11 +92,14 @@ public final class ScriptImages {
      * @throws MacroException if not found.
      */
     public BufferedImage getOrLoad(final String nameOrLocation)
-            throws MacroException {
-        
-        try {
+            throws MacroException
+    {
+        try
+        {
             return get(nameOrLocation);
-        } catch (final MacroException ex) {
+        }
+        catch (final MacroException ex)
+        {
             return load(nameOrLocation);
         }
     }

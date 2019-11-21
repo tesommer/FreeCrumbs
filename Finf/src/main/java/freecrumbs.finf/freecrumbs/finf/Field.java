@@ -10,7 +10,8 @@ import java.util.stream.Stream;
  * 
  * @author Tone Sommerland
  */
-public final class Field {
+public final class Field
+{
     private final String name;
     private final FieldValue value;
     private final FieldComputation computation;
@@ -18,13 +19,16 @@ public final class Field {
     private Field(
             final String name,
             final FieldValue value,
-            final FieldComputation computation) {
-        
+            final FieldComputation computation)
+    {
         this.name = requireNonNull(name, "name");
-        if (value == null) {
+        if (value == null)
+        {
             this.value = null;
             this.computation = requireNonNull(computation, "computation");
-        } else {
+        }
+        else
+        {
             this.value = value;
             this.computation = null;
         }
@@ -35,7 +39,8 @@ public final class Field {
      * @param name the name
      * @param value the value
      */
-    public static Field getInstance(final String name, final FieldValue value) {
+    public static Field getInstance(final String name, final FieldValue value)
+    {
         return new Field(name, value, null);
     }
     
@@ -45,29 +50,32 @@ public final class Field {
      * @param computation the computation
      */
     public static Field getInstance(
-            final String name, final FieldComputation computation) {
-        
+            final String name, final FieldComputation computation)
+    {
         return new Field(name, null, computation);
     }
     
     /**
      * Returns the names of the given fields.
      */
-    public static String[] namesOf(final Field... fields) {
+    public static String[] namesOf(final Field... fields)
+    {
         return Stream.of(fields).map(Field::name).toArray(String[]::new);
     }
     
     /**
      * The name of this field.
      */
-    public String name() {
+    public String name()
+    {
         return name;
     }
     
     /**
      * Whether or not this field has a computed value.
      */
-    public boolean isComputed() {
+    public boolean isComputed()
+    {
         return computation != null;
     }
     
@@ -76,8 +84,10 @@ public final class Field {
      * @throws NoSuchElementException
      * if the value of this field is {@link #isComputed() computed}
      */
-    public FieldValue value() {
-        if (value == null) {
+    public FieldValue value()
+    {
+        if (value == null)
+        {
             throw new NoSuchElementException("value");
         }
         return value;
@@ -88,8 +98,10 @@ public final class Field {
      * @throws NoSuchElementException
      * if the value of this field is not {@link #isComputed() computed}
      */
-    public FieldComputation computation() {
-        if (computation == null) {
+    public FieldComputation computation()
+    {
+        if (computation == null)
+        {
             throw new NoSuchElementException("computation");
         }
         return computation;

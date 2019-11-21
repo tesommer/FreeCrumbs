@@ -18,11 +18,12 @@ import freecrumbs.finf.Field;
  * 
  * @author Tone Sommerland
  */
-public final class FieldTesting {
-    
+public final class FieldTesting
+{
     public static final File DUMMY_FILE = new File("dummy");
 
-    private FieldTesting() {
+    private FieldTesting()
+    {
     }
     
     /**
@@ -30,7 +31,8 @@ public final class FieldTesting {
      * @throws NoSuchElementException
      * if the fields array doesn't contain the field
      */
-    public static Field getField(final String name, final Field... fields) {
+    public static Field getField(final String name, final Field... fields)
+    {
         return Stream.of(fields)
                 .filter(field -> field.name().equals(name))
                 .findAny()
@@ -41,10 +43,12 @@ public final class FieldTesting {
      * Resets field computations.
      */
     public static void resetComputations(final Field... fields)
-            throws IOException {
-        
-        for (final Field field : fields) {
-            if (field.isComputed()) {
+            throws IOException
+    {
+        for (final Field field : fields)
+        {
+            if (field.isComputed())
+            {
                 field.computation().reset(DUMMY_FILE);
             }
         }
@@ -56,20 +60,24 @@ public final class FieldTesting {
     public static void updateComputations(
             final byte[] content,
             final int bufferSize,
-            final Field... fields) throws IOException {
-        
+            final Field... fields) throws IOException
+    {
         final var active = new ArrayList<Field>(List.of(fields));
         final var buffer = new byte[bufferSize];
-        for (int offset = 0; ;) {
+        for (int offset = 0; ;)
+        {
             final int length = Math.min(content.length - offset, bufferSize);
-            if (length <= 0) {
+            if (length <= 0)
+            {
                 break;
             }
             System.arraycopy(content, offset, buffer, 0, length);
-            for (int i = 0; i < active.size(); i++) {
+            for (int i = 0; i < active.size(); i++)
+            {
                 final Field field = active.get(i);
                 if (field.isComputed()
-                        && !field.computation().update(buffer, 0, length)) {
+                        && !field.computation().update(buffer, 0, length))
+                {
                     active.remove(i--);
                 }
             }
@@ -79,8 +87,8 @@ public final class FieldTesting {
     
     public static void assertFieldValues(
             final Map<String, String> expecteds,
-            final Field[] actuals) throws IOException {
-        
+            final Field[] actuals) throws IOException
+    {
         assertEquals(
                 expecteds.keySet().stream()
                     .sorted()
@@ -90,7 +98,8 @@ public final class FieldTesting {
                     .sorted()
                     .collect(toList()),
                 "Field names");
-        for (final String key : expecteds.keySet()) {
+        for (final String key : expecteds.keySet())
+        {
             final Field field = getField(key, actuals);
             assertEquals(
                     expecteds.get(key),

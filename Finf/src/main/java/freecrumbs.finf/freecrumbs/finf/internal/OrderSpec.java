@@ -9,8 +9,8 @@ import java.util.Comparator;
  * 
  * @author Tone Sommerland
  */
-public final class OrderSpec {
-    
+public final class OrderSpec
+{
     /**
      * Order by precedence.
      */
@@ -30,22 +30,25 @@ public final class OrderSpec {
      * @param desc descending or not
      */
     public OrderSpec(
-        final String fieldName, final int precedence, final boolean desc) {
-        
+        final String fieldName, final int precedence, final boolean desc)
+    {
         this.fieldName = requireNonNull(fieldName, "fieldName");
         this.precedence = precedence;
         this.desc = desc;
     }
     
-    public String getFieldName() {
+    public String getFieldName()
+    {
         return fieldName;
     }
 
-    public int getPrecedence() {
+    public int getPrecedence()
+    {
         return precedence;
     }
     
-    public boolean isDesc() {
+    public boolean isDesc()
+    {
         return desc;
     }
 }

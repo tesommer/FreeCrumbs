@@ -10,11 +10,13 @@ import java.awt.Robot;
  * 
  * @author Tone Sommerland
  */
-public final class Macro {
+public final class Macro
+{
     private final String name;
     private final Gesture[] gestures;
 
-    private Macro(final String name, final Gesture... gestures) {
+    private Macro(final String name, final Gesture... gestures)
+    {
         this.name = requireNonNull(name, "name");
         this.gestures = gestures.clone();
     }
@@ -24,7 +26,8 @@ public final class Macro {
      * @param name the name of this macro
      * @param gestures the gestures that this macro performs
      */
-    public static Macro get(final String name, final Gesture... gestures) {
+    public static Macro get(final String name, final Gesture... gestures)
+    {
         return new Macro(name, gestures);
     }
     
@@ -32,7 +35,8 @@ public final class Macro {
      * Returns a nameless macro.
      * @param gestures the gestures that this macro performs
      */
-    public static Macro getNameless(final Gesture... gestures) {
+    public static Macro getNameless(final Gesture... gestures)
+    {
         return new Macro("", gestures);
     }
 
@@ -40,7 +44,8 @@ public final class Macro {
      * The name of this macro.
      * @return the empty string if this macro doesn't have a name
      */
-    String getName() {
+    String getName()
+    {
         return name;
     }
 
@@ -50,9 +55,10 @@ public final class Macro {
      * @param robot the event generator
      */
     void play(final Script script, final Robot robot)
-            throws MacroException {
-        
-        for (final Gesture gesture : gestures) {
+            throws MacroException
+    {
+        for (final Gesture gesture : gestures)
+        {
             play(script, robot, gesture);
         }
     }
@@ -60,11 +66,14 @@ public final class Macro {
     private static void play(
             final Script script,
             final Robot robot,
-            final Gesture gesture) throws MacroException {
-        
-        try {
+            final Gesture gesture) throws MacroException
+    {
+        try
+        {
             gesture.play(script, robot);
-        } catch (final IllegalArgumentException|SecurityException ex) {
+        }
+        catch (final IllegalArgumentException|SecurityException ex)
+        {
             throw new MacroException(ex);
         }
     }

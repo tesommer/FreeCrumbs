@@ -7,8 +7,8 @@ import java.awt.Graphics;
  * 
  * @author Tone Sommerland
  */
-public interface Layer {
-    
+public interface Layer
+{
     public abstract void paint(Graphics g);
 
 }

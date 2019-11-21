@@ -14,14 +14,16 @@ import freecrumbs.finf.FieldValue;
  * 
  * @author Tone Sommerland
  */
-public abstract class TimeFieldValue implements FieldValue {
+public abstract class TimeFieldValue implements FieldValue
+{
     private final DateFormat dateFormat;
     
     /**
      * Creates an instance that does not use a date format,
      * but returns the value as milliseconds since the epoch.
      */
-    protected TimeFieldValue() {
+    protected TimeFieldValue()
+    {
         this.dateFormat = null;
     }
 
@@ -32,11 +34,14 @@ public abstract class TimeFieldValue implements FieldValue {
      * @throws IOException if the date format is incorrect
      */
     protected TimeFieldValue(final String dateFormat, final Locale locale)
-            throws IOException {
-        
-        try {
+            throws IOException
+    {
+        try
+        {
             this.dateFormat = new SimpleDateFormat(dateFormat, locale);
-        } catch (final IllegalArgumentException ex) {
+        }
+        catch (final IllegalArgumentException ex)
+        {
             throw new IOException(ex);
         }
     }
@@ -44,8 +49,10 @@ public abstract class TimeFieldValue implements FieldValue {
     protected abstract long getTime(File file) throws IOException;
 
     @Override
-    public final String get(final File file) throws IOException {
-        if (dateFormat == null) {
+    public final String get(final File file) throws IOException
+    {
+        if (dateFormat == null)
+        {
             return String.valueOf(file.lastModified());
         }
         return dateFormat.format(new Date(getTime(file)));

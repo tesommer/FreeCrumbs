@@ -11,21 +11,26 @@ import java.util.regex.PatternSyntaxException;
  * 
  * @author Tone Sommerland
  */
-public final class RegexFileFilter implements FileFilter {
+public final class RegexFileFilter implements FileFilter
+{
     private final Pattern pattern;
     
     public RegexFileFilter(final String regex, final int flags)
-        throws IOException {
-        
-        try {
+        throws IOException
+    {
+        try
+        {
             this.pattern = Pattern.compile(regex, flags);
-        } catch (final PatternSyntaxException ex) {
+        }
+        catch (final PatternSyntaxException ex)
+        {
             throw new IOException(ex);
         }
     }
     
     @Override
-    public boolean accept(final File file) {
+    public boolean accept(final File file)
+    {
         return pattern.matcher(file.getName()).matches();
     }
 }

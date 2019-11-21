@@ -10,18 +10,20 @@ import javax.swing.JPanel;
  * 
  * @author Tone Sommerland
  */
-public final class LayeredPane extends JPanel {
-    
+public final class LayeredPane extends JPanel
+{
     private static final long serialVersionUID = 1L;
     
     private final Layer[] layers;
     
-    public LayeredPane(final Layer... layers) {
+    public LayeredPane(final Layer... layers)
+    {
         this.layers = layers.clone();
     }
     
     @Override
-    protected void paintComponent(final Graphics g) {
+    protected void paintComponent(final Graphics g)
+    {
         super.paintComponent(g);
         Stream.of(layers).forEach(layer -> layer.paint(g));
     }

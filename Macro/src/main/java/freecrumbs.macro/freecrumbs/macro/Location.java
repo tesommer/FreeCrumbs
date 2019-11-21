@@ -9,8 +9,8 @@ import freecrumbs.macro.internal.ScriptFile;
  * 
  * @author Tone Sommerland
  */
-public interface Location {
-    
+public interface Location
+{
     /**
      * Returns a location referencing a script file.
      * The returned location supports both
@@ -19,7 +19,8 @@ public interface Location {
      * forward slash {@code '/'} is used as the file separator.
      * @param filePath path to the file
      */
-    public static Location fromFilePath(final String filePath) {
+    public static Location fromFilePath(final String filePath)
+    {
         return new ScriptFile(filePath);
     }
     

@@ -23,8 +23,8 @@ import freecrumbs.macro.Util;
  * 
  * @author Tone Sommerland
  */
-public final class Wait extends Command {
-    
+public final class Wait extends Command
+{
     public static final GestureParser INSTANCE = new Wait();
     
     public static final String NAME = "wait";
@@ -32,29 +32,32 @@ public final class Wait extends Command {
     private static final String DEFAULT_GONE = "0";
     private static final String DEFAULT_MILLIS = "100";
     
-    private Wait() {
+    private Wait()
+    {
         super(NAME, 5, 7);
     }
 
     @Override
     protected Gesture getGesture(final String line, final String[] params)
-            throws MacroException {
-        
+            throws MacroException
+    {
         return (script, robot) -> waitForImage(script, robot, params);
     }
 
     private static void waitForImage(
             final Script script,
             final Robot robot,
-            final String[] params) throws MacroException {
-        
+            final String[] params) throws MacroException
+    {
         final BufferedImage image = getImage(script, params);
         final boolean gone = getGone(script, params);
         final int millis = getMillis(script, params);
-        while (true) {
+        while (true)
+        {
             final int[] xy = getScanner(script, robot, params)
                 .xyOf(image, 1);
-            if (gone == (xy.length == 0)) {
+            if (gone == (xy.length == 0))
+            {
                 break;
             }
             robot.delay(millis);
@@ -62,21 +65,21 @@ public final class Wait extends Command {
     }
 
     private static BufferedImage getImage(
-            final Script script, final String[] params) throws MacroException {
-        
+            final Script script, final String[] params) throws MacroException
+    {
         return script.images().getOrLoad(params[4]);
     }
     
     private static boolean getGone(final Script script, final String[] params)
-            throws MacroException {
-        
+            throws MacroException
+    {
         return script.variables().value(
                 paramOrDefault(params, 5, DEFAULT_GONE)) != 0;
     }
     
     private static int getMillis(final Script script, final String[] params)
-            throws MacroException {
-        
+            throws MacroException
+    {
         return script.variables().value(
                 paramOrDefault(params, 6, DEFAULT_MILLIS));
     }
@@ -84,8 +87,8 @@ public final class Wait extends Command {
     private static Scanner getScanner(
             final Script script,
             final Robot robot,
-            final String[] params) throws MacroException {
-        
+            final String[] params) throws MacroException
+    {
         final int fromX = script.variables().value(params[0]);
         final int fromY = script.variables().value(params[1]);
         final int toX = script.variables().value(params[2]);

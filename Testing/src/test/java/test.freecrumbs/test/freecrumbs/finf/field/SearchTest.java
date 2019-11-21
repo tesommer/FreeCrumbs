@@ -16,14 +16,16 @@ import freecrumbs.finf.field.DynamicValue;
 import freecrumbs.finf.field.Search;
 
 @DisplayName("Search")
-public final class SearchTest {
-
-    public SearchTest() {
+public final class SearchTest
+{
+    public SearchTest()
+    {
     }
     
     @Test
     @DisplayName("Single-char file, regex is same char")
-    public void test1() throws IOException {
+    public void test1() throws IOException
+    {
         final Field[] fields = search("a", "a");
         assertFieldValues(Map.of(
                 "found",      "1",
@@ -37,7 +39,8 @@ public final class SearchTest {
     
     @Test
     @DisplayName("Single-char file, group count 1, not found")
-    public void test2() throws IOException {
+    public void test2() throws IOException
+    {
         final Field[] fields = search("a", "(b)");
         assertFieldValues(Map.of(
                 "found",      "0",
@@ -51,7 +54,8 @@ public final class SearchTest {
     
     @Test
     @DisplayName("Empty file, empty regex")
-    public void test3() throws IOException {
+    public void test3() throws IOException
+    {
         final Field[] fields = search("", "");
         assertFieldValues(Map.of(
                 "found",      "0",
@@ -65,7 +69,8 @@ public final class SearchTest {
     
     @Test
     @DisplayName("Empty file, non-empty regex")
-    public void test4() throws IOException {
+    public void test4() throws IOException
+    {
         final Field[] fields = search("", "c");
         assertFieldValues(Map.of(
                 "found",      "0",
@@ -79,7 +84,8 @@ public final class SearchTest {
     
     @Test
     @DisplayName("Single-line file, find 1st occurrence")
-    public void test5() throws IOException {
+    public void test5() throws IOException
+    {
         final Field[] fields = search("abcdbe", "b");
         assertFieldValues(Map.of(
                 "found",      "1",
@@ -93,7 +99,8 @@ public final class SearchTest {
     
     @Test
     @DisplayName("Single-line file, find 2nd occurrence")
-    public void test6() throws IOException {
+    public void test6() throws IOException
+    {
         final Field[] fields = search(
                 "Abcdbe", getParams("b").withOccurrence(2));
         assertFieldValues(Map.of(
@@ -108,7 +115,8 @@ public final class SearchTest {
     
     @Test
     @DisplayName("Multi-line file, group count 2, find 1st occurrence")
-    public void test7() throws IOException {
+    public void test7() throws IOException
+    {
         final Field[] fields = search("abcdbe\nxybc\n", "((b))");
         assertFieldValues(Map.of(
                 "found",      "1",
@@ -122,7 +130,8 @@ public final class SearchTest {
     
     @Test
     @DisplayName("Multi-line file, find 2nd occurrence, line 2")
-    public void test8() throws IOException {
+    public void test8() throws IOException
+    {
         final Field[] fields = search(
                 "abcdE\nxybc\n", getParams("b").withOccurrence(2));
         assertFieldValues(Map.of(
@@ -137,7 +146,8 @@ public final class SearchTest {
     
     @Test
     @DisplayName("Single-line file, Find last occurrence")
-    public void test9() throws IOException {
+    public void test9() throws IOException
+    {
         final Field[] fields = search(
                 "xyzyxzy", getParams("x").withOccurrence(-1));
         assertFieldValues(Map.of(
@@ -152,7 +162,8 @@ public final class SearchTest {
     
     @Test
     @DisplayName("Multi-line file, Find last occurrence")
-    public void test10() throws IOException {
+    public void test10() throws IOException
+    {
         final Field[] fields = search(
                 "xyxz\nabc\nyxzy\n", getParams("x").withOccurrence(-1));
         assertFieldValues(Map.of(
@@ -167,7 +178,8 @@ public final class SearchTest {
     
     @Test
     @DisplayName("Multi-line file, occurrence=0")
-    public void test11() throws IOException {
+    public void test11() throws IOException
+    {
         final Field[] fields = search(
                 "Xyxz\nabc\nyxzy\n", getParams("x").withOccurrence(0));
         assertFieldValues(Map.of(
@@ -182,7 +194,8 @@ public final class SearchTest {
     
     @Test
     @DisplayName("Multi-line file, positive non-existing occurrence")
-    public void test12() throws IOException {
+    public void test12() throws IOException
+    {
         final Field[] fields = search(
                 "xYxz\nabc\nyxzy\n", getParams("x").withOccurrence(42));
         assertFieldValues(Map.of(
@@ -197,7 +210,8 @@ public final class SearchTest {
     
     @Test
     @DisplayName("Multi-line file, negative non-existing occurrence")
-    public void test13() throws IOException {
+    public void test13() throws IOException
+    {
         final Field[] fields = search(
                 "xyxZ\nabc\nyxzy\n", getParams("x").withOccurrence(-42));
         assertFieldValues(Map.of(
@@ -212,7 +226,8 @@ public final class SearchTest {
     
     @Test
     @DisplayName("Field-name prefix, groups 2, group count 1")
-    public void test14() throws IOException {
+    public void test14() throws IOException
+    {
         final Field[] fields = search(
                 "2", getParams("(2)").withFieldNamePrefix("T").withGroups(2));
         final var expecteds = new HashMap<String, String>();
@@ -231,14 +246,15 @@ public final class SearchTest {
         assertFieldValues(expecteds, fields);
     }
     
-    private static Search.Params getParams(final String regex) {
+    private static Search.Params getParams(final String regex)
+    {
         return new Search.Params(DynamicValue.of(regex));
     }
     
     private static Field[] search(
             final String input,
-            final Search.Params params) throws IOException {
-        
+            final Search.Params params) throws IOException
+    {
         final Field[] fields = Search.getFields(params);
         resetComputations(fields);
         updateComputations(input.getBytes("UTF-8"), 1024, fields);
@@ -247,8 +263,8 @@ public final class SearchTest {
     
     private static Field[] search(
             final String input,
-            final String regex) throws IOException {
-        
+            final String regex) throws IOException
+    {
         return search(input, getParams(regex));
     }
 

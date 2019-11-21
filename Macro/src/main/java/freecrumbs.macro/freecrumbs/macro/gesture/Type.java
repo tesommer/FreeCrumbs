@@ -13,20 +13,21 @@ import freecrumbs.macro.Util;
  * 
  * @author Tone Sommerland
  */
-public final class Type extends Command {
-    
+public final class Type extends Command
+{
     public static final GestureParser INSTANCE = new Type();
     
     public static final String NAME = "type";
 
-    private Type() {
+    private Type()
+    {
         super(NAME, 1, 1);
     }
 
     @Override
     protected Gesture getGesture(final String line, final String[] params)
-            throws MacroException {
-        
+            throws MacroException
+    {
         return (script, robot)
                 -> Util.type(robot, script.variables().value(params[0]));
     }

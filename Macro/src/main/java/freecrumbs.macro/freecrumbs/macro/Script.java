@@ -12,7 +12,8 @@ import java.util.stream.Stream;
  * 
  * @author Tone Sommerland
  */
-public final class Script {
+public final class Script
+{
     private final Location location;
     private final Loader loader;
     private final ScriptVariables variables;
@@ -20,15 +21,18 @@ public final class Script {
     private final Macro[] macros;
     
     private Script(final Location location, final Loader loader)
-            throws MacroException {
-
+            throws MacroException
+    {
         this.location = requireNonNull(location, "location");
         this.loader = requireNonNull(loader, "loader");
         this.variables = new ScriptVariables();
         this.images = new ScriptImages(location);
-        try (final InputStream in = location.open()) {
+        try (final InputStream in = location.open())
+        {
             this.macros = loader.load(in);
-        } catch (final IOException ex) {
+        }
+        catch (final IOException ex)
+        {
             throw new MacroException(ex);
         }
     }
@@ -41,36 +45,40 @@ public final class Script {
      * if for instance there was a problem loading the macros
      */
     public static Script load(final Location location, final Loader loader)
-            throws MacroException {
-        
+            throws MacroException
+    {
         return new Script(location, loader);
     }
 
     /**
      * The location of this script.
      */
-    public Location location() {
+    public Location location()
+    {
         return location;
     }
     
     /**
      * The loader of this script.
      */
-    public Loader loader() {
+    public Loader loader()
+    {
         return loader;
     }
 
     /**
      * Script variables.
      */
-    public ScriptVariables variables() {
+    public ScriptVariables variables()
+    {
         return variables;
     }
 
     /**
      * Script images.
      */
-    public ScriptImages images() {
+    public ScriptImages images()
+    {
         return images;
     }
 
@@ -80,8 +88,10 @@ public final class Script {
      * @param robot the event generator
      * @param times the number of times to play
      */
-    public void play(final Robot robot, final int times) throws MacroException {
-        if (macros.length > 0) {
+    public void play(final Robot robot, final int times) throws MacroException
+    {
+        if (macros.length > 0)
+        {
             play(macros[0], robot, times);
         }
     }
@@ -94,12 +104,13 @@ public final class Script {
      * @throws MacroException in particular if the macro wasn't found
      */
     public void play(final Robot robot, final int times, final String macroName)
-            throws MacroException {
-
+            throws MacroException
+    {
         play(getMacro(macroName), robot, times);
     }
     
-    private Macro getMacro(final String name) throws MacroException {
+    private Macro getMacro(final String name) throws MacroException
+    {
         return Stream.of(macros)
             .filter(m -> m.getName().equals(name))
             .findFirst()
@@ -107,14 +118,18 @@ public final class Script {
     }
     
     private void play(final Macro macro, final Robot robot, final int times)
-            throws MacroException {
-        
-        try {
+            throws MacroException
+    {
+        try
+        {
             loader.getRecursionGuard().increment();
-            for (int i = 0; i < times; i++) {
+            for (int i = 0; i < times; i++)
+            {
                 macro.play(this, robot);
             }
-        } finally {
+        }
+        finally
+        {
             loader.getRecursionGuard().decrement();
         }
     }

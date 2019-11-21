@@ -15,14 +15,16 @@ import freecrumbs.macrec.Layer;
  * 
  * @author Tone Sommerland
  */
-public final class MarkLayer implements Layer {
-    
-    private static final class Mark {
+public final class MarkLayer implements Layer
+{
+    private static final class Mark
+    {
         final Point point;
         final Color color;
         final int length;
         
-        Mark(final Point point, final Color color, final int length) {
+        Mark(final Point point, final Color color, final int length)
+        {
             assert point != null;
             assert color != null;
             assert length >= 0;
@@ -34,12 +36,15 @@ public final class MarkLayer implements Layer {
     
     private final List<Mark> marks = new ArrayList<>();
 
-    public MarkLayer() {
+    public MarkLayer()
+    {
     }
 
     @Override
-    public void paint(final Graphics g) {
-        for (final Mark mark : marks) {
+    public void paint(final Graphics g)
+    {
+        for (final Mark mark : marks)
+        {
             g.setColor(mark.color);
             g.drawLine(
                     mark.point.x - mark.length,
@@ -55,9 +60,10 @@ public final class MarkLayer implements Layer {
     }
     
     public void addMark(
-            final Point point, final Color color, final int length) {
-        
-        if (length < 0) {
+            final Point point, final Color color, final int length)
+    {
+        if (length < 0)
+        {
             throw new IllegalArgumentException("length < 0: " + length);
         }
         marks.add(new Mark(
@@ -66,19 +72,23 @@ public final class MarkLayer implements Layer {
                 length));
     }
     
-    public void removeMark(final int index) {
+    public void removeMark(final int index)
+    {
         marks.remove(index);
     }
     
-    public Point getMarkPoint(final int index) {
+    public Point getMarkPoint(final int index)
+    {
         return new Point(marks.get(index).point);
     }
     
-    public int getMarkCount() {
+    public int getMarkCount()
+    {
         return marks.size();
     }
     
-    public void clearMarks() {
+    public void clearMarks()
+    {
         marks.clear();
     }
 

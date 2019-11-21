@@ -8,8 +8,8 @@ import java.io.IOException;
  * 
  * @author Tone Sommerland
  */
-public interface FieldComputation {
-    
+public interface FieldComputation
+{
     /**
      * Resets the computation.
      * @param file the file that is about to be
@@ -24,7 +24,8 @@ public interface FieldComputation {
      * @implSpec
      * The default implementation does nothing.
      */
-    public default void abort(final File file) {
+    public default void abort(final File file)
+    {
     }
     
     /**

@@ -36,8 +36,8 @@ import freecrumbs.macro.Util;
  * 
  * @author Tone Sommerland
  */
-public final class Play extends Command {
-    
+public final class Play extends Command
+{
     public static final GestureParser INSTANCE = new Play();
     
     public static final String NAME = "play";
@@ -54,15 +54,17 @@ public final class Play extends Command {
     private static final String
     INPUT_DELIMITER = SCRIPT_INPUT_SEPARATOR + "|" + VARIABLE_VALUE_SEPARATOR;
     
-    private Play() {
+    private Play()
+    {
         super(NAME, 1, 5);
     }
 
     @Override
     protected Gesture getGesture(final String line, final String[] params)
-            throws MacroException {
-        
-        if (params.length == 3 || params.length == 4) {
+            throws MacroException
+    {
+        if (params.length == 3 || params.length == 4)
+        {
             throw new MacroException("Syntax error: " + line);
         }
         return (script, robot) -> play(script, robot, params);
@@ -71,23 +73,25 @@ public final class Play extends Command {
     private static void play(
             final Script script,
             final Robot robot,
-            final String[] params) throws MacroException {
-        
+            final String[] params) throws MacroException
+    {
         final String times = paramOrDefault(params, 1, "1");
         final MacroSpecifier macroSpecifier
             = getMacroSpecifier(script, params[0]);
         if (params.length != 5 || Util.evaluateLogical(
-                script, params[2], params[3], params[4])) {
+                script, params[2], params[3], params[4]))
+        {
             macroSpecifier.play(script, robot, times);
         }
     }
     
     private static MacroSpecifier getMacroSpecifier(
             final Script current,
-            final String macroParam) throws MacroException {
-        
+            final String macroParam) throws MacroException
+    {
         final int index = macroParam.lastIndexOf(SCRIPT_MACRO_SEPARATOR);
-        if (index < 0) {
+        if (index < 0)
+        {
             return new MacroSpecifier(macroParam);
         }
         final String macroName
@@ -97,17 +101,21 @@ public final class Play extends Command {
                 macroName, new ScriptSpecifier(current, scriptParam));
     }
     
-    private static final class ScriptSpecifier {
+    private static final class ScriptSpecifier
+    {
         private final Map<String, Integer> input = new HashMap<>();
         private final String scriptLocation;
 
         public ScriptSpecifier(final Script current, final String scriptParam)
-                throws MacroException {
-            
+                throws MacroException
+        {
             final int index = scriptParam.indexOf(SCRIPT_INPUT_SEPARATOR);
-            if (index < 0) {
+            if (index < 0)
+            {
                 scriptLocation = scriptParam;
-            } else {
+            }
+            else
+            {
                 scriptLocation = scriptParam.substring(0, index);
                 extractInput(current, scriptParam, index);
             }
@@ -116,12 +124,14 @@ public final class Play extends Command {
         private void extractInput(
                 final Script current,
                 final String scriptParam,
-                final int index) throws MacroException {
-            
+                final int index) throws MacroException
+        {
             try (final var scanner
-                    = new Scanner(scriptParam.substring(index))) {
+                    = new Scanner(scriptParam.substring(index)))
+            {
                 try (final Scanner delimited
-                        = scanner.useDelimiter(INPUT_DELIMITER)) {
+                        = scanner.useDelimiter(INPUT_DELIMITER))
+                {
                     extractInput(current, scriptParam, delimited);
                 }
             }
@@ -130,11 +140,13 @@ public final class Play extends Command {
         private void extractInput(
                 final Script current,
                 final String scriptParam,
-                final Scanner scanner) throws MacroException {
-            
-            while (scanner.hasNext()) {
+                final Scanner scanner) throws MacroException
+        {
+            while (scanner.hasNext())
+            {
                 final String variable = scanner.next();
-                if (!scanner.hasNext()) {
+                if (!scanner.hasNext())
+                {
                     throw new MacroException(scriptParam);
                 }
                 input.put(
@@ -143,12 +155,15 @@ public final class Play extends Command {
             }
         }
 
-        public String getScriptLocation() {
+        public String getScriptLocation()
+        {
             return scriptLocation;
         }
         
-        public void setInputVariables(final Script script) {
-            for (final String variable : input.keySet()) {
+        public void setInputVariables(final Script script)
+        {
+            for (final String variable : input.keySet())
+            {
                 script.variables().set(variable, input.get(variable));
             }
         }
@@ -158,7 +173,8 @@ public final class Play extends Command {
     /**
      * Specifies a macro in the current script or another script.
      */
-    private static final class MacroSpecifier {
+    private static final class MacroSpecifier
+    {
         private final String macroName;
         private final ScriptSpecifier scriptSpecifier;
         
@@ -168,8 +184,8 @@ public final class Play extends Command {
          * @param scriptSpecifier the script location and input (nullable)
          */
         public MacroSpecifier(
-                final String macroName, final ScriptSpecifier scriptSpecifier) {
-            
+                final String macroName, final ScriptSpecifier scriptSpecifier)
+        {
             this.macroName = requireNonNull(macroName, "macroName");
             this.scriptSpecifier = scriptSpecifier;
         }
@@ -178,26 +194,32 @@ public final class Play extends Command {
          * Creates a specifier for a macro in the current script.
          * @param macroName the macro name
          */
-        public MacroSpecifier(final String macroName) {
+        public MacroSpecifier(final String macroName)
+        {
             this(macroName, null);
         }
         
         public void play(
                 final Script current,
                 final Robot robot,
-                final String times) throws MacroException {
-            
+                final String times) throws MacroException
+        {
             final Script script = getScript(current);
-            if (macroName.isEmpty()) {
+            if (macroName.isEmpty())
+            {
                 script.play(robot, current.variables().value(times));
-            } else {
+            }
+            else
+            {
                 script.play(robot, current.variables().value(times),
                         macroName);
             }
         }
         
-        private Script getScript(final Script current) throws MacroException {
-            if (scriptSpecifier == null) {
+        private Script getScript(final Script current) throws MacroException
+        {
+            if (scriptSpecifier == null)
+            {
                 return current;
             }
             final Script script = Script.load(

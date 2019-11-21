@@ -12,20 +12,21 @@ import freecrumbs.macro.MacroException;
  * 
  * @author Tone Sommerland
  */
-public final class Exit extends Command {
-    
+public final class Exit extends Command
+{
     public static final GestureParser INSTANCE = new Exit();
     
     public static final String NAME = "exit";
     
-    private Exit() {
+    private Exit()
+    {
         super(NAME, 0, 0);
     }
 
     @Override
     protected Gesture getGesture(final String line, final String[] params)
-            throws MacroException {
-        
+            throws MacroException
+    {
         return (script, robot) -> System.exit(0);
     }
 

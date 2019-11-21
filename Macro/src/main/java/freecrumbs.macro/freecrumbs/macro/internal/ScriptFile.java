@@ -17,8 +17,8 @@ import freecrumbs.macro.MacroException;
  * 
  * @author Tone Sommerland
  */
-public final class ScriptFile implements Location {
-    
+public final class ScriptFile implements Location
+{
     private static final char SEPARATOR = '/';
     
     private final String base;
@@ -27,18 +27,22 @@ public final class ScriptFile implements Location {
      * Returns a location referencing a script file.
      * @param base path to the file
      */
-    public ScriptFile(final String base) {
+    public ScriptFile(final String base)
+    {
         this.base = neutral(base);
     }
 
     @Override
-    public Location refer(final String target) throws MacroException {
+    public Location refer(final String target) throws MacroException
+    {
         final int index = base.lastIndexOf(SEPARATOR);
-        if (index >= 0) {
+        if (index >= 0)
+        {
             final File relative = new File(
                     dependent(base.substring(0, index)),
                     dependent(target));
-            if (relative.isFile()) {
+            if (relative.isFile())
+            {
                 return new ScriptFile(relative.getPath());
             }
         }
@@ -46,19 +50,25 @@ public final class ScriptFile implements Location {
     }
 
     @Override
-    public InputStream open() throws MacroException {
-        try {
+    public InputStream open() throws MacroException
+    {
+        try
+        {
             return new FileInputStream(dependent(base));
-        } catch (final IOException ex) {
+        }
+        catch (final IOException ex)
+        {
             throw new MacroException(ex);
         }
     }
     
-    private static String dependent(final String filePath) {
+    private static String dependent(final String filePath)
+    {
         return filePath.replace(SEPARATOR, File.separatorChar);
     }
     
-    private static String neutral(final String filePath) {
+    private static String neutral(final String filePath)
+    {
         return filePath.replace(File.separatorChar, SEPARATOR);
     }
 

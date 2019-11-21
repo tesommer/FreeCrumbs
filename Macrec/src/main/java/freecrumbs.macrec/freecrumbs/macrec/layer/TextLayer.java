@@ -15,7 +15,8 @@ import freecrumbs.macrec.Layer;
  * 
  * @author Tone Sommerland
  */
-public final class TextLayer implements Layer {
+public final class TextLayer implements Layer
+{
     private final Point point;
     private final Color color;
     private final Font font;
@@ -26,8 +27,8 @@ public final class TextLayer implements Layer {
             final Point point,
             final Color color,
             final Font font,
-            final int lineHeight) {
-        
+            final int lineHeight)
+    {
         this.point = new Point(requireNonNull(point, "point"));
         this.color = requireNonNull(color, "color");
         this.font = requireNonNull(font, "font");
@@ -35,17 +36,20 @@ public final class TextLayer implements Layer {
     }
 
     @Override
-    public void paint(final Graphics g) {
+    public void paint(final Graphics g)
+    {
         g.setColor(color);
         g.setFont(font);
         int y = point.y;
-        for (final String line : text.split("\\n")) {
+        for (final String line : text.split("\\n"))
+        {
             g.drawString(line.trim(), point.x, y);
             y += lineHeight;
         }
     }
     
-    public void setText(final String text) {
+    public void setText(final String text)
+    {
         this.text = requireNonNull(text, "text");
     }
 

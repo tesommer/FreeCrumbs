@@ -13,20 +13,21 @@ import freecrumbs.macro.Util;
  * 
  * @author Tone Sommerland
  */
-public final class AddKeyCodeVariables extends Command {
-    
+public final class AddKeyCodeVariables extends Command
+{
     public static final GestureParser INSTANCE = new AddKeyCodeVariables();
     
     public static final String NAME = "add_key_code_variables";
 
-    private AddKeyCodeVariables() {
+    private AddKeyCodeVariables()
+    {
         super(NAME, 0, 0);
     }
 
     @Override
     protected Gesture getGesture(final String line, final String[] params)
-            throws MacroException {
-        
+            throws MacroException
+    {
         return (script, robot) -> Util.addKeyCodeVariables(script);
     }
 

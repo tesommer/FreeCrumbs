@@ -8,14 +8,15 @@ import freecrumbs.finf.Field;
  * 
  * @author Tone Sommerland
  */
-public final class Size {
-    
+public final class Size
+{
     private static final String NAME = "size";
     
     public static final Field
     FIELD = Field.getInstance(NAME, file -> String.valueOf(file.length()));
 
-    private Size() {
+    private Size()
+    {
     }
 
 }

@@ -9,8 +9,8 @@ import java.io.IOException;
  * @author Tone Sommerland
  */
 @FunctionalInterface
-public interface InfoGenerator {
-    
+public interface InfoGenerator
+{
     public abstract Info getInfo(final File file) throws IOException;
 
 }

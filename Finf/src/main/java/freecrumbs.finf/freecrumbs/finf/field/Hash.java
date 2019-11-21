@@ -17,9 +17,10 @@ import freecrumbs.finf.FieldComputation;
  * 
  * @author Tone Sommerland
  */
-public final class Hash {
-    
-    private Hash() {
+public final class Hash
+{
+    private Hash()
+    {
     }
     
     /**
@@ -27,25 +28,31 @@ public final class Hash {
      * @param name the field name
      * @param algorithm the hash algorithm
      */
-    public static Field getField(final String name, final String algorithm) {
+    public static Field getField(final String name, final String algorithm)
+    {
         return Field.getInstance(name, new HashFieldComputation(algorithm));
     }
     
     private static final class HashFieldComputation
-        implements FieldComputation {
-        
+        implements FieldComputation
+    {
         private final String algorithm;
         private MessageDigest messageDigest;
 
-        private HashFieldComputation(final String algorithm) {
+        private HashFieldComputation(final String algorithm)
+        {
             this.algorithm = requireNonNull(algorithm, "algorithm");
         }
 
         @Override
-        public void reset(final File file) throws IOException {
-            try {
+        public void reset(final File file) throws IOException
+        {
+            try
+            {
                 messageDigest = MessageDigest.getInstance(algorithm);
-            } catch (final NoSuchAlgorithmException ex) {
+            }
+            catch (final NoSuchAlgorithmException ex)
+            {
                 throw new IOException(ex);
             }
         }
@@ -54,14 +61,15 @@ public final class Hash {
         public boolean update(
                 final byte[] input,
                 final int offset,
-                final int length) throws IOException {
-            
+                final int length) throws IOException
+        {
             messageDigest.update(input, offset, length);
             return true;
         }
 
         @Override
-        public String get() throws IOException {
+        public String get() throws IOException
+        {
             return EncodingUtil.bytesToHex(false, messageDigest.digest());
         }
         

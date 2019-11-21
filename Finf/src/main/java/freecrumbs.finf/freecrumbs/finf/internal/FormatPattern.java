@@ -19,7 +19,8 @@ import freecrumbs.finf.InfoGenerator;
  * 
  * @author Tone Sommerland
  */
-public final class FormatPattern {
+public final class FormatPattern
+{
     private final Pattern pattern;
     private final boolean include;
     
@@ -28,7 +29,8 @@ public final class FormatPattern {
      * @param pattern the regex pattern to match against the format
      * @param include whether a match includes or excludes the file
      */
-    public FormatPattern(final Pattern pattern, final boolean include) {
+    public FormatPattern(final Pattern pattern, final boolean include)
+    {
         this.pattern = requireNonNull(pattern, "pattern");
         this.include = include;
     }
@@ -39,8 +41,8 @@ public final class FormatPattern {
     public boolean includes(
             final File file,
             final InfoGenerator infoGenerator,
-            final InfoFormat infoFormat) throws IOException {
-        
+            final InfoFormat infoFormat) throws IOException
+    {
         final Info info = infoGenerator.getInfo(file);
         return pattern.matcher(infoFormat.toString(info)).matches() == include;
     }

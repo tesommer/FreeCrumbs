@@ -29,8 +29,8 @@ import freecrumbs.finf.InfoGenerator;
  * 
  * @author Tone Sommerland
  */
-public final class Manifold {
-    
+public final class Manifold
+{
     private static final int REGEX_FLAGS = 0;
 
     private final InfoGenerator infoGenerator;
@@ -39,8 +39,8 @@ public final class Manifold {
     private final Comparator<Info> order;
 
     public Manifold(final Properties props, final Locale locale)
-            throws IOException {
-        
+            throws IOException
+    {
         this.infoFormat = Settings.getOutput(props);
         final AvailableFields availableFields
             = Settings.getAvailableFields(props, locale);
@@ -49,14 +49,17 @@ public final class Manifold {
         this.order = orderParser.getOrder();
         final Collection<FilterParser> filterParsers
             = Settings.getFilterParsers(props);
-        if (Settings.isPrefilter(props)) {
+        if (Settings.isPrefilter(props))
+        {
             this.infoGenerator = getPrefilterInfoGenerator(
                     availableFields,
                     this.infoFormat,
                     orderParser);
             this.fileFilter = nullOrAsOne(getPrefilterFileFilters(
                     filterParsers, availableFields));
-        } else {
+        }
+        else
+        {
             this.infoGenerator = getNonPrefilterInfoGenerator(
                     availableFields,
                     this.infoFormat,
@@ -67,27 +70,31 @@ public final class Manifold {
         }
     }
     
-    public InfoGenerator getInfoGenerator() {
+    public InfoGenerator getInfoGenerator()
+    {
         return infoGenerator;
     }
     
-    public InfoFormat getInfoFormat() {
+    public InfoFormat getInfoFormat()
+    {
         return infoFormat;
     }
     
-    public FileFilter getFileFilter() {
+    public FileFilter getFileFilter()
+    {
         return fileFilter;
     }
     
-    public Comparator<Info> getOrder() {
+    public Comparator<Info> getOrder()
+    {
         return order;
     }
     
     private static InfoGenerator getPrefilterInfoGenerator(
             final AvailableFields availableFields,
             final TokenInfoFormat infoFormat,
-            final OrderParser orderParser) {
-        
+            final OrderParser orderParser)
+    {
         final String[] used1 = infoFormat.getUsedFieldNames(
                 availableFields.getNames());
         final String[] used2 = orderParser.getUsedFieldNames();
@@ -98,8 +105,8 @@ public final class Manifold {
             final AvailableFields availableFields,
             final TokenInfoFormat infoFormat,
             final OrderParser orderParser,
-            final Collection<FilterParser> filterParsers) {
-        
+            final Collection<FilterParser> filterParsers)
+    {
         final String[] availableFieldNames = availableFields.getNames();
         final String[] used1 = infoFormat.getUsedFieldNames(
                 availableFieldNames);
@@ -113,10 +120,11 @@ public final class Manifold {
     
     private static Collection<FileFilter> getPrefilterFileFilters(
             final Collection<FilterParser> filterParsers,
-            final AvailableFields availableFields) throws IOException {
-        
+            final AvailableFields availableFields) throws IOException
+    {
         final var fileFilters = new ArrayList<FileFilter>(filterParsers.size());
-        for (final var filterParser : filterParsers) {
+        for (final var filterParser : filterParsers)
+        {
             fileFilters.add(
                     getPrefilterFileFilter(availableFields, filterParser));
         }
@@ -125,10 +133,11 @@ public final class Manifold {
     
     private static Collection<FileFilter> getNonPrefilterFileFilters(
             final Collection<FilterParser> filterParsers,
-            final InfoGenerator infoGenerator) throws IOException {
-        
+            final InfoGenerator infoGenerator) throws IOException
+    {
         final var fileFilters = new ArrayList<FileFilter>(filterParsers.size());
-        for (final var filterParser : filterParsers) {
+        for (final var filterParser : filterParsers)
+        {
             fileFilters.add(
                     filterParser.getFileFilter(REGEX_FLAGS, infoGenerator));
         }
@@ -137,8 +146,8 @@ public final class Manifold {
     
     private static FileFilter getPrefilterFileFilter(
             final AvailableFields availableFields,
-            final FilterParser filterParser) throws IOException {
-        
+            final FilterParser filterParser) throws IOException
+    {
         final String[] usedFieldNames = filterParser.getUsedFieldNames(
                 availableFields.getNames());
         return filterParser.getFileFilter(
@@ -147,23 +156,24 @@ public final class Manifold {
     
     private static InfoGenerator getInfoGenerator(
             final AvailableFields availableFields,
-            final String[] usedFieldNames) {
-        
+            final String[] usedFieldNames)
+    {
         return availableFields.getReader(usedFieldNames);
     }
     
     private static FileFilter nullOrAsOne(
-            final Collection<FileFilter> fileFilters) {
-        
-        if (fileFilters.isEmpty()) {
+            final Collection<FileFilter> fileFilters)
+    {
+        if (fileFilters.isEmpty())
+        {
             return null;
         }
         return file -> !fileFilters.stream().anyMatch(ff -> !ff.accept(file));
     }
     
     private static String[] concat(
-            final String[] array1, final String[] array2) {
-        
+            final String[] array1, final String[] array2)
+    {
         return Stream.concat(
                 Stream.of(array1),
                 Stream.of(array2))
@@ -173,8 +183,8 @@ public final class Manifold {
     private static String[] concat(
             final String[] array1,
             final String[] array2,
-            final String[] array3) {
-        
+            final String[] array3)
+    {
         return Stream.concat(
                 Stream.of(array1),
                 Stream.concat(

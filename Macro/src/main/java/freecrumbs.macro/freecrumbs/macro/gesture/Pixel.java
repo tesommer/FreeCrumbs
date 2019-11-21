@@ -13,20 +13,21 @@ import freecrumbs.macro.MacroException;
  * 
  * @author Tone Sommerland
  */
-public final class Pixel extends Command {
-    
+public final class Pixel extends Command
+{
     public static final GestureParser INSTANCE = new Pixel();
     
     public static final String NAME = "pixel";
     
-    private Pixel() {
+    private Pixel()
+    {
         super(NAME, 3, 3);
     }
 
     @Override
     protected Gesture getGesture(final String line, final String[] params)
-            throws MacroException {
-        
+            throws MacroException
+    {
         return (script, robot)
                 -> script.variables().set(
                         params[0],

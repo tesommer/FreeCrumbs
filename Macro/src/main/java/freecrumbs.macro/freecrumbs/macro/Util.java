@@ -16,15 +16,17 @@ import java.util.stream.Stream;
  * 
  * @author Tone Sommerland
  */
-public final class Util {
-
-    private Util() {
+public final class Util
+{
+    private Util()
+    {
     }
     
     /**
      * Splits a line into words separated by space or tab.
      */
-    public static String[] split(final String line) {
+    public static String[] split(final String line)
+    {
         return split(line, 0);
     }
     
@@ -38,9 +40,11 @@ public final class Util {
      * after the first {@code limit - 1} words.
      * A limit of zero or less turns the limit off.
      */
-    private static String[] split(final String line, final int limit) {
+    private static String[] split(final String line, final int limit)
+    {
         final String[] words = line.trim().split("[ \\t]+", limit);
-        if (words[0].isEmpty()) {
+        if (words[0].isEmpty())
+        {
             return new String[0];
         }
         return words;
@@ -50,7 +54,8 @@ public final class Util {
      * Whether or not the given prefix is the first word of a line
      * with words separated by space or tab.
      */
-    public static boolean isFirstWord(final String prefix, final String line) {
+    public static boolean isFirstWord(final String prefix, final String line)
+    {
         final String[] words = split(line);
         return words.length >= 1 && words[0].equals(prefix);
     }
@@ -60,13 +65,15 @@ public final class Util {
      * The variables are named {@code VK_A}, {@code VK_ALT}, etc.
      * @see java.awt.event.KeyEvent
      */
-    public static void addKeyCodeVariables(final Script script) {
+    public static void addKeyCodeVariables(final Script script)
+    {
         Stream.of(KeyEvent.class.getDeclaredFields())
             .filter(Util::isKeyCodeConstant)
             .forEach(field -> addKeyCodeVariable(script, field));
     }
     
-    private static boolean isKeyCodeConstant(final Field field) {
+    private static boolean isKeyCodeConstant(final Field field)
+    {
         return
                     field.getName().startsWith("VK_")
                 && (field.getModifiers() & Modifier.PUBLIC) != 0
@@ -74,11 +81,14 @@ public final class Util {
     }
 
     private static void addKeyCodeVariable(
-            final Script script, final Field field) {
-        
-        try {
+            final Script script, final Field field)
+    {
+        try
+        {
             script.variables().set(field.getName(), field.getInt(null));
-        } catch (final IllegalAccessException ex) {
+        }
+        catch (final IllegalAccessException ex)
+        {
             throw new AssertionError(ex);
         }
     }
@@ -94,26 +104,41 @@ public final class Util {
             final Script script,
             final String left,
             final String operator,
-            final String right) throws MacroException {
-        
+            final String right) throws MacroException
+    {
         final int leftValue = script.variables().value(left);
         final int rightValue = script.variables().value(right);
-        if ("+".equals(operator)) {
+        if ("+".equals(operator))
+        {
             return leftValue + rightValue;
-        } else if ("-".equals(operator)) {
+        }
+        else if ("-".equals(operator))
+        {
             return leftValue - rightValue;
-        } else if ("*".equals(operator)) {
+        }
+        else if ("*".equals(operator))
+        {
             return leftValue * rightValue;
-        } else if ("/".equals(operator)) {
-            try {
+        }
+        else if ("/".equals(operator))
+        {
+            try
+            {
                 return leftValue / rightValue;
-            } catch (final ArithmeticException ex) {
+            }
+            catch (final ArithmeticException ex)
+            {
                 throw new MacroException(ex);
             }
-        } else if ("%".equals(operator)) {
-            try {
+        }
+        else if ("%".equals(operator))
+        {
+            try
+            {
                 return leftValue % rightValue;
-            } catch (final ArithmeticException ex) {
+            }
+            catch (final ArithmeticException ex)
+            {
                 throw new MacroException(ex);
             }
         }
@@ -134,26 +159,38 @@ public final class Util {
             final Script script,
             final String left,
             final String operator,
-            final String right) throws MacroException {
-        
-        if ("isset".equals(operator)) {
+            final String right) throws MacroException
+    {
+        if ("isset".equals(operator))
+        {
             final boolean existence
                 = script.variables().value(right) != 0;
             return script.variables().getNames().contains(left) == existence;
         }
         final int leftValue = script.variables().value(left);
         final int rightValue = script.variables().value(right);
-        if ("==".equals(operator)) {
+        if ("==".equals(operator))
+        {
             return leftValue == rightValue;
-        } else if ("!=".equals(operator)) {
+        }
+        else if ("!=".equals(operator))
+        {
             return leftValue != rightValue;
-        } else if ("<".equals(operator)) {
+        }
+        else if ("<".equals(operator))
+        {
             return leftValue < rightValue;
-        } else if (">".equals(operator)) {
+        }
+        else if (">".equals(operator))
+        {
             return leftValue > rightValue;
-        } else if ("<=".equals(operator)) {
+        }
+        else if ("<=".equals(operator))
+        {
             return leftValue <= rightValue;
-        } else if (">=".equals(operator)) {
+        }
+        else if (">=".equals(operator))
+        {
             return leftValue >= rightValue;
         }
         throw new MacroException("Invalid operator: " + operator);
@@ -164,12 +201,14 @@ public final class Util {
      * @param robot event generator
      * @param value the digits to type
      */
-    public static void type(final Robot robot, final int value) {
+    public static void type(final Robot robot, final int value)
+    {
         final String digits = String.valueOf(value);
         IntStream.iterate(0, index -> index + 1)
             .limit(digits.length())
             .map(digits::codePointAt)
-            .forEach(codePoint -> {
+            .forEach(codePoint ->
+            {
                 robot.keyPress(codePoint);
                 robot.keyRelease(codePoint);
             });
@@ -178,7 +217,8 @@ public final class Util {
     /**
      * Creates a screenshot of the entire screen.
      */
-    public static BufferedImage createScreenCapture(final Robot robot) {
+    public static BufferedImage createScreenCapture(final Robot robot)
+    {
         final Dimension screenSize
             = Toolkit.getDefaultToolkit().getScreenSize();
         return robot.createScreenCapture(new Rectangle(screenSize));

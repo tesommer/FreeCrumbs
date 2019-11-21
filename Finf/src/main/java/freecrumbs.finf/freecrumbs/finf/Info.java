@@ -12,21 +12,24 @@ import java.util.Set;
  * 
  * @author Tone Sommerland
  */
-public final class Info {
+public final class Info
+{
     private final Map<String, String> values;
 
     /**
      * Creates a file info object.
      * @param values field names and their associated values
      */
-    public Info(final Map<String, String> values) {
+    public Info(final Map<String, String> values)
+    {
         this.values = Map.copyOf(values);
     }
     
     /**
      * The names of the fields this info contains.
      */
-    public Set<String> getFieldNames() {
+    public Set<String> getFieldNames()
+    {
         return values.keySet();
     }
     
@@ -35,9 +38,11 @@ public final class Info {
      * @throws java.util.NoSuchElementException
      * if this info doesn't have the given field
      */
-    public String getValue(final String fieldName) {
+    public String getValue(final String fieldName)
+    {
         requireNonNull(fieldName, "fieldName");
-        if (!values.containsKey(fieldName)) {
+        if (!values.containsKey(fieldName))
+        {
             throw new NoSuchElementException(fieldName);
         }
         return values.get(fieldName);
@@ -48,12 +53,16 @@ public final class Info {
      * with the value of the same field in another info.
      * @return empty if the field is nonexistent in any of the info objects
      */
-    public Optional<Integer> compare(final String fieldName, final Info other) {
-        try {
+    public Optional<Integer> compare(final String fieldName, final Info other)
+    {
+        try
+        {
             final String value1 = getValue(fieldName);
             final String value2 = other.getValue(fieldName);
             return Optional.of(value1.compareTo(value2));
-        } catch (final NoSuchElementException ex) {
+        }
+        catch (final NoSuchElementException ex)
+        {
             return Optional.empty();
         }
     }

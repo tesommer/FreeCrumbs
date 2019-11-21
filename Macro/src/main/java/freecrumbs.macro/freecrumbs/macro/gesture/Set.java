@@ -16,24 +16,27 @@ import freecrumbs.macro.Util;
  * 
  * @author Tone Sommerland
  */
-public final class Set extends Command {
-    
+public final class Set extends Command
+{
     public static final GestureParser INSTANCE = new Set();
     
     public static final String NAME = "set";
     
-    private Set() {
+    private Set()
+    {
         super(NAME, 2, 4);
     }
 
     @Override
     protected Gesture getGesture(final String line, final String[] params)
-            throws MacroException {
-        
-        if (params.length == 3) {
+            throws MacroException
+    {
+        if (params.length == 3)
+        {
             throw new MacroException("Syntax error: " + line);
         }
-        if (params.length == 2) {
+        if (params.length == 2)
+        {
             return (script, robot) -> script.variables().set(
                     params[0], script.variables().value(params[1]));
         }

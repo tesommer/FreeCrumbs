@@ -16,20 +16,21 @@ import freecrumbs.macro.MacroException;
  * 
  * @author Tone Sommerland
  */
-public final class MouseRelease extends Command {
-    
+public final class MouseRelease extends Command
+{
     public static final GestureParser INSTANCE = new MouseRelease();
     
     public static final String NAME = "mouse_release";
     
-    private MouseRelease() {
+    private MouseRelease()
+    {
         super(NAME, 1, 3);
     }
 
     @Override
     protected Gesture getGesture(final String line, final String[] params)
-            throws MacroException {
-        
+            throws MacroException
+    {
         return (script, robot)
                 -> robot.mouseRelease(getButtons(script, params));
     }

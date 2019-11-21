@@ -14,30 +14,35 @@ import freecrumbs.finf.InfoFormat;
  * 
  * @author Tone Sommerland
  */
-public final class TokenInfoFormat implements InfoFormat {
+public final class TokenInfoFormat implements InfoFormat
+{
     private final String format;
 
     /**
      * Creates a new token info-format.
      * @param format the format string containing tokens to be replaced
      */
-    public TokenInfoFormat(final String format) {
+    public TokenInfoFormat(final String format)
+    {
         this.format = requireNonNull(format, "format");
     }
     
     /**
      * Returns the field names used by this format.
      */
-    public String[] getUsedFieldNames(final String[] availableFieldNames) {
+    public String[] getUsedFieldNames(final String[] availableFieldNames)
+    {
         return Stream.of(availableFieldNames)
                 .filter(name -> format.contains(getToken(name)))
                 .toArray(String[]::new);
     }
     
     @Override
-    public String toString(final Info info) throws IOException {
+    public String toString(final Info info) throws IOException
+    {
         String result = format;
-        for (final String fieldName : info.getFieldNames()) {
+        for (final String fieldName : info.getFieldNames())
+        {
             result = replace(result, fieldName, info);
         }
         return result;
@@ -46,16 +51,18 @@ public final class TokenInfoFormat implements InfoFormat {
     private static String replace(
             final String format,
             final String fieldName,
-            final Info info) throws IOException {
-        
+            final Info info) throws IOException
+    {
         final String token = getToken(fieldName);
-        if (format.contains(token)) {
+        if (format.contains(token))
+        {
             return format.replace(token, info.getValue(fieldName));
         }
         return format;
     }
 
-    private static String getToken(final String fieldName) {
+    private static String getToken(final String fieldName)
+    {
         return "${" + fieldName + "}";
     }
 }

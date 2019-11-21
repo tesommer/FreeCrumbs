@@ -20,7 +20,8 @@ import java.util.stream.Stream;
  * 
  * @author Tone Sommerland
  */
-public final class FieldReader implements InfoGenerator {
+public final class FieldReader implements InfoGenerator
+{
     private final Map<File, Map<String, String>> cache;
     private final byte[] buffer;
     private final Field[] fields;
@@ -28,10 +29,11 @@ public final class FieldReader implements InfoGenerator {
     private FieldReader(
             final Map<File, Map<String, String>> cache,
             final int bufferSize,
-            final Field[] fields) {
-        
+            final Field[] fields)
+    {
         assert cache != null;
-        if (bufferSize < 1) {
+        if (bufferSize < 1)
+        {
             throw new IllegalArgumentException("bufferSize < 1: " + bufferSize);
         }
         this.cache = cache;
@@ -46,8 +48,8 @@ public final class FieldReader implements InfoGenerator {
      * @throws IllegalArgumentException if the buffer size is zero or negative
      */
     public static FieldReader getInstance(
-            final int bufferSize, final Field... fields) {
-        
+            final int bufferSize, final Field... fields)
+    {
         return new FieldReader(new HashMap<>(), bufferSize, fields);
     }
     
@@ -57,19 +59,22 @@ public final class FieldReader implements InfoGenerator {
      * @param fields the fields to read
      * @throws IllegalArgumentException if the buffer size is zero or negative
      */
-    public FieldReader coCaching(final int bufferSize, final Field... fields) {
+    public FieldReader coCaching(final int bufferSize, final Field... fields)
+    {
         return new FieldReader(this.cache, bufferSize, fields);
     }
     
     /**
      * The names of this reader's fields.
      */
-    public String[] getFieldNames() {
+    public String[] getFieldNames()
+    {
         return Field.namesOf(fields);
     }
     
     @Override
-    public Info getInfo(final File file) throws IOException {
+    public Info getInfo(final File file) throws IOException
+    {
         final Map<String, String> values
             = cache.computeIfAbsent(file, key -> new HashMap<>());
         putValues(values, file);
@@ -79,10 +84,12 @@ public final class FieldReader implements InfoGenerator {
     
     private void putValues(
             final Map<? super String, ? super String> values,
-            final File file) throws IOException {
-        
-        for (final Field field : nonCached(values)) {
-            if (!field.isComputed()) {
+            final File file) throws IOException
+    {
+        for (final Field field : nonCached(values))
+        {
+            if (!field.isComputed())
+            {
                 values.put(field.name(), field.value().get(file));
             }
         }
@@ -90,12 +97,13 @@ public final class FieldReader implements InfoGenerator {
     
     private void putComputations(
             final Map<? super String, ? super String> values,
-            final File file) throws IOException {
-        
+            final File file) throws IOException
+    {
         final Collection<Field> notAborted = resetAbort(values, file);
         final Collection<FieldComputation> compsToUpdate = computationsIn(
                 notAborted);
-        if (compsToUpdate.isEmpty()) {
+        if (compsToUpdate.isEmpty())
+        {
             return;
         }
         update(compsToUpdate, buffer, file);
@@ -104,8 +112,8 @@ public final class FieldReader implements InfoGenerator {
     
     private Collection<Field> resetAbort(
             final Map<? super String, ? super String> values,
-            final File file) throws IOException {
-        
+            final File file) throws IOException
+    {
         final Collection<Field> notCachedBeforeReset = nonCached(values);
         reset(computationsIn(notCachedBeforeReset), file);
         final Collection<Field> notCachedAfterReset = nonCached(values);
@@ -114,16 +122,16 @@ public final class FieldReader implements InfoGenerator {
     }
     
     private Collection<Field> nonCached(
-            final Map<? super String, ? super String> values) {
-        
+            final Map<? super String, ? super String> values)
+    {
         return Stream.of(fields)
                 .filter(field -> !values.containsKey(field.name()))
                 .collect(toList());
     }
     
     private static Collection<FieldComputation> computationsIn(
-            final Collection<Field> fields) {
-        
+            final Collection<Field> fields)
+    {
         return fields.stream()
                 .filter(Field::isComputed)
                 .map(Field::computation)
@@ -132,9 +140,10 @@ public final class FieldReader implements InfoGenerator {
 
     private static void reset(
             final Collection<? extends FieldComputation> computations,
-            final File file) throws IOException {
-        
-        for (final var computation : computations) {
+            final File file) throws IOException
+    {
+        for (final var computation : computations)
+        {
             computation.reset(file);
         }
     }
@@ -142,8 +151,8 @@ public final class FieldReader implements InfoGenerator {
     private static void abort(
             final Collection<Field> notCachedBeforeReset,
             final Collection<Field> notCachedAfterReset,
-            final File file) {
-        
+            final File file)
+    {
         notCachedBeforeReset.stream()
                 .filter(field -> !notCachedAfterReset.contains(field))
                 .map(Field::computation)
@@ -153,19 +162,23 @@ public final class FieldReader implements InfoGenerator {
     private static void update(
             final Collection<? extends FieldComputation> computations,
             final byte[] buffer,
-            final File file) throws IOException {
-        
-        try (final var in = new FileInputStream(file)) {
+            final File file) throws IOException
+    {
+        try (final var in = new FileInputStream(file))
+        {
             final var active = new ArrayList<FieldComputation>(computations);
             for (
                     int bytesRead = in.read(buffer);
                     bytesRead > 0;
-                    bytesRead = in.read(buffer)) {
-                
-                for (int i = 0; i < active.size(); i++) {
-                    if (!active.get(i).update(buffer, 0, bytesRead)) {
+                    bytesRead = in.read(buffer))
+            {
+                for (int i = 0; i < active.size(); i++)
+                {
+                    if (!active.get(i).update(buffer, 0, bytesRead))
+                    {
                         active.remove(i--);
-                        if (active.isEmpty()) {
+                        if (active.isEmpty())
+                        {
                             return;
                         }
                     }
@@ -177,10 +190,12 @@ public final class FieldReader implements InfoGenerator {
     private static void compute(
             final Collection<Field> fields,
             final Map<? super String, ? super String> values)
-                    throws IOException {
-        
-        for (final var field : fields) {
-            if (field.isComputed()) {
+                    throws IOException
+    {
+        for (final var field : fields)
+        {
+            if (field.isComputed())
+            {
                 values.put(field.name(), field.computation().get());
             }
         }

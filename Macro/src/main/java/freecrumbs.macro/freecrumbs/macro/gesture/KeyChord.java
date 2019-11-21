@@ -17,40 +17,43 @@ import freecrumbs.macro.Script;
  * 
  * @author Tone Sommerland
  */
-public final class KeyChord extends Command {
-    
+public final class KeyChord extends Command
+{
     public static final GestureParser INSTANCE = new KeyChord();
     
     public static final String NAME = "key_chord";
 
-    private KeyChord() {
+    private KeyChord()
+    {
         super(NAME, 1, Integer.MAX_VALUE);
     }
 
     @Override
     protected Gesture getGesture(final String line, final String[] params)
-            throws MacroException {
-        
+            throws MacroException
+    {
         return (script, robot) -> playChord(script, robot, params);
     }
     
     private static void playChord(
             final Script script,
             final Robot robot,
-            final String[] params) throws MacroException {
-        
+            final String[] params) throws MacroException
+    {
         final int[] keyCodes = getKeyCodes(script, params);
         IntStream.of(keyCodes).forEach(robot::keyPress);
-        for (int i = keyCodes.length - 1; i >= 0; i--) {
+        for (int i = keyCodes.length - 1; i >= 0; i--)
+        {
             robot.keyRelease(keyCodes[i]);
         }
     }
 
     private static int[] getKeyCodes(
-            final Script script, final String[] params) throws MacroException {
-        
+            final Script script, final String[] params) throws MacroException
+    {
         final int[] keyCodes = new int[params.length];
-        for (int i = 0; i < keyCodes.length; i++) {
+        for (int i = 0; i < keyCodes.length; i++)
+        {
             keyCodes[i] = script.variables().value(params[i]);
         }
         return keyCodes;

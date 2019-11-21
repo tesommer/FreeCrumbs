@@ -12,20 +12,21 @@ import freecrumbs.macro.MacroException;
  * 
  * @author Tone Sommerland
  */
-public final class Load extends Command {
-    
+public final class Load extends Command
+{
     public static final GestureParser INSTANCE = new Load();
     
     public static final String NAME = "load";
     
-    private Load() {
+    private Load()
+    {
         super(NAME, 2, 2);
     }
 
     @Override
     protected Gesture getGesture(final String line, final String[] params)
-            throws MacroException {
-        
+            throws MacroException
+    {
         return (script, robot) -> script.images()
                 .set(params[0], script.images().load(params[1]));
     }

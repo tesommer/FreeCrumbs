@@ -26,14 +26,16 @@ import freecrumbs.finf.FieldReader;
 import freecrumbs.finf.Info;
 
 @DisplayName("ConfigLoader")
-public final class ConfigLoaderTest {
-
-    public ConfigLoaderTest() {
+public final class ConfigLoaderTest
+{
+    public ConfigLoaderTest()
+    {
     }
     
     @Test
     @DisplayName("getDefault(Map): Empty config")
-    public void test1() throws IOException {
+    public void test1() throws IOException
+    {
         final Config config = loadConfig("");
         assertConfig(config, false, false, -1);
         final Info info = getInfo("a", "b", "2", "3", "c");
@@ -43,20 +45,23 @@ public final class ConfigLoaderTest {
     
     @Test
     @DisplayName("getDefault(Map): Invalid property")
-    public void test2() throws IOException {
+    public void test2() throws IOException
+    {
         final Config config = loadConfig("count=22\nabc=xyz");
         assertConfig(config, false, false, 22);
     }
     
     @Test
     @DisplayName("getDefault(Map): Invalid date format")
-    public void test3() {
+    public void test3()
+    {
         assertThrows(IOException.class, () -> loadConfig("date.format=j"));
     }
     
     @Test
     @DisplayName("getDefault(Map): Override")
-    public void test4() throws IOException {
+    public void test4() throws IOException
+    {
         final var overrides = Map.of("count", "21");
         final Config config = loadConfig("count=22", overrides);
         assertConfig(config, false, false, 21);
@@ -64,7 +69,8 @@ public final class ConfigLoaderTest {
     
     @Test
     @DisplayName("getDefault(Map): Override to default")
-    public void test5() throws IOException {
+    public void test5() throws IOException
+    {
         final var overrides = new HashMap<String, String>();
         overrides.put("count", null);
         final Config config = loadConfig("count=22", overrides);
@@ -73,7 +79,8 @@ public final class ConfigLoaderTest {
     
     @Test
     @DisplayName("getDefault(Map): Used fields, prefilter off")
-    public void test6() throws IOException {
+    public void test6() throws IOException
+    {
         final Config config = loadConfig(
                   "prefilter=0\n"
                 + "output=${filename}\n"
@@ -85,7 +92,8 @@ public final class ConfigLoaderTest {
     
     @Test
     @DisplayName("getDefault(Map): Used fields, prefilter on")
-    public void test7() throws IOException {
+    public void test7() throws IOException
+    {
         final Config config = loadConfig(
                 "prefilter=1\n"
               + "output=${filename}\n"
@@ -97,7 +105,8 @@ public final class ConfigLoaderTest {
     
     @Test
     @DisplayName("getDefault(Map): hash.algorithms")
-    public void test8() throws IOException {
+    public void test8() throws IOException
+    {
         final String setting
             = "hash.algorithms= md5  sha-512, \tnothanx md5 MD5 \n"
             + "output="
@@ -113,14 +122,16 @@ public final class ConfigLoaderTest {
     
     @Nested
     @DisplayName("ConfigLoader.getDefault(Map): filter")
-    public static final class GetDefaultTest_FileFilter {
-
-        public GetDefaultTest_FileFilter() {
+    public static final class GetDefaultTest_FileFilter
+    {
+        public GetDefaultTest_FileFilter()
+        {
         }
         
         @Test
         @DisplayName("Regex")
-        public void test1() throws IOException {
+        public void test1() throws IOException
+        {
             final Config config = loadConfig("filter=a\\\\d*");
             assertFileFilter(config, "abc", false);
             assertFileFilter(config, "a23", true);
@@ -128,7 +139,8 @@ public final class ConfigLoaderTest {
         
         @Test
         @DisplayName("Regex: invalid regex")
-        public void test2() {
+        public void test2()
+        {
             assertThrows(
                     IOException.class,
                     () -> loadConfig("filter=.{@,"));
@@ -136,7 +148,8 @@ public final class ConfigLoaderTest {
         
         @Test
         @DisplayName("Format pattern")
-        public void test3() throws IOException {
+        public void test3() throws IOException
+        {
             final String setting
                 = "filter=${filename}"
                 + "--^.{14,}$++(.*\\\\.html?$|.*\\\\.php$)--^index\\\\..{3,4}$";
@@ -153,7 +166,8 @@ public final class ConfigLoaderTest {
         
         @Test
         @DisplayName("Format pattern: empty format")
-        public void test4() throws IOException {
+        public void test4() throws IOException
+        {
             final Config config1 = loadConfig("filter=++.*");
             final Config config2 = loadConfig("filter=++.+");
             final String filename1 = "element115.txt";
@@ -166,7 +180,8 @@ public final class ConfigLoaderTest {
         
         @Test
         @DisplayName("Format pattern: pattern with trailing delim char")
-        public void test5() throws IOException {
+        public void test5() throws IOException
+        {
             final Config config = loadConfig(
                     "filter=${filename}++\\\\d+++\\\\w+");
             assertFileFilter(config, "123", true);
@@ -175,7 +190,8 @@ public final class ConfigLoaderTest {
         
         @Test
         @DisplayName("Format pattern: trailing empty pattern")
-        public void test6() throws IOException {
+        public void test6() throws IOException
+        {
             final Config config = loadConfig("filter=${filename}++.?++");
             assertFileFilter(config, "", true);
             assertFileFilter(config, "a", false);
@@ -183,7 +199,8 @@ public final class ConfigLoaderTest {
         
         @Test
         @DisplayName("Format pattern: invalid pattern")
-        public void test7() {
+        public void test7()
+        {
             assertThrows(
                     IOException.class,
                     () -> loadConfig("filter=${filename}++.{@,"));
@@ -191,7 +208,8 @@ public final class ConfigLoaderTest {
         
         @Test
         @DisplayName("Multiple filters")
-        public void test8() throws IOException {
+        public void test8() throws IOException
+        {
             final String setting
                 = "filter=.{2,}\n"
                 + "filter.malt=${filename}--.{7,}\n"
@@ -206,8 +224,8 @@ public final class ConfigLoaderTest {
     
     @Nested
     @DisplayName("ConfigLoader.getDefault(Map): order")
-    public static final class GetDefaultTest_Order {
-        
+    public static final class GetDefaultTest_Order
+    {
         private static final Info
         I1 = getInfo("p1", "f1", "1", "100", "h1");
         
@@ -217,12 +235,14 @@ public final class ConfigLoaderTest {
         private static final Info
         I3 = getInfo("p1", "f2", "3", "102", "h3");
 
-        public GetDefaultTest_Order() {
+        public GetDefaultTest_Order()
+        {
         }
         
         @Test
         @DisplayName("Order")
-        public void test1() throws IOException {
+        public void test1() throws IOException
+        {
             final Config config = loadConfig(
                     "order=path filename desc size asc");
             assertOrder(config, I3, I1, I2);
@@ -233,21 +253,24 @@ public final class ConfigLoaderTest {
         
         @Test
         @DisplayName("Order: invalid order")
-        public void test2() throws IOException {
+        public void test2() throws IOException
+        {
             assertOrder(loadConfig("order=wtf md5"), I1, I2, I3);
         }
     }
     
     @Nested
     @DisplayName("ConfigLoader.getDefault(Map): output")
-    public static final class GetDefaultTest_InfoFormat {
-
-        public GetDefaultTest_InfoFormat() {
+    public static final class GetDefaultTest_InfoFormat
+    {
+        public GetDefaultTest_InfoFormat()
+        {
         }
         
         @Test
         @DisplayName("Info format")
-        public void test1() throws IOException {
+        public void test1() throws IOException
+        {
             final Config config = loadConfig(
                     "output=${modified}|${filename}: ${path} -- ${size}");
             final Info info = getInfo("cat", "al", "ey", "a", "Z");
@@ -257,28 +280,32 @@ public final class ConfigLoaderTest {
     
     @Nested
     @DisplayName("ConfigLoader.getDefault(Map): count")
-    public static final class GetDefaultTest_Count {
-
-        public GetDefaultTest_Count() {
+    public static final class GetDefaultTest_Count
+    {
+        public GetDefaultTest_Count()
+        {
         }
         
         @Test
         @DisplayName("Count")
-        public void test1() throws IOException {
+        public void test1() throws IOException
+        {
             assertEquals(2, loadConfig("count=2").getCount(), "Count");
         }
     }
     
     @Nested
     @DisplayName("ConfigLoader.getDefault(Map): search")
-    public static final class GetDefaultTest_Search {
-
-        public GetDefaultTest_Search() {
+    public static final class GetDefaultTest_Search
+    {
+        public GetDefaultTest_Search()
+        {
         }
         
         @Test
         @DisplayName("Search")
-        public void test1() throws IOException {
+        public void test1() throws IOException
+        {
             loadConfig("search=/abc/");
             loadConfig("search=/abc/o=1");
             loadConfig("search=/abc/o=0");
@@ -320,15 +347,15 @@ public final class ConfigLoaderTest {
     
     private static Config loadConfig(
             final String properties,
-            final Map<String, String> overrides) throws IOException {
-        
+            final Map<String, String> overrides) throws IOException
+    {
         return ConfigLoader.getDefault(overrides)
                 .loadConfig(new StringReader(properties));
     }
     
     private static Config loadConfig(final String properties)
-            throws IOException {
-        
+            throws IOException
+    {
         return loadConfig(properties, Map.of());
     }
     
@@ -336,8 +363,8 @@ public final class ConfigLoaderTest {
             final Config config,
             final boolean expectedFileFilterPresence,
             final boolean expectedOrderPresence,
-            final int expectedCount) {
-        
+            final int expectedCount)
+    {
         assertEquals(
                 expectedFileFilterPresence,
                 config.getFileFilter().isPresent(),
@@ -354,8 +381,8 @@ public final class ConfigLoaderTest {
     
     private static void assertInfoGenerator(
             final Config config,
-            final String... expectedFieldNames) throws IOException {
-        
+            final String... expectedFieldNames) throws IOException
+    {
         final var reader = (FieldReader)config.getInfoGenerator();
         final var expected = Stream.of(expectedFieldNames)
                 .sorted()
@@ -369,8 +396,8 @@ public final class ConfigLoaderTest {
     private static void assertInfoFormat(
             final Config config,
             final Info info,
-            final String expectedFormattedInfo) throws IOException {
-        
+            final String expectedFormattedInfo) throws IOException
+    {
         final String actualFormattedInfo
             = config.getInfoFormat().toString(info);
         assertEquals(
@@ -380,8 +407,8 @@ public final class ConfigLoaderTest {
     private static void assertFileFilter(
             final Config config,
             final String filename,
-            final boolean expectedIncludes) {
-
+            final boolean expectedIncludes)
+    {
         assertEquals(
                 expectedIncludes,
                 config.getFileFilter().get().accept(new File(filename)),
@@ -389,12 +416,13 @@ public final class ConfigLoaderTest {
     }
     
     private static void assertOrder(
-            final Config config, final Info... expected) {
-        
+            final Config config, final Info... expected)
+    {
         final var actual = new ArrayList<Info>(List.of(expected));
         Collections.reverse(actual);
         actual.sort(config.getOrder().get());
-        for (int i = 0; i < expected.length; i++) {
+        for (int i = 0; i < expected.length; i++)
+        {
             assertSame(expected[i], actual.get(i), "Order: index " + i);
         }
     }

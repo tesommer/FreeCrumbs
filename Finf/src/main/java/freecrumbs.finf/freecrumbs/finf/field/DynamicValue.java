@@ -10,13 +10,14 @@ import freecrumbs.finf.InfoGenerator;
  * @author Tone Sommerland
  */
 @FunctionalInterface
-public interface DynamicValue extends FieldValue {
-    
+public interface DynamicValue extends FieldValue
+{
     /**
      * Returns an instance with a fixed value.
      * @param value the value
      */
-    public static DynamicValue of(final String value) {
+    public static DynamicValue of(final String value)
+    {
         return file -> value;
     }
     
@@ -26,8 +27,8 @@ public interface DynamicValue extends FieldValue {
      * to info returned by the given info generator.
      */
     public static DynamicValue of(
-            final InfoGenerator infoGenerator, final InfoFormat infoFormat) {
-        
+            final InfoGenerator infoGenerator, final InfoFormat infoFormat)
+    {
         return file -> infoFormat.toString(infoGenerator.getInfo(file));
     }
 

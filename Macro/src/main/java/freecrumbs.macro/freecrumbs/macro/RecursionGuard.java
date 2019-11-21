@@ -7,14 +7,15 @@ import freecrumbs.macro.internal.AtomicRecursionGuard;
  * 
  * @author Tone Sommerland
  */
-public interface RecursionGuard {
-    
+public interface RecursionGuard
+{
     /**
      * Returns an instance that uses an atomic counter.
      * @param limit the number of recursions at which an exception is thrown
      * @throws IllegalArgumentException if the limit is less than zero
      */
-    public static RecursionGuard getAtomic(final int limit) {
+    public static RecursionGuard getAtomic(final int limit)
+    {
         return new AtomicRecursionGuard(limit);
     }
     

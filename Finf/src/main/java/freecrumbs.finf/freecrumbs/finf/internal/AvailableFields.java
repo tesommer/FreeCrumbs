@@ -36,8 +36,8 @@ import freecrumbs.finf.field.Whitespace;
  * 
  * @author Tone Sommerland
  */
-public final class AvailableFields {
-    
+public final class AvailableFields
+{
     private static final int BUFFER_SIZE = 2048;
     
     /**
@@ -45,7 +45,8 @@ public final class AvailableFields {
      * 
      * @author Tone Sommerland
      */
-    public static final class Params {
+    public static final class Params
+    {
         private final String dateFormat;
         private final Locale locale;
         private final Classification.Heuristic classHeuristic;
@@ -57,8 +58,8 @@ public final class AvailableFields {
                 final Locale locale,
                 final Classification.Heuristic classHeuristic,
                 final String[] hashAlgorithms,
-                final Search.Params[] searchParams) {
-            
+                final Search.Params[] searchParams)
+        {
             this.dateFormat = dateFormat;
             this.locale = locale;
             this.classHeuristic = classHeuristic;
@@ -68,14 +69,16 @@ public final class AvailableFields {
                 = searchParams == null ? new Search.Params[0] : searchParams;
         }
         
-        public Params() {
+        public Params()
+        {
             this(null, null, null, null, null);
         }
         
         /**
          * If the given date format is empty, timestamp formatting will be off.
          */
-        public Params withTime(final String dateFormat, final Locale locale) {
+        public Params withTime(final String dateFormat, final Locale locale)
+        {
             return new Params(
                     requireNonNull(dateFormat, "dateFormat"),
                     requireNonNull(locale, "locale"),
@@ -85,8 +88,8 @@ public final class AvailableFields {
         }
         
         public Params withClassification(
-                final Classification.Heuristic heuristic) {
-            
+                final Classification.Heuristic heuristic)
+        {
             return new Params(
                     this.dateFormat,
                     this.locale,
@@ -100,7 +103,8 @@ public final class AvailableFields {
          * Empty algorithms and duplicates will be ignored.
          * Field names will be the algorithms in lowercase.
          */
-        public Params withHash(final String... algorithms) {
+        public Params withHash(final String... algorithms)
+        {
             return new Params(
                     this.dateFormat,
                     this.locale,
@@ -109,7 +113,8 @@ public final class AvailableFields {
                     this.searchParams);
         }
         
-        public Params withAnotherSearch(final Search.Params params) {
+        public Params withAnotherSearch(final Search.Params params)
+        {
             return new Params(
                     this.dateFormat,
                     this.locale,
@@ -120,22 +125,27 @@ public final class AvailableFields {
                         .toArray(Search.Params[]::new));
         }
         
-        private Field[] getFreshFields() throws IOException {
+        private Field[] getFreshFields() throws IOException
+        {
             final var freshFields = new ArrayList<Field>(
                     List.of(Path.FIELD, Filename.FIELD, Size.FIELD));
             freshFields.addAll(List.of(Eol.getFields()));
             freshFields.addAll(List.of(Whitespace.getFields()));
             freshFields.addAll(List.of(BinaryToText.getFields()));
-            if (dateFormat != null) {
+            if (dateFormat != null)
+            {
                 freshFields.addAll(timeFields(dateFormat, locale));
             }
-            if (classHeuristic != null) {
+            if (classHeuristic != null)
+            {
                 freshFields.add(classificationField(classHeuristic));
             }
-            if (hashAlgorithms.length > 0) {
+            if (hashAlgorithms.length > 0)
+            {
                 freshFields.addAll(hashFields(hashAlgorithms));
             }
-            if (searchParams.length > 0) {
+            if (searchParams.length > 0)
+            {
                 freshFields.addAll(searchFields(searchParams));
             }
             return freshFields.stream()
@@ -143,15 +153,16 @@ public final class AvailableFields {
                     .toArray(Field[]::new);
         }
         
-        private static Predicate<Field> distinctByName() {
+        private static Predicate<Field> distinctByName()
+        {
             final var names = new HashSet<String>();
             return field -> names.add(field.name());
         }
         
         private static Collection<Field> timeFields(
                 final String dateFormat,
-                final Locale locale) throws IOException {
-
+                final Locale locale) throws IOException
+        {
             final Field modifiedField = dateFormat.isEmpty()
                     ? Modified.getField()
                     : Modified.getField(dateFormat, locale);
@@ -159,16 +170,19 @@ public final class AvailableFields {
         }
         
         private static Field classificationField(
-                final Classification.Heuristic heuristic) {
-            
+                final Classification.Heuristic heuristic)
+        {
             return Classification.getField(heuristic, String::valueOf);
         }
         
-        private static Collection<Field> hashFields(final String[] algorithms) {
+        private static Collection<Field> hashFields(final String[] algorithms)
+        {
             final var hashFields = new ArrayList<Field>();
-            for (final String algorithm : algorithms) {
+            for (final String algorithm : algorithms)
+            {
                 final String trimmed = algorithm.trim();
-                if (trimmed.isEmpty()) {
+                if (trimmed.isEmpty())
+                {
                     continue;
                 }
                 final String trimmedAndLowerCase = trimmed.toLowerCase();
@@ -178,8 +192,8 @@ public final class AvailableFields {
         }
         
         private static Collection<Field> searchFields(
-                final Search.Params[] params) {
-            
+                final Search.Params[] params)
+        {
             return Stream.of(params)
                     .map(Search::getFields)
                     .flatMap(Stream::of)
@@ -193,8 +207,8 @@ public final class AvailableFields {
     
     private AvailableFields(
             final FieldReader mother,
-            final Params params) throws IOException {
-        
+            final Params params) throws IOException
+    {
         assert mother != null;
         this.mother = mother;
         this.params = params;
@@ -205,14 +219,16 @@ public final class AvailableFields {
      * Creates an instance with its own cache.
      * @param params field parameters
      */
-    public AvailableFields(final Params params) throws IOException {
+    public AvailableFields(final Params params) throws IOException
+    {
         this(FieldReader.getInstance(2), params);
     }
     
     /**
      * The parameters for this instance's fields.
      */
-    public Params getParams() {
+    public Params getParams()
+    {
         return params;
     }
     
@@ -221,15 +237,16 @@ public final class AvailableFields {
      * @param params field parameters
      */
     public AvailableFields coCaching(final Params params)
-            throws IOException {
-        
+            throws IOException
+    {
         return new AvailableFields(this.mother, params);
     }
 
     /**
      * The names of all available fields.
      */
-    public String[] getNames() {
+    public String[] getNames()
+    {
         return Field.namesOf(fields);
     }
     
@@ -239,7 +256,8 @@ public final class AvailableFields {
      * @throws NoSuchElementException
      * if any of the specified fields are unavailable
      */
-    public FieldReader getReader(final String... usedFieldNames) {
+    public FieldReader getReader(final String... usedFieldNames)
+    {
         return mother.coCaching(
                 BUFFER_SIZE,
                 Stream.of(usedFieldNames)
@@ -248,7 +266,8 @@ public final class AvailableFields {
                     .toArray(Field[]::new));
     }
     
-    private Field getField(final String name) {
+    private Field getField(final String name)
+    {
         return Stream.of(fields)
             .filter(field -> field.name().equals(name))
             .findAny()

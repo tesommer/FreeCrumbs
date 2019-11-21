@@ -38,8 +38,8 @@ import freecrumbs.finf.FieldComputation;
  * 
  * @author Tone Sommerland
  */
-public final class Search {
-    
+public final class Search
+{
     private static final String FOUND_FIELD_NAME = "found";
     private static final String GROUP_COUNT_FIELD_NAME = "groupcount";
     private static final String LINE_FIELD_NAME = "line";
@@ -54,7 +54,8 @@ public final class Search {
      * 
      * @author Tone Sommerland
      */
-    public static final class Params {
+    public static final class Params
+    {
         private final String fieldNamePrefix;
         private final int groups;
         private final Charset charset;
@@ -68,9 +69,10 @@ public final class Search {
                 final Charset charset,
                 final int occurrence,
                 final int regexFlags,
-                final DynamicValue regex) {
-            
-            if (groups < 0) {
+                final DynamicValue regex)
+        {
+            if (groups < 0)
+            {
                 throw new IllegalArgumentException("groups < 0");
             }
             this.fieldNamePrefix
@@ -85,11 +87,13 @@ public final class Search {
         /**
          * Creates parameters with the given regex.
          */
-        public Params(final DynamicValue regex) {
+        public Params(final DynamicValue regex)
+        {
             this("", 0, Charset.defaultCharset(), 1, 0, regex);
         }
         
-        public Params withFieldNamePrefix(final String fieldNamePrefix) {
+        public Params withFieldNamePrefix(final String fieldNamePrefix)
+        {
             return new Params(
                     fieldNamePrefix,
                     this.groups,
@@ -108,7 +112,8 @@ public final class Search {
          * excess groups will have empty/-1 as their values.
          * @throws IllegalArgumentException if groups is negative
          */
-        public Params withGroups(final int groups) {
+        public Params withGroups(final int groups)
+        {
             return new Params(
                     this.fieldNamePrefix,
                     groups,
@@ -118,7 +123,8 @@ public final class Search {
                     this.regex);
         }
         
-        public Params withCharset(final Charset charset) {
+        public Params withCharset(final Charset charset)
+        {
             return new Params(
                     this.fieldNamePrefix,
                     this.groups,
@@ -133,7 +139,8 @@ public final class Search {
          * A negative occurrence searches from the bottom rather than the top.
          * An occurrence of zero results in not found.
          */
-        public Params withOccurrence(final int occurrence) {
+        public Params withOccurrence(final int occurrence)
+        {
             return new Params(
                     this.fieldNamePrefix,
                     this.groups,
@@ -143,7 +150,8 @@ public final class Search {
                     this.regex);
         }
         
-        public Params withRegexFlags(final int regexFlags) {
+        public Params withRegexFlags(final int regexFlags)
+        {
             return new Params(
                     this.fieldNamePrefix,
                     this.groups,
@@ -153,7 +161,8 @@ public final class Search {
                     this.regex);
         }
         
-        public Params withRegex(final DynamicValue regex) {
+        public Params withRegex(final DynamicValue regex)
+        {
             return new Params(
                     this.fieldNamePrefix,
                     this.groups,
@@ -164,13 +173,15 @@ public final class Search {
         }
     }
 
-    private Search() {
+    private Search()
+    {
     }
     
     /**
      * Returns the fields of the search specified with the given parameters.
      */
-    public static Field[] getFields(final Params params) {
+    public static Field[] getFields(final Params params)
+    {
         final var searcher = new Searcher();
         final var fields = new ArrayList<Field>(4 + params.groups);
         fields.add(Field.getInstance(
@@ -182,7 +193,8 @@ public final class Search {
         fields.add(Field.getInstance(
                 params.fieldNamePrefix + LINE_FIELD_NAME,
                 new SearchComputation(params, searcher, Search::getLine)));
-        for (int groupNumber = 0; groupNumber <= params.groups; groupNumber++) {
+        for (int groupNumber = 0; groupNumber <= params.groups; groupNumber++)
+        {
             addGroupFields(
                     params,
                     searcher,
@@ -196,8 +208,8 @@ public final class Search {
             final Params params,
             final Searcher searcher,
             final int groupNumber,
-            final Collection<? super Field> fields) {
-        
+            final Collection<? super Field> fields)
+    {
         final String groupPrefix
             = groupNumber == 0 ? "" : groupNumber + SEPARATOR;
         fields.add(Field.getInstance(
@@ -214,40 +226,50 @@ public final class Search {
                         params, searcher, hit -> getEnd(hit, groupNumber))));
     }
     
-    private static String getFound(final Hit hit) {
+    private static String getFound(final Hit hit)
+    {
         return hit.isFound() ? "1" : "0";
     }
     
-    private static String getGroupCount(final Hit hit) {
+    private static String getGroupCount(final Hit hit)
+    {
         return String.valueOf(hit.groupCount);
     }
     
-    private static String getLine(final Hit hit) {
+    private static String getLine(final Hit hit)
+    {
         return String.valueOf(hit.lineNumber);
     }
     
-    private static String getInput(final Hit hit, final int groupNumber) {
-        if (groupNumber >= hit.groupHits.length) {
+    private static String getInput(final Hit hit, final int groupNumber)
+    {
+        if (groupNumber >= hit.groupHits.length)
+        {
             return "";
         }
         return hit.groupHits[groupNumber].input;
     }
     
-    private static String getStart(final Hit hit, final int groupNumber) {
-        if (groupNumber >= hit.groupHits.length) {
+    private static String getStart(final Hit hit, final int groupNumber)
+    {
+        if (groupNumber >= hit.groupHits.length)
+        {
             return "-1";
         }
         return String.valueOf(hit.groupHits[groupNumber].start);
     }
     
-    private static String getEnd(final Hit hit, final int groupNumber) {
-        if (groupNumber >= hit.groupHits.length) {
+    private static String getEnd(final Hit hit, final int groupNumber)
+    {
+        if (groupNumber >= hit.groupHits.length)
+        {
             return "-1";
         }
         return String.valueOf(hit.groupHits[groupNumber].end);
     }
     
-    private static final class SearchComputation implements FieldComputation {
+    private static final class SearchComputation implements FieldComputation
+    {
         private final Params params;
         private final Searcher searcher;
         private final Function<? super Hit, String> value;
@@ -255,8 +277,8 @@ public final class Search {
         private SearchComputation(
                 final Params params,
                 final Searcher searcher,
-                final Function<? super Hit, String> value) {
-            
+                final Function<? super Hit, String> value)
+        {
             assert params != null;
             assert searcher != null;
             assert value != null;
@@ -266,7 +288,8 @@ public final class Search {
         }
 
         @Override
-        public void reset(final File file) throws IOException {
+        public void reset(final File file) throws IOException
+        {
             searcher.reset(this, file, params.regexFlags, params.regex);
         }
 
@@ -274,42 +297,49 @@ public final class Search {
         public boolean update(
                 final byte[] input,
                 final int offset,
-                final int length) throws IOException {
-            
+                final int length) throws IOException
+        {
             return searcher.update(this, input, offset, length);
         }
 
         @Override
-        public String get() throws IOException {
+        public String get() throws IOException
+        {
             return value.apply(
                     searcher.finish(params.charset, params.occurrence));
         }
     }
     
-    private static final class Searcher {
+    private static final class Searcher
+    {
         private Object master;
         private Pattern pattern;
         private ByteArrayOutputStream buffer;
         private Hit hit;
         
-        private Searcher() {
+        private Searcher()
+        {
         }
         
         private void reset(
                 final Object caller,
                 final File file,
                 final int regexFlags,
-                final DynamicValue regex) throws IOException {
-            
-            if (master != null) {
+                final DynamicValue regex) throws IOException
+        {
+            if (master != null)
+            {
                 return;
             }
             master = caller;
-            try {
+            try
+            {
                 pattern = Pattern.compile(regex.get(file), regexFlags);
                 buffer = new ByteArrayOutputStream();
                 hit = Hit.getNotFound(pattern);
-            } catch (final PatternSyntaxException ex) {
+            }
+            catch (final PatternSyntaxException ex)
+            {
                 throw new IOException(ex);
             }
         }
@@ -318,17 +348,20 @@ public final class Search {
                 final Object caller,
                 final byte[] input,
                 final int offset,
-                final int length) {
-            
-            if (master != caller) {
+                final int length)
+        {
+            if (master != caller)
+            {
                 return false;
             }
             buffer.write(input, offset, length);
             return true;
         }
         
-        private Hit finish(final Charset charset, final int occurrence) {
-            if (master == null) {
+        private Hit finish(final Charset charset, final int occurrence)
+        {
+            if (master == null)
+            {
                 return hit;
             }
             master = null;
@@ -338,29 +371,34 @@ public final class Search {
                                     new ByteArrayInputStream(
                                             buffer.toByteArray()),
                                     charset));
-            ) {
+            )
+            {
                 return searchBuffer(reader, occurrence);
-            } catch (final IOException ex) {
+            }
+            catch (final IOException ex)
+            {
                 throw new AssertionError(ex);
             }
         }
 
         private Hit searchBuffer(
                 final BufferedReader reader,
-                final int occurrence) throws IOException {
-            
+                final int occurrence) throws IOException
+        {
             final var hits = new ArrayList<Hit>();
             int lineNumber = 0;
             for (
                     String line = reader.readLine();
                     line != null;
-                    line = reader.readLine()) {
-                
+                    line = reader.readLine())
+            {
                 lineNumber++;
                 final Matcher matcher = pattern.matcher(line);
-                while (matcher.find()) {
+                while (matcher.find())
+                {
                     hits.add(Hit.getFound(lineNumber, matcher));
-                    if (completionShortCircuited(hits, occurrence)) {
+                    if (completionShortCircuited(hits, occurrence))
+                    {
                         return hit;
                     }
                 }
@@ -370,9 +408,10 @@ public final class Search {
         }
         
         private boolean completionShortCircuited(
-                final List<Hit> hits, final int occurrence) {
-            
-            if (occurrence > 0 && hits.size() >= occurrence) {
+                final List<Hit> hits, final int occurrence)
+        {
+            if (occurrence > 0 && hits.size() >= occurrence)
+            {
                 pattern = null;
                 buffer = null;
                 hit = hits.get(occurrence - 1);
@@ -381,57 +420,67 @@ public final class Search {
             return false;
         }
         
-        private void complete(final List<Hit> hits, final int occurrence) {
+        private void complete(final List<Hit> hits, final int occurrence)
+        {
             pattern = null;
             buffer = null;
-            if (occurrence < 0 && hits.size() >= -occurrence) {
+            if (occurrence < 0 && hits.size() >= -occurrence)
+            {
                 hit = hits.get(hits.size() + occurrence);
             }
         }
     }
     
-    private static final class Hit {
+    private static final class Hit
+    {
         private final int lineNumber;
         private final int groupCount;
         private final GroupHit[] groupHits;
         
-        private Hit(final int lineNumber, final Matcher matcher) {
+        private Hit(final int lineNumber, final Matcher matcher)
+        {
             assert lineNumber >= 1;
             this.lineNumber = lineNumber;
             this.groupCount = matcher.groupCount();
             this.groupHits = new GroupHit[this.groupCount + 1];
-            for (int i = 0; i < this.groupHits.length; i++) {
+            for (int i = 0; i < this.groupHits.length; i++)
+            {
                 this.groupHits[i] = new GroupHit(matcher, i);
             }
         }
         
-        private Hit(final Pattern pattern) {
+        private Hit(final Pattern pattern)
+        {
             this.lineNumber = -1;
             this.groupCount = pattern.matcher("").groupCount();
             this.groupHits = new GroupHit[0];
         }
         
         private static Hit getFound(
-                final int lineNumber, final Matcher matcher) {
-            
+                final int lineNumber, final Matcher matcher)
+        {
             return new Hit(lineNumber, matcher);
         }
         
-        private static Hit getNotFound(final Pattern pattern) {
+        private static Hit getNotFound(final Pattern pattern)
+        {
             return new Hit(pattern);
         }
         
-        private boolean isFound() {
+        private boolean isFound()
+        {
             return lineNumber >= 0;
         }
     }
     
-    private static final class GroupHit {
+    private static final class GroupHit
+    {
         private final String input;
         private final int start;
         private final int end;
         
-        private GroupHit(final Matcher matcher, final int groupNumber) {
+        private GroupHit(final Matcher matcher, final int groupNumber)
+        {
             assert     matcher != null
                     && groupNumber >= 0
                     && groupNumber <= matcher.groupCount();

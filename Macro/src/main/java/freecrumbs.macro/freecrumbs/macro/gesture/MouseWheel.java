@@ -13,20 +13,21 @@ import freecrumbs.macro.MacroException;
  * 
  * @author Tone Sommerland
  */
-public final class MouseWheel extends Command {
-    
+public final class MouseWheel extends Command
+{
     public static final GestureParser INSTANCE = new MouseWheel();
     
     public static final String NAME = "mouse_wheel";
     
-    private MouseWheel() {
+    private MouseWheel()
+    {
         super(NAME, 1, 1);
     }
 
     @Override
     protected Gesture getGesture(final String line, final String[] params)
-            throws MacroException {
-        
+            throws MacroException
+    {
         return (script, robot)
                 -> robot.mouseWheel(script.variables().value(params[0]));
     }

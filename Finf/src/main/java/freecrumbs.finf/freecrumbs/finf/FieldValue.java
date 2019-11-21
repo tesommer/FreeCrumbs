@@ -9,8 +9,8 @@ import java.io.IOException;
  * @author Tone Sommerland
  */
 @FunctionalInterface
-public interface FieldValue {
-    
+public interface FieldValue
+{
     /**
      * Retrieves the value from the given file.
      */

@@ -35,8 +35,8 @@ import freecrumbs.macro.gesture.Wait;
  * 
  * @author Tone Sommerland
  */
-public final class Main {
-    
+public final class Main
+{
     private static final String
     HELP
         = "@macrohelp@";
@@ -47,7 +47,8 @@ public final class Main {
     
     private static final GestureParser[]
     GESTURE_PARSERS
-        = new GestureParser[] {
+        = new GestureParser[]
+        {
                 AddKeyCodeVariables.INSTANCE,
                 Beep.INSTANCE,
                 Delay.INSTANCE,
@@ -71,43 +72,57 @@ public final class Main {
                 Wait.INSTANCE,
         };
 
-    private Main() {
+    private Main()
+    {
     }
     
-    public static void main(final String[] args) {
-        try {
+    public static void main(final String[] args)
+    {
+        try
+        {
             final Args parsedArgs = parseArgs(args);
-            if (parsedArgs == null) {
+            if (parsedArgs == null)
+            {
                 System.out.println(HELP);
                 return;
             }
             final Script script = loadScript(parsedArgs);
             play(script, parsedArgs);
-        } catch (final MacroException ex) {
+        }
+        catch (final MacroException ex)
+        {
             handle(ex);
         }
     }
 
-    private static void handle(final MacroException ex) {
+    private static void handle(final MacroException ex)
+    {
         System.err.println(ex.toString());
     }
     
     private static void play(final Script script, final Args args)
-            throws MacroException {
-        
-        try {
+            throws MacroException
+    {
+        try
+        {
             final Robot robot = new Robot();
-            if (args.macroName == null) {
+            if (args.macroName == null)
+            {
                 script.play(robot, args.times);
-            } else {
+            }
+            else
+            {
                 script.play(robot, args.times, args.macroName);
             }
-        } catch (final AWTException ex) {
+        }
+        catch (final AWTException ex)
+        {
             throw new MacroException(ex);
         }
     }
     
-    private static Script loadScript(final Args args) throws MacroException {
+    private static Script loadScript(final Args args) throws MacroException
+    {
         return Script.load(
                 Location.fromFilePath(args.inputFile),
                 Loader.getDefault(GESTURE_PARSERS));
@@ -116,48 +131,68 @@ public final class Main {
     /**
      * Returns null if help option or if args contains error.
      */
-    private static Args parseArgs(final String[] args) throws MacroException {
+    private static Args parseArgs(final String[] args) throws MacroException
+    {
         String times = null;
         String macroName = null;
         String inputFile = null;
         int i = -1;
-        while (++i < args.length) {
-            if (HELP_OPTION.equals(args[i])) {
+        while (++i < args.length)
+        {
+            if (HELP_OPTION.equals(args[i]))
+            {
                 return null;
-            } else if (TIMES_OPTION.equals(args[i])) {
-                if (i == args.length - 1 || times != null) {
+            }
+            else if (TIMES_OPTION.equals(args[i]))
+            {
+                if (i == args.length - 1 || times != null)
+                {
                     return null;
                 }
                 times = args[++i];
-            } else if (MACRO_NAME_OPTION.equals(args[i])) {
-                if (i == args.length - 1 || macroName != null) {
+            }
+            else if (MACRO_NAME_OPTION.equals(args[i]))
+            {
+                if (i == args.length - 1 || macroName != null)
+                {
                     return null;
                 }
                 macroName = args[++i];
-            } else {
-                if (i != args.length - 1) {
+            }
+            else
+            {
+                if (i != args.length - 1)
+                {
                     return null;
                 }
                 inputFile = args[i];
             }
         }
-        if (inputFile == null) {
+        if (inputFile == null)
+        {
             return null;
         }
         final int playTimes;
-        if (times == null) {
+        if (times == null)
+        {
             playTimes = 1;
-        } else {
-            try {
+        }
+        else
+        {
+            try
+            {
                 playTimes = Integer.parseInt(times);
-            } catch (final NumberFormatException ex) {
+            }
+            catch (final NumberFormatException ex)
+            {
                 throw new MacroException(ex);
             }
         }
         return new Args(playTimes, macroName, inputFile);
     }
     
-    private static final class Args {
+    private static final class Args
+    {
         final int times;
         final String macroName;
         final String inputFile;
@@ -165,8 +200,8 @@ public final class Main {
         Args(
                 final int times,
                 final String macroName,
-                final String inputFile) {
-
+                final String inputFile)
+        {
             assert inputFile != null;
             this.times = times;
             this.macroName = macroName;

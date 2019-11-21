@@ -14,8 +14,8 @@ import freecrumbs.finf.InfoGenerator;
  * 
  * @author Tone Sommerland
  */
-public class MockInfoGenerator implements InfoGenerator {
-    
+public class MockInfoGenerator implements InfoGenerator
+{
     private static final String PATH_FIELD_NAME = "path";
     private static final String FILENAME_FIELD_NAME = "filename";
     private static final String SIZE_FIELD_NAME = "size";
@@ -27,7 +27,8 @@ public class MockInfoGenerator implements InfoGenerator {
     /**
      * Creates an info generator that "generates" the given info.
      */
-    public MockInfoGenerator(final Info info) {
+    public MockInfoGenerator(final Info info)
+    {
         this.info = requireNonNull(info, "info");
     }
     
@@ -39,8 +40,8 @@ public class MockInfoGenerator implements InfoGenerator {
             final String filename,
             final String size,
             final String modified,
-            final String md5) {
-        
+            final String md5)
+    {
         return new Info(Map.of(
                 PATH_FIELD_NAME,     path,
                 FILENAME_FIELD_NAME, filename,
@@ -50,7 +51,8 @@ public class MockInfoGenerator implements InfoGenerator {
     }
 
     @Override
-    public Info getInfo(final File file) throws IOException {
+    public Info getInfo(final File file) throws IOException
+    {
         return info;
     }
 

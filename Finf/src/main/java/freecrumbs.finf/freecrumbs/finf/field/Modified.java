@@ -12,17 +12,19 @@ import freecrumbs.finf.Field;
  * 
  * @author Tone Sommerland
  */
-public final class Modified {
-    
+public final class Modified
+{
     private static final String NAME = "modified";
 
-    private Modified() {
+    private Modified()
+    {
     }
     
     /**
      * Returns a field with a value as milliseconds since the epoch.
      */
-    public static Field getField() {
+    public static Field getField()
+    {
         return Field.getInstance(NAME, new ModifiedFieldValue());
     }
     
@@ -33,26 +35,28 @@ public final class Modified {
      * @throws IOException if the date format is incorrect
      */
     public static Field getField(final String dateFormat, final Locale locale)
-            throws IOException {
-        
+            throws IOException
+    {
         return Field.getInstance(
                 NAME, new ModifiedFieldValue(dateFormat, locale));
     }
     
-    private static final class ModifiedFieldValue extends TimeFieldValue {
-
-        private ModifiedFieldValue() {
+    private static final class ModifiedFieldValue extends TimeFieldValue
+    {
+        private ModifiedFieldValue()
+        {
         }
 
         private ModifiedFieldValue(
                 final String dateFormat,
-                final Locale locale) throws IOException {
-            
+                final Locale locale) throws IOException
+        {
             super(dateFormat, locale);
         }
 
         @Override
-        protected long getTime(final File file) throws IOException {
+        protected long getTime(final File file) throws IOException
+        {
             return file.lastModified();
         }
         

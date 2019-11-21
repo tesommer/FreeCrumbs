@@ -35,7 +35,8 @@ import freecrumbs.finf.ConfigLoader;
  * 
  * @author Tone Sommerland
  */
-public final class PropertiesConfigLoader implements ConfigLoader {
+public final class PropertiesConfigLoader implements ConfigLoader
+{
     private final Locale locale;
     private final Map<String, String> overrides;
 
@@ -45,15 +46,16 @@ public final class PropertiesConfigLoader implements ConfigLoader {
      * (a key with a value of {@code null} means 'use default')
      */
     public PropertiesConfigLoader(
-            final Locale locale, final Map<String, String> overrides) {
-        
+            final Locale locale, final Map<String, String> overrides)
+    {
         this.locale = requireNonNull(locale, "locale");
         // Do not use Map.copyOf because overrides may contain null.
         this.overrides = new HashMap<>(overrides);
     }
     
     @Override
-    public Config loadConfig(final Reader reader) throws IOException {
+    public Config loadConfig(final Reader reader) throws IOException
+    {
         final Properties props = getProperties(reader);
         final Manifold manifold = new Manifold(props, locale);
         return new Config.Builder(
@@ -64,7 +66,8 @@ public final class PropertiesConfigLoader implements ConfigLoader {
                     .build();
     }
 
-    private Properties getProperties(final Reader reader) throws IOException {
+    private Properties getProperties(final Reader reader) throws IOException
+    {
         final var props = new Properties();
         props.load(reader);
         applyOverrides(props, overrides);
@@ -72,12 +75,16 @@ public final class PropertiesConfigLoader implements ConfigLoader {
     }
 
     private static void applyOverrides(
-            final Properties props, final Map<String, String> overrides) {
-        
-        overrides.forEach((key, value) -> {
-            if (value == null) {
+            final Properties props, final Map<String, String> overrides)
+    {
+        overrides.forEach((key, value) ->
+        {
+            if (value == null)
+            {
                 props.remove(key);
-            } else {
+            }
+            else
+            {
                 props.put(key, value);
             }
         });

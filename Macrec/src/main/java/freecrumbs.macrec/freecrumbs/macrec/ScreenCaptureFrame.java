@@ -24,13 +24,14 @@ import freecrumbs.macro.MacroException;
  * @author Tone Sommerland
  */
 public class ScreenCaptureFrame extends JFrame
-    implements MouseListener, KeyListener {
-    
+    implements MouseListener, KeyListener
+{
     private static final long serialVersionUID = 1L;
     
     protected final BufferedImage screenCapture;
     
-    protected ScreenCaptureFrame() throws MacroException {
+    protected ScreenCaptureFrame() throws MacroException
+    {
         this.screenCapture = createScreenCapture();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         addKeyListener(this);
@@ -39,46 +40,58 @@ public class ScreenCaptureFrame extends JFrame
         setUndecorated(true);
     }
 
-    private static BufferedImage createScreenCapture() throws MacroException {
+    private static BufferedImage createScreenCapture() throws MacroException
+    {
         final Dimension screenSize
             = Toolkit.getDefaultToolkit().getScreenSize();
-        try {
+        try
+        {
             return new Robot().createScreenCapture(new Rectangle(screenSize));
-        } catch (final AWTException ex) {
+        }
+        catch (final AWTException ex)
+        {
             throw new MacroException(ex);
         }
     }
     
     @Override
-    public void keyTyped(final KeyEvent evt) {
+    public void keyTyped(final KeyEvent evt)
+    {
     }
 
     @Override
-    public void keyPressed(final KeyEvent evt) {
+    public void keyPressed(final KeyEvent evt)
+    {
     }
 
     @Override
-    public void keyReleased(final KeyEvent evt) {
+    public void keyReleased(final KeyEvent evt)
+    {
     }
 
     @Override
-    public void mouseClicked(final MouseEvent evt) {
+    public void mouseClicked(final MouseEvent evt)
+    {
     }
 
     @Override
-    public void mousePressed(final MouseEvent evt) {
+    public void mousePressed(final MouseEvent evt)
+    {
     }
 
     @Override
-    public void mouseReleased(final MouseEvent evt) {
+    public void mouseReleased(final MouseEvent evt)
+    {
     }
 
     @Override
-    public void mouseEntered(final MouseEvent evt) {
+    public void mouseEntered(final MouseEvent evt)
+    {
     }
 
     @Override
-    public void mouseExited(final MouseEvent evt) {
+    public void mouseExited(final MouseEvent evt)
+    {
     }
 
 }

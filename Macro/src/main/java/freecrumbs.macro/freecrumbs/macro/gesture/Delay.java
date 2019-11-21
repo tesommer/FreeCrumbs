@@ -13,24 +13,27 @@ import freecrumbs.macro.MacroException;
  * 
  * @author Tone Sommerland
  */
-public final class Delay extends Command {
-    
+public final class Delay extends Command
+{
     public static final GestureParser INSTANCE = new Delay();
     
     public static final String NAME = "delay";
     
     public static final String AUTO = "auto";
 
-    private Delay() {
+    private Delay()
+    {
         super(NAME, 1, 2);
     }
 
     @Override
     protected Gesture getGesture(final String line, final String[] params)
-            throws MacroException {
-        
-        if (params.length == 2) {
-            if (!AUTO.equals(params[1])) {
+            throws MacroException
+    {
+        if (params.length == 2)
+        {
+            if (!AUTO.equals(params[1]))
+            {
                 throw new MacroException(line);
             }
             return (script, robot) ->

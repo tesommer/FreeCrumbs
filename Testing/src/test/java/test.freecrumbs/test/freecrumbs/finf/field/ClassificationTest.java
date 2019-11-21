@@ -13,8 +13,8 @@ import freecrumbs.finf.field.Classification.Heuristic;
 import test.freecrumbs.finf.FieldTesting;
 
 @DisplayName("Classification")
-public final class ClassificationTest {
-    
+public final class ClassificationTest
+{
     private static final byte T = 't';
     private static final byte B = 'b';
     
@@ -27,17 +27,20 @@ public final class ClassificationTest {
     private static final String
     BINARY = Classification.Category.BINARY.toString();
 
-    public ClassificationTest() {
+    public ClassificationTest()
+    {
     }
     
     @Test
     @DisplayName("Empty")
-    public void test1() throws IOException {
+    public void test1() throws IOException
+    {
         final FieldComputation comp = getInstance(512, .3);
         comp.reset(FieldTesting.DUMMY_FILE);
         assertEquals(EMPTY, comp.get(), "emtpy");
         final FieldComputation comp2 = getInstance(512, .3);
-        final var ups = new byte[][] {
+        final var ups = new byte[][]
+        {
             new byte[0],
         };
         assertClassification(comp2, ups, 1, EMPTY);
@@ -45,8 +48,10 @@ public final class ClassificationTest {
     
     @Test
     @DisplayName("Containing null char")
-    public void test2() throws IOException {
-        final var ups = new byte[][] {
+    public void test2() throws IOException
+    {
+        final var ups = new byte[][]
+        {
             new byte[] {T, T, T},
             new byte[] {T, 0, T},
             new byte[] {T, T, T},
@@ -56,8 +61,10 @@ public final class ClassificationTest {
     
     @Test
     @DisplayName("Exceeding limit")
-    public void test3() throws IOException {
-        final var ups = new byte[][] {
+    public void test3() throws IOException
+    {
+        final var ups = new byte[][]
+        {
             new byte[] {T, T, T},
             new byte[] {T, B, B},
             new byte[] {B, B, B},
@@ -67,8 +74,10 @@ public final class ClassificationTest {
     
     @Test
     @DisplayName("Zero limit")
-    public void test4() throws IOException {
-        final var ups = new byte[][] {
+    public void test4() throws IOException
+    {
+        final var ups = new byte[][]
+        {
             new byte[] {B, B, B, B, B, B, B, B, B, B, B},
             new byte[] {B, B, B, B, B, B, B, B, B, B, B},
             new byte[] {B, B, B, B, B, B, B, B, B, B, B},
@@ -79,8 +88,10 @@ public final class ClassificationTest {
     
     @Test
     @DisplayName("Negative limit")
-    public void test5() throws IOException {
-        final var ups = new byte[][] {
+    public void test5() throws IOException
+    {
+        final var ups = new byte[][]
+        {
             new byte[] {T, T, T, T, T, T, T, T, T, T, T},
             new byte[] {T, T, T, T, T, T, T, T, T, T, T},
             new byte[] {T, T, T, T, T, T, T, T, T, T, T},
@@ -91,8 +102,10 @@ public final class ClassificationTest {
     
     @Test
     @DisplayName("Below threshold")
-    public void test6() throws IOException {
-        final var ups = new byte[][] {
+    public void test6() throws IOException
+    {
+        final var ups = new byte[][]
+        {
             new byte[] {T, B, B, T, T, T, B, T, T, T, B},
             new byte[] {T, B, B, T, T, T, T, T, T, B, B},
             new byte[] {B, T, T, B, T, T, T, T, T, B, B},
@@ -103,8 +116,10 @@ public final class ClassificationTest {
     
     @Test
     @DisplayName("Exceeding threshold")
-    public void test7() throws IOException {
-        final var ups = new byte[][] {
+    public void test7() throws IOException
+    {
+        final var ups = new byte[][]
+        {
             new byte[] {T, B, B, T, T, T, B, T, T, T, B},
             new byte[] {T, B, B, T, T, T, T, T, T, B, B},
             new byte[] {B, T, T, B, T, T, T, T, T, B, B},
@@ -115,7 +130,8 @@ public final class ClassificationTest {
     
     @Test
     @DisplayName("Zero threshold")
-    public void test8() throws IOException {
+    public void test8() throws IOException
+    {
         assertClassification(
                 getInstance(512, 0),
                 new byte[][] {new byte[] {T, T, T}},
@@ -130,7 +146,8 @@ public final class ClassificationTest {
     
     @Test
     @DisplayName("Negative threshold")
-    public void test9() throws IOException {
+    public void test9() throws IOException
+    {
         assertClassification(
                 getInstance(512, -1),
                 new byte[][] {new byte[] {T, T, T}},
@@ -152,12 +169,14 @@ public final class ClassificationTest {
             final FieldComputation comp,
             final byte[][] updates,
             final int expectedEnough,
-            final String expectedValue) throws IOException {
-        
+            final String expectedValue) throws IOException
+    {
         comp.reset(FieldTesting.DUMMY_FILE);
         int actualEnough = updates.length;
-        for (int i = 0; i < updates.length; i++) {
-            if (!comp.update(updates[i], 0, updates[i].length)) {
+        for (int i = 0; i < updates.length; i++)
+        {
+            if (!comp.update(updates[i], 0, updates[i].length))
+            {
                 actualEnough = i + 1;
                 break;
             }
@@ -167,8 +186,8 @@ public final class ClassificationTest {
     }
     
     private static FieldComputation getInstance(
-            final int limit, final double threshold) {
-        
+            final int limit, final double threshold)
+    {
         final Heuristic heuristic = Heuristic.DEFAULT
                 .withLimit(limit)
                 .withThreshold(threshold)

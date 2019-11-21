@@ -12,18 +12,21 @@ import freecrumbs.finf.Field;
  * 
  * @author Tone Sommerland
  */
-public final class Path {
-    
+public final class Path
+{
     private static final String NAME = "path";
     
     public static final Field FIELD = Field.getInstance(NAME, Path::getValue);
 
-    private Path() {
+    private Path()
+    {
     }
     
-    private static String getValue(final File file) {
+    private static String getValue(final File file)
+    {
         final int index = file.getPath().lastIndexOf(File.separatorChar);
-        if (index < 0) {
+        if (index < 0)
+        {
             return "";
         }
         return file.getPath().substring(0, index + 1);

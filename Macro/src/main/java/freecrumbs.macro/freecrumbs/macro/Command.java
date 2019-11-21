@@ -9,7 +9,8 @@ import java.util.Arrays;
  * 
  * @author Tone Sommerland
  */
-public abstract class Command implements GestureParser {
+public abstract class Command implements GestureParser
+{
     private final String name;
     private final int minParams;
     private final int maxParams;
@@ -27,12 +28,14 @@ public abstract class Command implements GestureParser {
      * or if {@code minParams} is greater than {@code maxParams}
      */
     protected Command(
-            final String name, final int minParams, final int maxParams) {
-        
-        if (name.trim().isEmpty()) {
+            final String name, final int minParams, final int maxParams)
+    {
+        if (name.trim().isEmpty())
+        {
             throw new IllegalArgumentException("Empty name: " + name);
         }
-        if (minParams < 0 || maxParams < 0 || minParams > maxParams) {
+        if (minParams < 0 || maxParams < 0 || minParams > maxParams)
+        {
             throw new IllegalArgumentException(
                     "min/maxParams: minParams="
                             + minParams + ", maxParams=" + maxParams);
@@ -49,24 +52,28 @@ public abstract class Command implements GestureParser {
     protected static String paramOrDefault(
             final String[] params,
             final int index,
-            final String defaultParam) {
-        
-        if (index < 0) {
+            final String defaultParam)
+    {
+        if (index < 0)
+        {
             throw new IllegalArgumentException("index < 0: " +  index);
         }
         return index < params.length ? params[index] : defaultParam;
     }
 
     @Override
-    public boolean supports(final String line) {
+    public boolean supports(final String line)
+    {
         return Util.isFirstWord(name, line);
     }
 
     @Override
-    public Gesture parse(final String line) throws MacroException {
+    public Gesture parse(final String line) throws MacroException
+    {
         final String[] words = Util.split(line);
         final String[] params = Arrays.copyOfRange(words, 1, words.length);
-        if (params.length < minParams || params.length > maxParams) {
+        if (params.length < minParams || params.length > maxParams)
+        {
             throw new MacroException("Syntax incorrect: " + line);
         }
         return getGesture(line, params);

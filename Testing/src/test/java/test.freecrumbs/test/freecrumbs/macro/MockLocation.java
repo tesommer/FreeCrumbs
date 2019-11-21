@@ -14,23 +14,26 @@ import freecrumbs.macro.MacroException;
  * 
  * @author Tone Sommerland
  */
-public final class MockLocation implements Location {
-    
+public final class MockLocation implements Location
+{
     public static final MockLocation DUMMY = new MockLocation("");
     
     private final String scriptContent;
 
-    public MockLocation(final String scriptContent) {
+    public MockLocation(final String scriptContent)
+    {
         this.scriptContent = requireNonNull(scriptContent, "scriptContent");
     }
 
     @Override
-    public Location refer(final String target) throws MacroException {
+    public Location refer(final String target) throws MacroException
+    {
         return new MockLocation(target);
     }
 
     @Override
-    public InputStream open() throws MacroException {
+    public InputStream open() throws MacroException
+    {
         return new ByteArrayInputStream(
                 scriptContent.getBytes(Charset.forName("UTF-8")));
     }

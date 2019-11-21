@@ -10,10 +10,12 @@ import freecrumbs.finf.Info;
  * 
  * @author Tone Sommerland
  */
-public final class OrderSpecInfoSorter implements Comparator<Info> {
+public final class OrderSpecInfoSorter implements Comparator<Info>
+{
     private final OrderSpec[] orderSpecs;
     
-    public OrderSpecInfoSorter(final OrderSpec... orderSpecs) {
+    public OrderSpecInfoSorter(final OrderSpec... orderSpecs)
+    {
         this.orderSpecs = Stream.of(orderSpecs)
                 .sorted(OrderSpec.COMPARATOR)
                 .toArray(OrderSpec[]::new);
@@ -22,19 +24,24 @@ public final class OrderSpecInfoSorter implements Comparator<Info> {
     /**
      * Returns the field names used by this sorter.
      */
-    public String[] getUsedFieldNames() {
+    public String[] getUsedFieldNames()
+    {
         return Stream.of(orderSpecs)
                 .map(OrderSpec::getFieldName)
                 .toArray(String[]::new);
     }
     
     @Override
-    public int compare(final Info info1, final Info info2) {
+    public int compare(final Info info1, final Info info2)
+    {
         int order = 0;
-        for (final OrderSpec orderSpec : orderSpecs) {
+        for (final OrderSpec orderSpec : orderSpecs)
+        {
             order = info1.compare(orderSpec.getFieldName(), info2).orElse(0);
-            if (order != 0) {
-                if (orderSpec.isDesc()) {
+            if (order != 0)
+            {
+                if (orderSpec.isDesc())
+                {
                     order = -order;
                 }
                 break;

@@ -23,8 +23,8 @@ import freecrumbs.finf.FieldComputation;
  * 
  * @author Tone Sommerland
  */
-public final class Eol {
-    
+public final class Eol
+{
     private static final String EOL_COUNT_FIELD_NAME = "eolcount";
     private static final String CR_COUNT_FIELD_NAME = "crcount";
     private static final String LF_COUNT_FIELD_NAME = "lfcount";
@@ -36,16 +36,19 @@ public final class Eol {
     
     private static final String EOL = System.getProperty("line.separator");
 
-    private Eol() {
+    private Eol()
+    {
     }
     
     /**
      * Returns instances of EOL-related fields.
      * Some of the returned instances are collaborating.
      */
-    public static Field[] getFields() {
+    public static Field[] getFields()
+    {
         final EolCounter counter = new EolCounter();
-        return new Field[] {
+        return new Field[]
+        {
                 Field.getInstance(
                         EOL_COUNT_FIELD_NAME,
                         new EolCountComputation(counter, Eol::getEolCount)),
@@ -65,14 +68,15 @@ public final class Eol {
         };
     }
     
-    private static final class EolCountComputation implements FieldComputation {
+    private static final class EolCountComputation implements FieldComputation
+    {
         private final EolCounter counter;
         private final Function<? super EolCounter, String> value;
 
         private EolCountComputation(
                 final EolCounter counter,
-                final Function<? super EolCounter, String> value) {
-            
+                final Function<? super EolCounter, String> value)
+        {
             assert counter != null;
             assert value != null;
             this.counter = counter;
@@ -80,7 +84,8 @@ public final class Eol {
         }
 
         @Override
-        public void reset(final File file) throws IOException {
+        public void reset(final File file) throws IOException
+        {
             counter.reset(this);
         }
 
@@ -88,11 +93,13 @@ public final class Eol {
         public boolean update(
                 final byte[] input,
                 final int offset,
-                final int length) throws IOException {
-            
+                final int length) throws IOException
+        {
             final int offsetPlusLength = offset + length;
-            for (int i = offset; i < offsetPlusLength; i++) {
-                if (!counter.update(this, input[i])) {
+            for (int i = offset; i < offsetPlusLength; i++)
+            {
+                if (!counter.update(this, input[i]))
+                {
                     return false;
                 }
             }
@@ -100,42 +107,51 @@ public final class Eol {
         }
 
         @Override
-        public String get() throws IOException {
+        public String get() throws IOException
+        {
             counter.finish();
             return value.apply(counter);
         }
         
     }
     
-    private static String getEolCount(final EolCounter counter) {
+    private static String getEolCount(final EolCounter counter)
+    {
         return String.valueOf(
                 counter.crCount + counter.lfCount + counter.crlfCount);
     }
     
-    private static String getCrCount(final EolCounter counter) {
+    private static String getCrCount(final EolCounter counter)
+    {
         return String.valueOf(counter.crCount);
     }
     
-    private static String getLfCount(final EolCounter counter) {
+    private static String getLfCount(final EolCounter counter)
+    {
         return String.valueOf(counter.lfCount);
     }
     
-    private static String getCrlfCount(final EolCounter counter) {
+    private static String getCrlfCount(final EolCounter counter)
+    {
         return String.valueOf(counter.crlfCount);
     }
     
-    private static final class EolCounter {
+    private static final class EolCounter
+    {
         private Object master;
         private int crCount;
         private int lfCount;
         private int crlfCount;
         private boolean lastWasCr;
         
-        private EolCounter() {
+        private EolCounter()
+        {
         }
         
-        private void reset(final Object caller) {
-            if (master == null) {
+        private void reset(final Object caller)
+        {
+            if (master == null)
+            {
                 master = caller;
                 crCount = 0;
                 lfCount = 0;
@@ -144,19 +160,28 @@ public final class Eol {
             }
         }
 
-        private boolean update(final Object caller, final byte b) {
-            if (master != caller) {
+        private boolean update(final Object caller, final byte b)
+        {
+            if (master != caller)
+            {
                 return false;
             }
-            if (b == '\n') {
-                if (lastWasCr) {
+            if (b == '\n')
+            {
+                if (lastWasCr)
+                {
                     crlfCount++;
                     lastWasCr = false;
-                } else {
+                }
+                else
+                {
                     lfCount++;
                 }
-            } else {
-                if (lastWasCr) {
+            }
+            else
+            {
+                if (lastWasCr)
+                {
                     crCount++;
                 }
                 lastWasCr = b == '\r';
@@ -164,9 +189,11 @@ public final class Eol {
             return true;
         }
         
-        private void finish() {
+        private void finish()
+        {
             master = null;
-            if (lastWasCr) {
+            if (lastWasCr)
+            {
                 crCount++;
                 lastWasCr = false;
             }

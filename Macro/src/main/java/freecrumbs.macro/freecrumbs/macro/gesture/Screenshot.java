@@ -18,36 +18,37 @@ import freecrumbs.macro.Script;
  * 
  * @author Tone Sommerland
  */
-public final class Screenshot extends Command {
-    
+public final class Screenshot extends Command
+{
     public static final GestureParser INSTANCE = new Screenshot();
     
     public static final String NAME = "screenshot";
     
-    private Screenshot() {
+    private Screenshot()
+    {
         super(NAME, 1, 5);
     }
 
     @Override
     protected Gesture getGesture(final String line, final String[] params)
-            throws MacroException {
-        
+            throws MacroException
+    {
         return (script, robot) -> takeScreenshot(script, robot, params);
     }
     
     private static void takeScreenshot(
             final Script script,
             final Robot robot,
-            final String[] params) throws MacroException {
-        
+            final String[] params) throws MacroException
+    {
         script.images().set(
                 params[0],
                 robot.createScreenCapture(getRectangle(script, params)));
     }
     
     private static Rectangle getRectangle(
-            final Script script, final String[] params) throws MacroException {
-        
+            final Script script, final String[] params) throws MacroException
+    {
         final Dimension screenSize
             = Toolkit.getDefaultToolkit().getScreenSize();
         return new Rectangle(
@@ -61,8 +62,8 @@ public final class Screenshot extends Command {
             final Script script,
             final String[] params,
             final int index,
-            final int defaultValue) throws MacroException {
-        
+            final int defaultValue) throws MacroException
+    {
         return script.variables().value(
                 paramOrDefault(params, index, String.valueOf(defaultValue)));
     }

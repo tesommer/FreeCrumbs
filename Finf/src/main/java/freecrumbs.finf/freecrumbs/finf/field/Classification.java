@@ -28,15 +28,15 @@ import freecrumbs.finf.FieldComputation;
  * 
  * @author Tone Sommerland
  */
-public final class Classification implements FieldComputation {
-    
+public final class Classification implements FieldComputation
+{
     /**
      * Represents the heuristic used by this computation.
      * 
      * @author Tone Sommerland
      */
-    public static final class Heuristic {
-        
+    public static final class Heuristic
+    {
         private static final int DEFAULT_LIMIT = 512;
         
         private static final double DEFAULT_THRESHOLD = .3;
@@ -55,7 +55,7 @@ public final class Classification implements FieldComputation {
         /**
          * The default heuristic uses a limit of 512 bytes,
          * a threshold of .3 (30 percent)
-         * and chars 32–127 + \r, \n, \t, \b and \f to be text chars.
+         * and chars 32ï¿½127 + \r, \n, \t, \b and \f to be text chars.
          */
         public static final Heuristic
         DEFAULT = new Heuristic(
@@ -68,22 +68,25 @@ public final class Classification implements FieldComputation {
         private Heuristic(
                 final int limit,
                 final double threshold,
-                final IntPredicate isTextChar) {
-            
+                final IntPredicate isTextChar)
+        {
             this.limit = limit;
             this.threshold = threshold;
             this.isTextChar = requireNonNull(isTextChar, "isTextChar");
         }
         
-        public Heuristic withLimit(final int limit) {
+        public Heuristic withLimit(final int limit)
+        {
             return new Heuristic(limit, this.threshold, this.isTextChar);
         }
         
-        public Heuristic withThreshold(final double threshold) {
+        public Heuristic withThreshold(final double threshold)
+        {
             return new Heuristic(this.limit, threshold, this.isTextChar);
         }
         
-        public Heuristic withIsTextChar(final IntPredicate isTextChar) {
+        public Heuristic withIsTextChar(final IntPredicate isTextChar)
+        {
             return new Heuristic(this.limit, this.threshold, isTextChar);
         }
     }
@@ -93,7 +96,8 @@ public final class Classification implements FieldComputation {
      * 
      * @author Tone Sommerland
      */
-    public static enum Category {
+    public static enum Category
+    {
         TEXT,
         BINARY,
         EMPTY,
@@ -109,21 +113,22 @@ public final class Classification implements FieldComputation {
     
     private Classification(
             final Heuristic heuristic,
-            final Function<? super Category, String> value) {
-        
+            final Function<? super Category, String> value)
+    {
         this.heuristic = requireNonNull(heuristic, "heuristic");
         this.value = requireNonNull(value, "value");
     }
     
     public static Field getField(
             final Heuristic heuristic,
-            final Function<? super Category, String> value) {
-        
+            final Function<? super Category, String> value)
+    {
         return Field.getInstance(NAME, new Classification(heuristic, value));
     }
 
     @Override
-    public void reset(final File file) throws IOException {
+    public void reset(final File file) throws IOException
+    {
         bytesRead = 0;
         binCount = 0;
         category = EMPTY;
@@ -133,18 +138,23 @@ public final class Classification implements FieldComputation {
     public boolean update(
             final byte[] input,
             final int offset,
-            final int length) throws IOException {
-        
+            final int length) throws IOException
+    {
         final int offsetPlusLength = offset + length;
-        for (int i = offset; i < offsetPlusLength; i++) {
-            if (++bytesRead > heuristic.limit && heuristic.limit > 0) {
+        for (int i = offset; i < offsetPlusLength; i++)
+        {
+            if (++bytesRead > heuristic.limit && heuristic.limit > 0)
+            {
                 return false;
             }
             final byte ch = input[i];
-            if (ch == 0) {
+            if (ch == 0)
+            {
                 category = BINARY;
                 return false;
-            } else if (!heuristic.isTextChar.test(ch)) {
+            }
+            else if (!heuristic.isTextChar.test(ch))
+            {
                 binCount++;
             }
         }
@@ -152,8 +162,10 @@ public final class Classification implements FieldComputation {
     }
 
     @Override
-    public String get() throws IOException {
-        if (category == EMPTY && bytesRead > 0) {
+    public String get() throws IOException
+    {
+        if (category == EMPTY && bytesRead > 0)
+        {
             category = binCount / (double)bytesRead > heuristic.threshold
                     ? BINARY : TEXT;
         }

@@ -15,8 +15,8 @@ import freecrumbs.macro.MacroException;
 import freecrumbs.macro.RecursionGuard;
 import freecrumbs.macro.Util;
 
-public final class DefaultLoader implements Loader {
-    
+public final class DefaultLoader implements Loader
+{
     private static final int RECURSION_LIMIT = 21;
     
     private static final String NAME_PREFIX = "name";
@@ -27,58 +27,73 @@ public final class DefaultLoader implements Loader {
     
     private final GestureParser[] gestureParsers;
 
-    public DefaultLoader(final GestureParser... gestureParsers) {
+    public DefaultLoader(final GestureParser... gestureParsers)
+    {
         this.gestureParsers = gestureParsers.clone();
     }
 
     @Override
-    public Macro[] load(final InputStream in) throws MacroException {
+    public Macro[] load(final InputStream in) throws MacroException
+    {
         final var reader = new BufferedReader(new InputStreamReader(in));
-        try {
+        try
+        {
             final var macros = new ArrayList<Macro>();
             final var gestures = new ArrayList<Gesture>();
             String macroName = null;
             for (
                     String line = reader.readLine();
                     line != null;
-                    line = reader.readLine()) {
-                
-                if (line.trim().isEmpty()) {
+                    line = reader.readLine())
+            {
+                if (line.trim().isEmpty())
+                {
                     addMacro(macros, gestures, macroName);
                     gestures.clear();
                     macroName = null;
-                } else if (!isComment(line)) {
+                }
+                else if (!isComment(line))
+                {
                     final String name = getMacroName(line);
-                    if (name == null) {
+                    if (name == null)
+                    {
                         addGesture(gestures, line);
-                    } else {
+                    }
+                    else
+                    {
                         macroName = name;
                     }
                 }
             }
             addMacro(macros, gestures, macroName);
             return macros.stream().toArray(Macro[]::new);
-        } catch (final IOException ex) {
+        }
+        catch (final IOException ex)
+        {
             throw new MacroException(ex);
         }
     }
     
     @Override
-    public RecursionGuard getRecursionGuard() {
+    public RecursionGuard getRecursionGuard()
+    {
         return recursionGuard;
     }
 
     /**
      * Returns null if the given line does not specify the macro name.
      */
-    private static String getMacroName(final String line) {
-        if (Util.isFirstWord(NAME_PREFIX, line)) {
+    private static String getMacroName(final String line)
+    {
+        if (Util.isFirstWord(NAME_PREFIX, line))
+        {
             return line.trim().substring(NAME_PREFIX.length()).trim();
         }
         return null;
     }
     
-    private static boolean isComment(final String line) {
+    private static boolean isComment(final String line)
+    {
         return line.trim().startsWith(COMMENT_PREFIX);
     }
 
@@ -88,10 +103,12 @@ public final class DefaultLoader implements Loader {
      */
     private void addGesture(
             final Collection<? super Gesture> gestures,
-            final String line) throws MacroException {
-        
-        for (final GestureParser parser : gestureParsers) {
-            if (parser.supports(line)) {
+            final String line) throws MacroException
+    {
+        for (final GestureParser parser : gestureParsers)
+        {
+            if (parser.supports(line))
+            {
                 gestures.add(parser.parse(line));
                 return;
             }
@@ -108,15 +125,19 @@ public final class DefaultLoader implements Loader {
     private static void addMacro(
             final Collection<? super Macro> macros,
             final Collection<? extends Gesture> gestures,
-            final String macroName) {
-        
-        if (gestures.isEmpty()) {
+            final String macroName)
+    {
+        if (gestures.isEmpty())
+        {
             return;
         }
-        if (macroName == null) {
+        if (macroName == null)
+        {
             macros.add(Macro.getNameless(
                     gestures.stream().toArray(Gesture[]::new)));
-        } else {
+        }
+        else
+        {
             macros.add(Macro.get(
                     macroName,
                     gestures.stream().toArray(Gesture[]::new)));
