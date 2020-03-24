@@ -40,7 +40,7 @@ third-party libraries that this product depends on.
 
 FreeCrumbs comes bundled with:
 
-* [CalclipseLib version 3](http://www.calclipse.com)
+* [CalclipseLib](http://www.calclipse.com)
 
 Directory layout
 ----------------

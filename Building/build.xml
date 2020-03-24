@@ -2,21 +2,32 @@
 
 <project name="FreeCrumbs" default="main" basedir=".">
     
-    <property name="version" value="3.2.0"/>
-    <property name="product.and.version" value="FreeCrumbs version ${version}"/>
-    <property name="copyright.year.owner" value="2019 Tone Sommerland"/>
-    <property name="copyright" value="Copyright (C) ${copyright.year.owner}"/>
+    <property name="version"
+              value="3.2.0"/>
     
-    <property name="build.dir" value="../Build"/>
-    <property name="build.dir.src" value="${build.dir}/FreeCrumbs_src-${version}"/>
-    <property name="build.dir.home" value="${build.dir}/FreeCrumbs-${version}"/>
+    <property name="product.and.version"
+              value="FreeCrumbs version ${version}"/>
     
-    <property name="finf.project.dir" value="../Finf"/>
-    <property name="macro.project.dir" value="../Macro"/>
-    <property name="macrec.project.dir" value="../Macrec"/>
+    <property name="copyright.year.owner"
+              value="2020 Tone Sommerland"/>
+    
+    <property name="copyright"
+              value="Copyright (C) ${copyright.year.owner}"/>
+    
+    <property name="dir.src"       value="FreeCrumbs_src-${version}"/>
+    <property name="dir.home"      value="FreeCrumbs-${version}"/>
+    <property name="build.dir"     value="../Build"/>
+    <property name="build.dir.src" value="${build.dir}/${dir.src}"/>
+    <property name="build.dir.bin" value="${build.dir}/${dir.home}"/>
+    
+    <property name="finf.project.dir"         value="../Finf"/>
+    <property name="macro.project.dir"        value="../Macro"/>
+    <property name="macrec.project.dir"       value="../Macrec"/>
     <property name="dependencies.project.dir" value="../Dependencies"/>
     
     <property name="dependencies.dir" value="${dependencies.project.dir}/lib"/>
+	
+    <property name="license.file" value="../LICENSE.txt"/>
     
     <!-- Retrieves missing dependencies. -->
     <target name="dependencies">
@@ -101,60 +112,72 @@
             includeantruntime="false"/>
         
         <!-- Create BUILD_HOME/lib -->
-        <mkdir dir="${build.dir.home}/lib"/>
-        <jar destfile="${build.dir.home}/lib/freecrumbs.finf-${version}.jar">
+        <mkdir dir="${build.dir.bin}/lib"/>
+        <jar destfile="${build.dir.bin}/lib/freecrumbs.finf-${version}.jar">
             <fileset dir="${build.dir}/Temp/freecrumbs.finf">
                 <include name="**/*.class"/>
             </fileset>
-            <fileset file="../LICENSE.txt"/>
+            <fileset file="${license.file}.txt"/>
         </jar>
-        <jar destfile="${build.dir.home}/lib/freecrumbs.macro-${version}.jar">
+        <jar destfile="${build.dir.bin}/lib/freecrumbs.macro-${version}.jar">
             <fileset dir="${build.dir}/Temp/freecrumbs.macro">
                 <include name="**/*.class"/>
             </fileset>
-            <fileset file="../LICENSE.txt"/>
+            <fileset file="${license.file}.txt"/>
         </jar>
-        <jar destfile="${build.dir.home}/lib/freecrumbs.macrec-${version}.jar">
+        <jar destfile="${build.dir.bin}/lib/freecrumbs.macrec-${version}.jar">
             <fileset dir="${build.dir}/Temp/freecrumbs.macrec">
                 <include name="**/*.class"/>
             </fileset>
-            <fileset file="../LICENSE.txt"/>
+            <fileset file="${license.file}.txt"/>
         </jar>
         
-        <!-- Delete BUILD/Temp -->
-        <delete dir="${build.dir}/Temp"/>
-        
         <!-- Copy dependencies to BUILD_HOME/lib -->
-        <copy todir="${build.dir.home}/lib">
+        <copy todir="${build.dir.bin}/lib">
             <fileset dir="${dependencies.dir}">
                 <include name="**/*.jar"/>
             </fileset>
         </copy>
         
+        <!-- Delete BUILD/Temp -->
+        <delete dir="${build.dir}/Temp"/>
+        
         <!-- Copy home files to BUILD_HOME -->
-        <copy todir="${build.dir.home}">
+        <copy todir="${build.dir.bin}">
             <fileset dir="Home"/>
         </copy>
         
         <!-- Copy LICENSE to BUILD_SRC and BUILD_HOME -->
         <copy todir="${build.dir.src}">
-            <fileset file="../LICENSE.txt"/>
+            <fileset file="${license.file}.txt"/>
         </copy>
-        <copy todir="${build.dir.home}">
-            <fileset file="../LICENSE.txt"/>
+        <copy todir="${build.dir.bin}">
+            <fileset file="${license.file}.txt"/>
         </copy>
         
         <!-- Replace BULD_HOME tokens -->
-        <replace dir="${build.dir.home}" token="@version@" value="${version}">
+        <replace
+         dir="${build.dir.bin}"
+         token="@version@"
+         value="${version}">
             <include name="**/*.md"/>
         </replace>
-        <replace dir="${build.dir.home}" token="@productandversion@" value="${product.and.version}">
+        <replace
+         dir="${build.dir.bin}"
+         token="@productandversion@"
+         value="${product.and.version}">
             <include name="**/*.md"/>
         </replace>
-        <replace dir="${build.dir.home}" token="@copyrightyearowner@" value="${copyright.year.owner}">
+        <replace
+         dir="${build.dir.bin}"
+         token="@copyrightyearowner@"
+         value="${copyright.year.owner}">
             <include name="**/*.md"/>
         </replace>
-        <replace dir="${build.dir.home}" token="@copyright@" value="${copyright}">
+        <replace
+         dir="${build.dir.bin}"
+         token="@copyright@"
+         value="${copyright}">
             <include name="**/*.md"/>
         </replace>
         
