@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
 
-import com.calclipse.lib.util.EncodingUtil;
+import com.calclipse.lib.misc.EncodingUtil;
 
 import freecrumbs.finf.Field;
 import freecrumbs.finf.FieldComputation;

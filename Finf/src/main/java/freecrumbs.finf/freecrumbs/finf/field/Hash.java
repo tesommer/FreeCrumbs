@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import com.calclipse.lib.util.EncodingUtil;
+import com.calclipse.lib.misc.EncodingUtil;
 
 import freecrumbs.finf.Field;
 import freecrumbs.finf.FieldComputation;
