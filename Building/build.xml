@@ -26,7 +26,7 @@
     <property name="dependencies.project.dir" value="../Dependencies"/>
     
     <property name="dependencies.dir" value="${dependencies.project.dir}/lib"/>
-	
+    
     <property name="license.file" value="../LICENSE.txt"/>
     
     <!-- Retrieves missing dependencies. -->
@@ -181,6 +181,15 @@
             <include name="**/*.md"/>
         </replace>
         
+        <!-- Copy make_archives.sh to BUILD -->
+        <copy todir="${build.dir}">
+            <fileset file="make_archives.sh"/>
+            <filterchain>
+                <replacetokens>
+                    <token key="dirhome" value="${dir.home}"/>
+                </replacetokens>
+            </filterchain>
+        </copy>
     </target>
 
 </project>
