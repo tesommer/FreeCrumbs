@@ -1,2 +1,3 @@
 #!/bin/sh
-`dirname $0`/openin.pl "$@"
+MY_DIR=`dirname $0`
+"$MY_DIR"/openin.pl "$@"

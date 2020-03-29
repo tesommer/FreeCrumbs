@@ -181,12 +181,12 @@
             <include name="**/*.md"/>
         </replace>
         
-        <!-- Copy make_archives.sh to BUILD -->
+        <!-- Copy post-build scripts to BUILD -->
         <copy todir="${build.dir}">
-            <fileset file="make_archives.sh"/>
+            <fileset file="pb_*.sh"/>
             <filterchain>
                 <replacetokens>
-                    <token key="dirhome" value="${dir.home}"/>
+                    <token key="dirhome"    value="${dir.home}"/>
                 </replacetokens>
             </filterchain>
         </copy>

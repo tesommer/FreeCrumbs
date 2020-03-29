@@ -1,2 +1,3 @@
 #!/bin/sh
-java -p `dirname $0`/../lib -m freecrumbs.macrec/freecrumbs.macrec.MacroRecorder "$@"
+MY_DIR=`dirname $0`
+java -p "$MY_DIR"/../lib -m freecrumbs.macrec/freecrumbs.macrec.MacroRecorder "$@"

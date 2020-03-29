@@ -1,2 +1,3 @@
 #!/bin/sh
-`dirname $0`/dups.pl | finf -c - "$@" | `dirname $0`/dups.pl x
+MY_DIR=`dirname $0`
+"$MY_DIR"/dups.pl | finf -c - "$@" | "$MY_DIR"/dups.pl x
