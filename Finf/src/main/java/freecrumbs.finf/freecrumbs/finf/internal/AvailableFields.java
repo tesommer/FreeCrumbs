@@ -28,7 +28,7 @@ import freecrumbs.finf.field.Whitespace;
 
 /**
  * Contains available info fields of which
- * {@link #getReader(String...) readers} can be created.
+ * {@link #reader(String...) readers} can be created.
  * No two fields in an instance of this class have the same name.
  * Each instance of this class has its own instances of the computed fields.
  * This is so that readers from instance A
@@ -125,13 +125,13 @@ public final class AvailableFields
                         .toArray(Search.Params[]::new));
         }
         
-        private Field[] getFreshFields() throws IOException
+        private Field[] freshFields() throws IOException
         {
             final var freshFields = new ArrayList<Field>(
                     List.of(Path.FIELD, Filename.FIELD, Size.FIELD));
-            freshFields.addAll(List.of(Eol.getFields()));
-            freshFields.addAll(List.of(Whitespace.getFields()));
-            freshFields.addAll(List.of(BinaryToText.getFields()));
+            freshFields.addAll(List.of(Eol.fields()));
+            freshFields.addAll(List.of(Whitespace.fields()));
+            freshFields.addAll(List.of(BinaryToText.fields()));
             if (dateFormat != null)
             {
                 freshFields.addAll(timeFields(dateFormat, locale));
@@ -164,15 +164,15 @@ public final class AvailableFields
                 final Locale locale) throws IOException
         {
             final Field modifiedField = dateFormat.isEmpty()
-                    ? Modified.getField()
-                    : Modified.getField(dateFormat, locale);
+                    ? Modified.field()
+                    : Modified.field(dateFormat, locale);
             return List.of(modifiedField);
         }
         
         private static Field classificationField(
                 final Classification.Heuristic heuristic)
         {
-            return Classification.getField(heuristic, String::valueOf);
+            return Classification.field(heuristic, String::valueOf);
         }
         
         private static Collection<Field> hashFields(final String[] algorithms)
@@ -186,7 +186,7 @@ public final class AvailableFields
                     continue;
                 }
                 final String trimmedAndLowerCase = trimmed.toLowerCase();
-                hashFields.add(Hash.getField(trimmedAndLowerCase, trimmed));
+                hashFields.add(Hash.field(trimmedAndLowerCase, trimmed));
             }
             return hashFields;
         }
@@ -195,7 +195,7 @@ public final class AvailableFields
                 final Search.Params[] params)
         {
             return Stream.of(params)
-                    .map(Search::getFields)
+                    .map(Search::fields)
                     .flatMap(Stream::of)
                     .collect(toList());
         }
@@ -212,7 +212,7 @@ public final class AvailableFields
         assert mother != null;
         this.mother = mother;
         this.params = params;
-        this.fields = params.getFreshFields();
+        this.fields = params.freshFields();
     }
     
     /**
@@ -221,13 +221,13 @@ public final class AvailableFields
      */
     public AvailableFields(final Params params) throws IOException
     {
-        this(FieldReader.getInstance(2), params);
+        this(FieldReader.of(2), params);
     }
     
     /**
      * The parameters for this instance's fields.
      */
-    public Params getParams()
+    public Params params()
     {
         return params;
     }
@@ -245,7 +245,7 @@ public final class AvailableFields
     /**
      * The names of all available fields.
      */
-    public String[] getNames()
+    public String[] names()
     {
         return Field.namesOf(fields);
     }
@@ -256,17 +256,17 @@ public final class AvailableFields
      * @throws NoSuchElementException
      * if any of the specified fields are unavailable
      */
-    public FieldReader getReader(final String... usedFieldNames)
+    public FieldReader reader(final String... usedFieldNames)
     {
         return mother.coCaching(
                 BUFFER_SIZE,
                 Stream.of(usedFieldNames)
                     .distinct()
-                    .map(this::getField)
+                    .map(this::field)
                     .toArray(Field[]::new));
     }
     
-    private Field getField(final String name)
+    private Field field(final String name)
     {
         return Stream.of(fields)
             .filter(field -> field.name().equals(name))

@@ -23,9 +23,9 @@ public final class Modified
     /**
      * Returns a field with a value as milliseconds since the epoch.
      */
-    public static Field getField()
+    public static Field field()
     {
-        return Field.getInstance(NAME, new ModifiedFieldValue());
+        return Field.simple(NAME, new ModifiedFieldValue());
     }
     
     /**
@@ -34,10 +34,10 @@ public final class Modified
      * @param locale the locale
      * @throws IOException if the date format is incorrect
      */
-    public static Field getField(final String dateFormat, final Locale locale)
+    public static Field field(final String dateFormat, final Locale locale)
             throws IOException
     {
-        return Field.getInstance(
+        return Field.simple(
                 NAME, new ModifiedFieldValue(dateFormat, locale));
     }
     
@@ -55,7 +55,7 @@ public final class Modified
         }
 
         @Override
-        protected long getTime(final File file) throws IOException
+        protected long time(final File file) throws IOException
         {
             return file.lastModified();
         }

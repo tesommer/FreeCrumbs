@@ -107,27 +107,27 @@ public final class Config
         this.count = count;
     }
     
-    public InfoGenerator getInfoGenerator()
+    public InfoGenerator infoGenerator()
     {
         return infoGenerator;
     }
     
-    public InfoFormat getInfoFormat()
+    public InfoFormat infoFormat()
     {
         return infoFormat;
     }
     
-    public Optional<FileFilter> getFileFilter()
+    public Optional<FileFilter> fileFilter()
     {
         return Optional.ofNullable(fileFilter);
     }
     
-    public Optional<Comparator<? super Info>> getOrder()
+    public Optional<Comparator<? super Info>> order()
     {
         return Optional.ofNullable(order);
     }
     
-    public int getCount()
+    public int count()
     {
         return count;
     }

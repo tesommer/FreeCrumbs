@@ -47,8 +47,7 @@ public final class FieldReader implements InfoGenerator
      * @param fields the fields to read
      * @throws IllegalArgumentException if the buffer size is zero or negative
      */
-    public static FieldReader getInstance(
-            final int bufferSize, final Field... fields)
+    public static FieldReader of(final int bufferSize, final Field... fields)
     {
         return new FieldReader(new HashMap<>(), bufferSize, fields);
     }
@@ -67,24 +66,24 @@ public final class FieldReader implements InfoGenerator
     /**
      * The names of this reader's fields.
      */
-    public String[] getFieldNames()
+    public String[] fieldNames()
     {
         return Field.namesOf(fields);
     }
     
     @Override
-    public Info getInfo(final File file) throws IOException
+    public Info infoAbout(final File file) throws IOException
     {
         final Map<String, String> values
             = cache.computeIfAbsent(file, key -> new HashMap<>());
-        putValues(values, file);
-        putComputations(values, file);
+        putValues(file, values);
+        putComputations(file, values);
         return new Info(values);
     }
     
     private void putValues(
-            final Map<? super String, ? super String> values,
-            final File file) throws IOException
+            final File file,
+            final Map<? super String, ? super String> values) throws IOException
     {
         for (final Field field : nonCached(values))
         {
@@ -96,10 +95,10 @@ public final class FieldReader implements InfoGenerator
     }
     
     private void putComputations(
-            final Map<? super String, ? super String> values,
-            final File file) throws IOException
+            final File file,
+            final Map<? super String, ? super String> values) throws IOException
     {
-        final Collection<Field> notAborted = resetAbort(values, file);
+        final Collection<Field> notAborted = resetAbort(file, values);
         final Collection<FieldComputation> compsToUpdate = computationsIn(
                 notAborted);
         if (compsToUpdate.isEmpty())
@@ -111,8 +110,8 @@ public final class FieldReader implements InfoGenerator
     }
     
     private Collection<Field> resetAbort(
-            final Map<? super String, ? super String> values,
-            final File file) throws IOException
+            final File file,
+            final Map<? super String, ? super String> values) throws IOException
     {
         final Collection<Field> notCachedBeforeReset = nonCached(values);
         reset(computationsIn(notCachedBeforeReset), file);

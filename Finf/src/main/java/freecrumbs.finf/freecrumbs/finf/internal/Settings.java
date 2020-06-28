@@ -40,7 +40,7 @@ public final class Settings
     {
     }
     
-    public static AvailableFields getAvailableFields(
+    public static AvailableFields availableFields(
             final Properties props, final Locale locale) throws IOException
     {
         final String dateFormat = props.getProperty(
@@ -48,7 +48,7 @@ public final class Settings
         final var params = new AvailableFields.Params()
                 .withTime(dateFormat, locale)
                 .withClassification(Classification.Heuristic.DEFAULT)
-                .withHash(getHashAlgorithms(props));
+                .withHash(hashAlgorithms(props));
         return withSearchFields(new AvailableFields(params), props);
     }
     
@@ -72,13 +72,13 @@ public final class Settings
         return result;
     }
 
-    public static TokenInfoFormat getOutput(final Properties props)
+    public static TokenInfoFormat output(final Properties props)
     {
         return new TokenInfoFormat(
                 props.getProperty(OUTPUT_KEY, DEFAULT_OUTPUT));
     }
 
-    public static int getCount(final Properties props) throws IOException
+    public static int count(final Properties props) throws IOException
     {
         try
         {
@@ -90,7 +90,7 @@ public final class Settings
         }
     }
     
-    public static OrderParser getOrderParser(
+    public static OrderParser orderParser(
             final Properties props, final String[] availableFieldNames)
     {
         final String setting = props.getProperty(ORDER_KEY);
@@ -101,7 +101,7 @@ public final class Settings
      * If the filter setting is not present,
      * the returned collection will be empty.
      */
-    public static List<FilterParser> getFilterParsers(final Properties props)
+    public static List<FilterParser> filterParsers(final Properties props)
             throws IOException
     {
         final var filterParsers = new ArrayList<FilterParser>();
@@ -131,7 +131,7 @@ public final class Settings
         return SEARCH_KEY.equals(key) || key.startsWith(SEARCH_KEY_PREFIX);
     }
 
-    private static String[] getHashAlgorithms(final Properties props)
+    private static String[] hashAlgorithms(final Properties props)
     {
         return props.getProperty(HASH_ALGORITHMS_KEY, DEFAULT_HASH_ALGORITHMS)
                 .split(HASH_ALGORITHM_DELIMITER);

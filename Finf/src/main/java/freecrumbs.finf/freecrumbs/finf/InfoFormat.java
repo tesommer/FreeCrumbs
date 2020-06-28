@@ -10,5 +10,5 @@ import java.io.IOException;
 @FunctionalInterface
 public interface InfoFormat
 {
-    public abstract String toString(Info info) throws IOException;
+    public abstract String stringify(Info info) throws IOException;
 }

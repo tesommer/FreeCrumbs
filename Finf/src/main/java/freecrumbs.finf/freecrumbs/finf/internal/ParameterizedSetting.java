@@ -25,8 +25,8 @@ public final class ParameterizedSetting
     public ParameterizedSetting(final String setting) throws IOException
     {
         this.whole = requireNonNull(setting, "setting");
-        this.mainPart = getMainPart(setting);
-        this.params = Map.copyOf(getParams(setting));
+        this.mainPart = mainPart(setting);
+        this.params = Map.copyOf(params(setting));
     }
     
     public String whole()
@@ -44,7 +44,7 @@ public final class ParameterizedSetting
         return params;
     }
 
-    private static String getMainPart(final String setting) throws IOException
+    private static String mainPart(final String setting) throws IOException
     {
         if (!setting.startsWith(MAIN_PART_DELIM))
         {
@@ -58,7 +58,7 @@ public final class ParameterizedSetting
         return setting.substring(1, end);
     }
     
-    private static Map<String, String> getParams(final String setting)
+    private static Map<String, String> params(final String setting)
             throws IOException
     {
         final int endOfMainPart = setting.lastIndexOf(MAIN_PART_DELIM);
@@ -70,14 +70,14 @@ public final class ParameterizedSetting
         final var params = new HashMap<String, String>();
         for (final String param : paramsPart.split(PARAM_DELIM))
         {
-            addParam(params, param);
+            addParam(param, params);
         }
         return params;
     }
     
     private static void addParam(
-            final Map<? super String, ? super String> params,
-            final String param) throws IOException
+            final String param,
+            final Map<? super String, ? super String> params) throws IOException
     {
         final int index = param.indexOf(KEY_VALUE_DELIM);
         if (index < 0)

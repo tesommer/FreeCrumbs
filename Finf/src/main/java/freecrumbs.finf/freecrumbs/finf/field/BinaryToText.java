@@ -38,23 +38,23 @@ public final class BinaryToText
     /**
      * Returns binary-to-text transformation fields.
      */
-    public static Field[] getFields()
+    public static Field[] fields()
     {
         return new Field[]
         {
-                Field.getInstance(
+                Field.computed(
                         HEX_FIELD_NAME,
                         new HexComputation(false)),
-                Field.getInstance(
+                Field.computed(
                         HEX_UPPERCASE_FIELD_NAME,
                         new HexComputation(true)),
-                Field.getInstance(
+                Field.computed(
                         BASE64_FIELD_NAME,
                         new Base64Computation(Base64.getEncoder())),
-                Field.getInstance(
+                Field.computed(
                         BASE64_MIME_FIELD_NAME,
                         new Base64Computation(Base64.getMimeEncoder())),
-                Field.getInstance(
+                Field.computed(
                         BASE64_URL_FIELD_NAME,
                         new Base64Computation(Base64.getUrlEncoder())),
         };

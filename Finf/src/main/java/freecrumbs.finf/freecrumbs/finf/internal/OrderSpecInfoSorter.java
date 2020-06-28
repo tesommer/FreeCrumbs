@@ -24,10 +24,10 @@ public final class OrderSpecInfoSorter implements Comparator<Info>
     /**
      * Returns the field names used by this sorter.
      */
-    public String[] getUsedFieldNames()
+    public String[] usedFieldNames()
     {
         return Stream.of(orderSpecs)
-                .map(OrderSpec::getFieldName)
+                .map(OrderSpec::fieldName)
                 .toArray(String[]::new);
     }
     
@@ -37,7 +37,7 @@ public final class OrderSpecInfoSorter implements Comparator<Info>
         int order = 0;
         for (final OrderSpec orderSpec : orderSpecs)
         {
-            order = info1.compare(orderSpec.getFieldName(), info2).orElse(0);
+            order = info1.compare(orderSpec.fieldName(), info2).orElse(0);
             if (order != 0)
             {
                 if (orderSpec.isDesc())

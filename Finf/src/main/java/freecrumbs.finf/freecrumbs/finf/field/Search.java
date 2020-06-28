@@ -180,19 +180,19 @@ public final class Search
     /**
      * Returns the fields of the search specified with the given parameters.
      */
-    public static Field[] getFields(final Params params)
+    public static Field[] fields(final Params params)
     {
         final var searcher = new Searcher();
         final var fields = new ArrayList<Field>(4 + params.groups);
-        fields.add(Field.getInstance(
+        fields.add(Field.computed(
                 params.fieldNamePrefix + FOUND_FIELD_NAME,
-                new SearchComputation(params, searcher, Search::getFound)));
-        fields.add(Field.getInstance(
+                new SearchComputation(params, searcher, Search::found)));
+        fields.add(Field.computed(
                 params.fieldNamePrefix + GROUP_COUNT_FIELD_NAME,
-                new SearchComputation(params, searcher, Search::getGroupCount)));
-        fields.add(Field.getInstance(
+                new SearchComputation(params, searcher, Search::groupCount)));
+        fields.add(Field.computed(
                 params.fieldNamePrefix + LINE_FIELD_NAME,
-                new SearchComputation(params, searcher, Search::getLine)));
+                new SearchComputation(params, searcher, Search::line)));
         for (int groupNumber = 0; groupNumber <= params.groups; groupNumber++)
         {
             addGroupFields(
@@ -212,36 +212,36 @@ public final class Search
     {
         final String groupPrefix
             = groupNumber == 0 ? "" : groupNumber + SEPARATOR;
-        fields.add(Field.getInstance(
+        fields.add(Field.computed(
                 params.fieldNamePrefix + groupPrefix + INPUT_FIELD_NAME,
                 new SearchComputation(
-                        params, searcher, hit -> getInput(hit, groupNumber))));
-        fields.add(Field.getInstance(
+                        params, searcher, hit -> input(hit, groupNumber))));
+        fields.add(Field.computed(
                 params.fieldNamePrefix + groupPrefix + START_FIELD_NAME,
                 new SearchComputation(
-                        params, searcher, hit -> getStart(hit, groupNumber))));
-        fields.add(Field.getInstance(
+                        params, searcher, hit -> start(hit, groupNumber))));
+        fields.add(Field.computed(
                 params.fieldNamePrefix + groupPrefix + END_FIELD_NAME,
                 new SearchComputation(
-                        params, searcher, hit -> getEnd(hit, groupNumber))));
+                        params, searcher, hit -> end(hit, groupNumber))));
     }
     
-    private static String getFound(final Hit hit)
+    private static String found(final Hit hit)
     {
         return hit.isFound() ? "1" : "0";
     }
     
-    private static String getGroupCount(final Hit hit)
+    private static String groupCount(final Hit hit)
     {
         return String.valueOf(hit.groupCount);
     }
     
-    private static String getLine(final Hit hit)
+    private static String line(final Hit hit)
     {
         return String.valueOf(hit.lineNumber);
     }
     
-    private static String getInput(final Hit hit, final int groupNumber)
+    private static String input(final Hit hit, final int groupNumber)
     {
         if (groupNumber >= hit.groupHits.length)
         {
@@ -250,7 +250,7 @@ public final class Search
         return hit.groupHits[groupNumber].input;
     }
     
-    private static String getStart(final Hit hit, final int groupNumber)
+    private static String start(final Hit hit, final int groupNumber)
     {
         if (groupNumber >= hit.groupHits.length)
         {
@@ -259,7 +259,7 @@ public final class Search
         return String.valueOf(hit.groupHits[groupNumber].start);
     }
     
-    private static String getEnd(final Hit hit, final int groupNumber)
+    private static String end(final Hit hit, final int groupNumber)
     {
         if (groupNumber >= hit.groupHits.length)
         {
@@ -336,7 +336,7 @@ public final class Search
             {
                 pattern = Pattern.compile(regex.get(file), regexFlags);
                 buffer = new ByteArrayOutputStream();
-                hit = Hit.getNotFound(pattern);
+                hit = Hit.notFound(pattern);
             }
             catch (final PatternSyntaxException ex)
             {
@@ -396,7 +396,7 @@ public final class Search
                 final Matcher matcher = pattern.matcher(line);
                 while (matcher.find())
                 {
-                    hits.add(Hit.getFound(lineNumber, matcher));
+                    hits.add(Hit.found(lineNumber, matcher));
                     if (completionShortCircuited(hits, occurrence))
                     {
                         return hit;
@@ -456,13 +456,13 @@ public final class Search
             this.groupHits = new GroupHit[0];
         }
         
-        private static Hit getFound(
+        private static Hit found(
                 final int lineNumber, final Matcher matcher)
         {
             return new Hit(lineNumber, matcher);
         }
         
-        private static Hit getNotFound(final Pattern pattern)
+        private static Hit notFound(final Pattern pattern)
         {
             return new Hit(pattern);
         }

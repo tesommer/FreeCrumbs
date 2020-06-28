@@ -56,7 +56,7 @@ public final class FilterParser
         {
             final Matcher delimiter
                 = Pattern.compile(DELIM_PATTERN).matcher(setting);
-            final Part formatPart = getFormatPart(setting, delimiter);
+            final Part formatPart = formatPart(setting, delimiter);
             if (formatPart == null)
             {
                 this.infoFormat = null;
@@ -77,8 +77,8 @@ public final class FilterParser
         Part part = formatPart;
         do
         {
-            part = getNextPatternPart(setting, delimiter, part);
-            formatPatterns.add(getFormatPattern(part));
+            part = nextPatternPart(setting, delimiter, part);
+            formatPatterns.add(formatPattern(part));
         }
         while (!part.last);
     }
@@ -86,18 +86,18 @@ public final class FilterParser
     /**
      * Returns the field names used by the filter setting.
      */
-    public String[] getUsedFieldNames(final String[] availableFieldNames)
+    public String[] usedFieldNames(final String[] availableFieldNames)
     {
         return infoFormat == null
                 ? new String[0]
-                : infoFormat.getUsedFieldNames(availableFieldNames);
+                : infoFormat.usedFieldNames(availableFieldNames);
     }
     
     /**
      * Returns the file filter.
      * @return null if the setting is null
      */
-    public FileFilter getFileFilter(
+    public FileFilter fileFilter(
             final int regexFlags,
             final InfoGenerator infoGenerator) throws IOException
     {
@@ -118,7 +118,7 @@ public final class FilterParser
         }
     }
     
-    private static FormatPattern getFormatPattern(final Part patternPart)
+    private static FormatPattern formatPattern(final Part patternPart)
             throws IOException
     {
         try
@@ -135,7 +135,7 @@ public final class FilterParser
     /**
      * Returns null if the setting is not a format pattern.
      */
-    private static Part getFormatPart(
+    private static Part formatPart(
             final String setting, final Matcher delimiter)
     {
         if (delimiter.find())
@@ -146,7 +146,7 @@ public final class FilterParser
         return null;
     }
     
-    private static Part getNextPatternPart(
+    private static Part nextPatternPart(
             final String setting,
             final Matcher delimiter,
             final Part previous)

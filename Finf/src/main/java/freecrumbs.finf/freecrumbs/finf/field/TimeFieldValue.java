@@ -46,7 +46,7 @@ public abstract class TimeFieldValue implements FieldValue
         }
     }
     
-    protected abstract long getTime(File file) throws IOException;
+    protected abstract long time(File file) throws IOException;
 
     @Override
     public final String get(final File file) throws IOException
@@ -55,7 +55,7 @@ public abstract class TimeFieldValue implements FieldValue
         {
             return String.valueOf(file.lastModified());
         }
-        return dateFormat.format(new Date(getTime(file)));
+        return dateFormat.format(new Date(time(file)));
     }
 
 }

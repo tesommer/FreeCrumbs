@@ -30,7 +30,7 @@ public final class TokenInfoFormat implements InfoFormat
     /**
      * Returns the field names used by this format.
      */
-    public String[] getUsedFieldNames(final String[] availableFieldNames)
+    public String[] usedFieldNames(final String[] availableFieldNames)
     {
         return Stream.of(availableFieldNames)
                 .filter(name -> format.contains(getToken(name)))
@@ -38,10 +38,10 @@ public final class TokenInfoFormat implements InfoFormat
     }
     
     @Override
-    public String toString(final Info info) throws IOException
+    public String stringify(final Info info) throws IOException
     {
         String result = format;
-        for (final String fieldName : info.getFieldNames())
+        for (final String fieldName : info.fieldNames())
         {
             result = replace(result, fieldName, info);
         }
@@ -56,7 +56,7 @@ public final class TokenInfoFormat implements InfoFormat
         final String token = getToken(fieldName);
         if (format.contains(token))
         {
-            return format.replace(token, info.getValue(fieldName));
+            return format.replace(token, info.value(fieldName));
         }
         return format;
     }

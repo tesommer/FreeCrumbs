@@ -119,11 +119,11 @@ public final class Classification implements FieldComputation
         this.value = requireNonNull(value, "value");
     }
     
-    public static Field getField(
+    public static Field field(
             final Heuristic heuristic,
             final Function<? super Category, String> value)
     {
-        return Field.getInstance(NAME, new Classification(heuristic, value));
+        return Field.computed(NAME, new Classification(heuristic, value));
     }
 
     @Override

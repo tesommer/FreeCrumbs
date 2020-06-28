@@ -44,26 +44,26 @@ public final class SearchParser
     {
         final var parameterizedSetting = new ParameterizedSetting(setting);
         final Search.Params searchParams = initialSearchParams.withRegex(
-                getRegex(availableFields, parameterizedSetting));
-        return availableFields.coCaching(availableFields.getParams()
+                regex(availableFields, parameterizedSetting));
+        return availableFields.coCaching(availableFields.params()
                 .withAnotherSearch(remainingSearchParams(
                         searchParams, parameterizedSetting)));
     }
     
-    private static DynamicValue getRegex(
+    private static DynamicValue regex(
             final AvailableFields availableFields,
             final ParameterizedSetting setting) throws IOException
     {
         final String regexString = setting.mainPart();
         final var regexFormat = new TokenInfoFormat(regexString);
-        final String[] usedByRegex = regexFormat.getUsedFieldNames(
-                availableFields.getNames());
+        final String[] usedByRegex = regexFormat.usedFieldNames(
+                availableFields.names());
         if (usedByRegex.length == 0)
         {
             return DynamicValue.of(regexString);
         }
         return DynamicValue.of(
-                availableFields.getReader(usedByRegex), regexFormat);
+                availableFields.reader(usedByRegex), regexFormat);
     }
     
     private static Search.Params remainingSearchParams(
@@ -72,12 +72,12 @@ public final class SearchParser
     {
         final Map<String, String> params = setting.params();
         return searchParams
-                .withOccurrence(getOccurrence(params, setting.whole()))
-                .withGroups(getGroups(params, setting.whole()))
-                .withCharset(getCharset(params, setting.whole()));
+                .withOccurrence(occurrence(params, setting.whole()))
+                .withGroups(groups(params, setting.whole()))
+                .withCharset(charset(params, setting.whole()));
     }
     
-    private static int getOccurrence(
+    private static int occurrence(
             final Map<? super String, String> params,
             final String message) throws IOException
     {
@@ -86,7 +86,7 @@ public final class SearchParser
                 "Occurrence: " + message);
     }
     
-    private static int getGroups(
+    private static int groups(
             final Map<? super String, String> params,
             final String message) throws IOException
     {
@@ -95,7 +95,7 @@ public final class SearchParser
                 "Groups: " + message);
     }
     
-    private static Charset getCharset(
+    private static Charset charset(
             final Map<? super String, String> params,
             final String message) throws IOException
     {

@@ -16,13 +16,13 @@ public final class Path
 {
     private static final String NAME = "path";
     
-    public static final Field FIELD = Field.getInstance(NAME, Path::getValue);
+    public static final Field FIELD = Field.simple(NAME, Path::value);
 
     private Path()
     {
     }
     
-    private static String getValue(final File file)
+    private static String value(final File file)
     {
         final int index = file.getPath().lastIndexOf(File.separatorChar);
         if (index < 0)

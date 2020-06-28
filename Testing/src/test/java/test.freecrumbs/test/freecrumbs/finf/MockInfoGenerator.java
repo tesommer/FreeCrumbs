@@ -51,7 +51,7 @@ public class MockInfoGenerator implements InfoGenerator
     }
 
     @Override
-    public Info getInfo(final File file) throws IOException
+    public Info infoAbout(final File file) throws IOException
     {
         return info;
     }

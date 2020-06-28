@@ -255,7 +255,7 @@ public final class SearchTest
             final String input,
             final Search.Params params) throws IOException
     {
-        final Field[] fields = Search.getFields(params);
+        final Field[] fields = Search.fields(params);
         resetComputations(fields);
         updateComputations(input.getBytes("UTF-8"), 1024, fields);
         return fields;

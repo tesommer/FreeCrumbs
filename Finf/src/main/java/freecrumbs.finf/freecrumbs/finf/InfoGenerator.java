@@ -11,6 +11,6 @@ import java.io.IOException;
 @FunctionalInterface
 public interface InfoGenerator
 {
-    public abstract Info getInfo(final File file) throws IOException;
+    public abstract Info infoAbout(final File file) throws IOException;
 
 }

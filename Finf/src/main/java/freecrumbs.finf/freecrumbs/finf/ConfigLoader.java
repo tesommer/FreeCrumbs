@@ -20,7 +20,7 @@ public interface ConfigLoader
      * the default setting for that key will be used.
      * @param overrides configuration overrides
      */
-    public static ConfigLoader getDefault(final Map<String, String> overrides)
+    public static ConfigLoader overriddenBy(final Map<String, String> overrides)
     {
         return new PropertiesConfigLoader(Locale.getDefault(), overrides);
     }

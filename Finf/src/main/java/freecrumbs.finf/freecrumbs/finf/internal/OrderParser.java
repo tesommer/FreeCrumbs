@@ -29,28 +29,28 @@ public final class OrderParser
         else
         {
             this.order = new OrderSpecInfoSorter(
-                    getOrderSpecs(setting, availableFieldNames));
+                    orderSpecs(setting, availableFieldNames));
         }
     }
     
     /**
      * Returns the field names used by the order setting.
      */
-    public String[] getUsedFieldNames()
+    public String[] usedFieldNames()
     {
-        return order == null ? new String[0] : order.getUsedFieldNames();
+        return order == null ? new String[0] : order.usedFieldNames();
     }
     
     /**
      * Return the info sorter.
      * @return null if the setting is null
      */
-    public Comparator<Info> getOrder()
+    public Comparator<Info> order()
     {
         return order;
     }
     
-    private static OrderSpec[] getOrderSpecs(
+    private static OrderSpec[] orderSpecs(
             final String setting, final String[] availableFieldNames)
     {
         final var orderSpecs = new ArrayList<OrderSpec>(

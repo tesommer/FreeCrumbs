@@ -45,7 +45,7 @@ public final class Main
                 System.out.println(HELP);
                 return;
             }
-            final Collection<File> inputFiles = getInputFiles(parsedArgs);
+            final Collection<File> inputFiles = inputFiles(parsedArgs);
             final Config config = loadConfig(parsedArgs);
             Finf.output(inputFiles, config, System.out);
         }
@@ -60,21 +60,21 @@ public final class Main
         System.err.println(ex.toString());
     }
 
-    private static Collection<File> getInputFiles(final Args parsedArgs)
+    private static Collection<File> inputFiles(final Args parsedArgs)
     {
         final var inputFiles = new ArrayList<File>();
         parsedArgs.inputFiles.stream()
             .map(File::new)
-            .forEach(file -> addTree(inputFiles, file));
+            .forEach(file -> addTree(file, inputFiles));
         return inputFiles;
     }
     
     private static void addTree(
-            final Collection<? super File> files, final File file)
+            final File file, final Collection<? super File> files)
     {
         if (file.isDirectory())
         {
-            Stream.of(file.listFiles()).forEach(child -> addTree(files, child));
+            Stream.of(file.listFiles()).forEach(child -> addTree(child, files));
         }
         else
         {
@@ -85,7 +85,7 @@ public final class Main
     private static Config loadConfig(final Args args) throws IOException
     {
         final ConfigLoader loader
-            = ConfigLoader.getDefault(getConfigOverrides(args));
+            = ConfigLoader.overriddenBy(configOverrides(args));
         if (args.configFile == null)
         {
             return loader.loadConfig(new StringReader(""));
@@ -103,7 +103,7 @@ public final class Main
         }
     }
     
-    private static Map<String, String> getConfigOverrides(final Args args)
+    private static Map<String, String> configOverrides(final Args args)
     {
         final var overrides = new HashMap<String, String>();
         args.configOverrides.forEach(

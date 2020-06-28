@@ -56,17 +56,17 @@ public final class PropertiesConfigLoader implements ConfigLoader
     @Override
     public Config loadConfig(final Reader reader) throws IOException
     {
-        final Properties props = getProperties(reader);
+        final Properties props = properties(reader);
         final Manifold manifold = new Manifold(props, locale);
         return new Config.Builder(
-                manifold.getInfoGenerator(), manifold.getInfoFormat())
-                    .setFileFilter(manifold.getFileFilter())
-                    .setOrder(manifold.getOrder())
-                    .setCount(Settings.getCount(props))
+                manifold.infoGenerator(), manifold.infoFormat())
+                    .setFileFilter(manifold.fileFilter())
+                    .setOrder(manifold.order())
+                    .setCount(Settings.count(props))
                     .build();
     }
 
-    private Properties getProperties(final Reader reader) throws IOException
+    private Properties properties(final Reader reader) throws IOException
     {
         final var props = new Properties();
         props.load(reader);

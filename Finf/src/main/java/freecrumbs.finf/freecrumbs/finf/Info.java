@@ -28,7 +28,7 @@ public final class Info
     /**
      * The names of the fields this info contains.
      */
-    public Set<String> getFieldNames()
+    public Set<String> fieldNames()
     {
         return values.keySet();
     }
@@ -38,7 +38,7 @@ public final class Info
      * @throws java.util.NoSuchElementException
      * if this info doesn't have the given field
      */
-    public String getValue(final String fieldName)
+    public String value(final String fieldName)
     {
         requireNonNull(fieldName, "fieldName");
         if (!values.containsKey(fieldName))
@@ -57,8 +57,8 @@ public final class Info
     {
         try
         {
-            final String value1 = getValue(fieldName);
-            final String value2 = other.getValue(fieldName);
+            final String value1 = value(fieldName);
+            final String value2 = other.value(fieldName);
             return Optional.of(value1.compareTo(value2));
         }
         catch (final NoSuchElementException ex)

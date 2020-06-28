@@ -29,7 +29,7 @@ public interface DynamicValue extends FieldValue
     public static DynamicValue of(
             final InfoGenerator infoGenerator, final InfoFormat infoFormat)
     {
-        return file -> infoFormat.toString(infoGenerator.getInfo(file));
+        return file -> infoFormat.stringify(infoGenerator.infoAbout(file));
     }
 
 }

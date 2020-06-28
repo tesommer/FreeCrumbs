@@ -39,7 +39,7 @@ public final class Field
      * @param name the name
      * @param value the value
      */
-    public static Field getInstance(final String name, final FieldValue value)
+    public static Field simple(final String name, final FieldValue value)
     {
         return new Field(name, value, null);
     }
@@ -49,7 +49,7 @@ public final class Field
      * @param name the field name
      * @param computation the computation
      */
-    public static Field getInstance(
+    public static Field computed(
             final String name, final FieldComputation computation)
     {
         return new Field(name, null, computation);
@@ -72,7 +72,7 @@ public final class Field
     }
     
     /**
-     * Whether or not this field has a computed value.
+     * Whether or not this field contains a simple value or a computation.
      */
     public boolean isComputed()
     {
@@ -82,7 +82,7 @@ public final class Field
     /**
      * This field's value.
      * @throws NoSuchElementException
-     * if the value of this field is {@link #isComputed() computed}
+     * if {@link #isComputed()} returns {@code true}
      */
     public FieldValue value()
     {
@@ -96,7 +96,7 @@ public final class Field
     /**
      * This field's value computation.
      * @throws NoSuchElementException
-     * if the value of this field is not {@link #isComputed() computed}
+     * if {@link #isComputed()} returns {@code false}
      */
     public FieldComputation computation()
     {

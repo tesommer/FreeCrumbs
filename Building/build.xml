@@ -3,7 +3,7 @@
 <project name="FreeCrumbs" default="main" basedir=".">
     
     <property name="version"
-              value="3.2.0-a"/>
+              value="4.0.0-a"/>
     
     <property name="product.and.version"
               value="FreeCrumbs version ${version}"/>

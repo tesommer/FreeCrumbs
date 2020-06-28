@@ -28,9 +28,9 @@ public final class Hash
      * @param name the field name
      * @param algorithm the hash algorithm
      */
-    public static Field getField(final String name, final String algorithm)
+    public static Field field(final String name, final String algorithm)
     {
-        return Field.getInstance(name, new HashFieldComputation(algorithm));
+        return Field.computed(name, new HashFieldComputation(algorithm));
     }
     
     private static final class HashFieldComputation

@@ -43,8 +43,8 @@ public final class FormatPattern
             final InfoGenerator infoGenerator,
             final InfoFormat infoFormat) throws IOException
     {
-        final Info info = infoGenerator.getInfo(file);
-        return pattern.matcher(infoFormat.toString(info)).matches() == include;
+        final Info info = infoGenerator.infoAbout(file);
+        return pattern.matcher(infoFormat.stringify(info)).matches() == include;
     }
     
 }

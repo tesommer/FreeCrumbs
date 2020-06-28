@@ -290,7 +290,7 @@ public final class ConfigLoaderTest
         @DisplayName("Count")
         public void test1() throws IOException
         {
-            assertEquals(2, loadConfig("count=2").getCount(), "Count");
+            assertEquals(2, loadConfig("count=2").count(), "Count");
         }
     }
     
@@ -349,7 +349,7 @@ public final class ConfigLoaderTest
             final String properties,
             final Map<String, String> overrides) throws IOException
     {
-        return ConfigLoader.getDefault(overrides)
+        return ConfigLoader.overriddenBy(overrides)
                 .loadConfig(new StringReader(properties));
     }
     
@@ -367,15 +367,15 @@ public final class ConfigLoaderTest
     {
         assertEquals(
                 expectedFileFilterPresence,
-                config.getFileFilter().isPresent(),
+                config.fileFilter().isPresent(),
                 "File filter presence");
         assertEquals(
                 expectedOrderPresence,
-                config.getOrder().isPresent(),
+                config.order().isPresent(),
                 "Order presence");
         assertEquals(
                 expectedCount,
-                config.getCount(),
+                config.count(),
                 "Count");
     }
     
@@ -383,11 +383,11 @@ public final class ConfigLoaderTest
             final Config config,
             final String... expectedFieldNames) throws IOException
     {
-        final var reader = (FieldReader)config.getInfoGenerator();
+        final var reader = (FieldReader)config.infoGenerator();
         final var expected = Stream.of(expectedFieldNames)
                 .sorted()
                 .collect(toList());
-        final var actual = Stream.of(reader.getFieldNames())
+        final var actual = Stream.of(reader.fieldNames())
                 .sorted()
                 .collect(toList());
         assertEquals(expected, actual, "Field names");
@@ -399,7 +399,7 @@ public final class ConfigLoaderTest
             final String expectedFormattedInfo) throws IOException
     {
         final String actualFormattedInfo
-            = config.getInfoFormat().toString(info);
+            = config.infoFormat().stringify(info);
         assertEquals(
                 expectedFormattedInfo, actualFormattedInfo, "Formatted info");
     }
@@ -411,7 +411,7 @@ public final class ConfigLoaderTest
     {
         assertEquals(
                 expectedIncludes,
-                config.getFileFilter().get().accept(new File(filename)),
+                config.fileFilter().get().accept(new File(filename)),
                 "File filter includes " + filename);
     }
     
@@ -420,7 +420,7 @@ public final class ConfigLoaderTest
     {
         final var actual = new ArrayList<Info>(List.of(expected));
         Collections.reverse(actual);
-        actual.sort(config.getOrder().get());
+        actual.sort(config.order().get());
         for (int i = 0; i < expected.length; i++)
         {
             assertSame(expected[i], actual.get(i), "Order: index " + i);

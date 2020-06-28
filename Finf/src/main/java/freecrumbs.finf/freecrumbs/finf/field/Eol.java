@@ -44,27 +44,27 @@ public final class Eol
      * Returns instances of EOL-related fields.
      * Some of the returned instances are collaborating.
      */
-    public static Field[] getFields()
+    public static Field[] fields()
     {
-        final EolCounter counter = new EolCounter();
+        final var counter = new EolCounter();
         return new Field[]
         {
-                Field.getInstance(
+                Field.computed(
                         EOL_COUNT_FIELD_NAME,
                         new EolCountComputation(counter, Eol::getEolCount)),
-                Field.getInstance(
+                Field.computed(
                         CR_COUNT_FIELD_NAME,
                         new EolCountComputation(counter, Eol::getCrCount)),
-                Field.getInstance(
+                Field.computed(
                         LF_COUNT_FIELD_NAME,
                         new EolCountComputation(counter, Eol::getLfCount)),
-                Field.getInstance(
+                Field.computed(
                         CRLF_COUNT_FIELD_NAME,
                         new EolCountComputation(counter, Eol::getCrlfCount)),
-                Field.getInstance(EOL_FIELD_NAME,  file -> EOL),
-                Field.getInstance(CR_FIELD_NAME,   file -> "\r"),
-                Field.getInstance(LF_FIELD_NAME,   file -> "\n"),
-                Field.getInstance(CRLF_FIELD_NAME, file -> "\r\n"),
+                Field.simple(EOL_FIELD_NAME,  file -> EOL),
+                Field.simple(CR_FIELD_NAME,   file -> "\r"),
+                Field.simple(LF_FIELD_NAME,   file -> "\n"),
+                Field.simple(CRLF_FIELD_NAME, file -> "\r\n"),
         };
     }
     

@@ -32,7 +32,7 @@ public final class Finf
             final Config config,
             final PrintStream out) throws IOException
     {
-        if (config.getOrder().isPresent())
+        if (config.order().isPresent())
         {
             outputOrdered(files, config, out);
         }
@@ -61,7 +61,7 @@ public final class Finf
                 items,
                 config,
                 out,
-                config.getInfoGenerator()::getInfo);
+                config.infoGenerator()::infoAbout);
     }
     
     private static List<Info> filterAndSort(
@@ -71,9 +71,9 @@ public final class Finf
         final var items = new ArrayList<Info>();
         for (final File file : filter(files, config))
         {
-            items.add(config.getInfoGenerator().getInfo(file));
+            items.add(config.infoGenerator().infoAbout(file));
         }
-        return items.stream().sorted(config.getOrder().get()).collect(toList());
+        return items.stream().sorted(config.order().get()).collect(toList());
     }
 
     private static List<File> filter(
@@ -97,17 +97,17 @@ public final class Finf
             final PrintStream out,
             final Informer<? super T> informer) throws IOException
     {
-        for (int i = 0; (config.getCount() < 0 || i < config.getCount())
+        for (int i = 0; (config.count() < 0 || i < config.count())
                 && i < items.size(); i++)
         {
             final Info info = informer.provide(items.get(i));
-            out.print(config.getInfoFormat().toString(info));
+            out.print(config.infoFormat().stringify(info));
         }
     }
     
     private static boolean acceptsInput(final File file, final Config config)
     {
-        return config.getFileFilter().map(ff -> ff.accept(file)).orElse(true);
+        return config.fileFilter().map(ff -> ff.accept(file)).orElse(true);
     }
 
 }

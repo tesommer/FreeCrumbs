@@ -192,7 +192,7 @@ public final class ClassificationTest
                 .withLimit(limit)
                 .withThreshold(threshold)
                 .withIsTextChar(ch -> ch == T);
-        return Classification.getField(heuristic, String::valueOf)
+        return Classification.field(heuristic, String::valueOf)
                 .computation();
     }
 

@@ -20,12 +20,12 @@ public final class Whitespace
     {
     }
     
-    public static Field[] getFields()
+    public static Field[] fields()
     {
         return new Field[]
         {
-                Field.getInstance(SPACE_FIELD_NAME,   file -> " "),
-                Field.getInstance(TAB_FIELD_NAME,   file -> "\t"),
+                Field.simple(SPACE_FIELD_NAME,   file -> " "),
+                Field.simple(TAB_FIELD_NAME,   file -> "\t"),
         };
     }
 

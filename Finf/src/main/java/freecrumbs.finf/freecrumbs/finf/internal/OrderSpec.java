@@ -16,8 +16,8 @@ public final class OrderSpec
      */
     public static final Comparator<OrderSpec>
     COMPARATOR = (os1, os2)
-        -> Integer.valueOf(os1.getPrecedence())
-            .compareTo(Integer.valueOf(os2.getPrecedence()));
+        -> Integer.valueOf(os1.precedence())
+            .compareTo(Integer.valueOf(os2.precedence()));
     
     private final String fieldName;
     private final int precedence;
@@ -37,12 +37,12 @@ public final class OrderSpec
         this.desc = desc;
     }
     
-    public String getFieldName()
+    public String fieldName()
     {
         return fieldName;
     }
 
-    public int getPrecedence()
+    public int precedence()
     {
         return precedence;
     }

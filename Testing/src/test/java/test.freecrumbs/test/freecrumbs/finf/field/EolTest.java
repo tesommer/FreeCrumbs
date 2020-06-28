@@ -33,19 +33,19 @@ public final class EolTest
                 "2",
                 "2",
                 "1",
-                getEolCounts(content, 1024, Eol.getFields()));
+                getEolCounts(content, 1024, Eol.fields()));
         assertEolCounts(
                 "5",
                 "2",
                 "2",
                 "1",
-                getEolCounts(content, 2, Eol.getFields()));
+                getEolCounts(content, 2, Eol.fields()));
         assertEolCounts(
                 "5",
                 "2",
                 "2",
                 "1",
-                getEolCounts(content, 1, Eol.getFields()));
+                getEolCounts(content, 1, Eol.fields()));
     }
     
     @Test
@@ -54,7 +54,7 @@ public final class EolTest
     {
         final String content1 = "a\nb\nc\nd\n";
         final String content2 = "z\r\ny\r\nx\r\n";
-        final Field[] fields = Eol.getFields();
+        final Field[] fields = Eol.fields();
         assertEolCounts(
                 "4",
                 "0",
@@ -79,7 +79,7 @@ public final class EolTest
                 "0",
                 "0",
                 "0",
-                getEolCounts(content, 2, Eol.getFields()));
+                getEolCounts(content, 2, Eol.fields()));
     }
     
     @Test
@@ -93,7 +93,7 @@ public final class EolTest
                 "0",
                 "0",
                 "1",
-                getEolCounts(content, bufferSize, Eol.getFields()));
+                getEolCounts(content, bufferSize, Eol.fields()));
     }
     
     @Test
@@ -106,7 +106,7 @@ public final class EolTest
                 "1",
                 "0",
                 "0",
-                getEolCounts(content, 512, Eol.getFields()));
+                getEolCounts(content, 512, Eol.fields()));
     }
     
     @Test
@@ -114,7 +114,7 @@ public final class EolTest
     public void test6() throws IOException
     {
         final String content = "abc\r\nx\ny\rz";
-        final Field[] fields = Eol.getFields();
+        final Field[] fields = Eol.fields();
         final Field eol = FieldTesting.getField(EOL_COUNT_FIELD_NAME, fields);
         final Field cr = FieldTesting.getField(CR_COUNT_FIELD_NAME, fields);
         final Field lf = FieldTesting.getField(LF_COUNT_FIELD_NAME, fields);
