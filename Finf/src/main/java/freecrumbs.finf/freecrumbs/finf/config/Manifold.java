@@ -1,4 +1,4 @@
-package freecrumbs.finf.internal;
+package freecrumbs.finf.config;
 
 import java.io.FileFilter;
 import java.io.IOException;

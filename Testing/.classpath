@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src/test/java/test.freecrumbs"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Finf">
 		<attributes>
 			<attribute name="module" value="true"/>

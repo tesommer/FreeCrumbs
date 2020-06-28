@@ -5,7 +5,7 @@ import java.io.Reader;
 import java.util.Locale;
 import java.util.Map;
 
-import freecrumbs.finf.internal.PropertiesConfigLoader;
+import freecrumbs.finf.config.PropertiesConfigLoader;
 
 /**
  * Configuration loader.

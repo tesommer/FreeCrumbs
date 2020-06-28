@@ -1,4 +1,4 @@
-package freecrumbs.finf.internal;
+package freecrumbs.finf.config;
 
 import java.io.FileFilter;
 import java.io.IOException;
@@ -24,7 +24,7 @@ import freecrumbs.finf.InfoGenerator;
  * }
  * </pre>
  * 
- * @see freecrumbs.finf.internal.PropertiesConfigLoader
+ * @see freecrumbs.finf.config.PropertiesConfigLoader
  * 
  * @author Tone Sommerland
  */

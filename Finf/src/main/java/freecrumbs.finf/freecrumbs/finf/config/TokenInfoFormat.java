@@ -1,4 +1,4 @@
-package freecrumbs.finf.internal;
+package freecrumbs.finf.config;
 
 import static java.util.Objects.requireNonNull;
 
