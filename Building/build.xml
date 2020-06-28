@@ -183,7 +183,7 @@
         
         <!-- Copy post-build scripts to BUILD -->
         <copy todir="${build.dir}">
-            <fileset file="pb_*.sh"/>
+            <fileset file="postbuild_*.sh"/>
             <filterchain>
                 <replacetokens>
                     <token key="dirhome"    value="${dir.home}"/>
