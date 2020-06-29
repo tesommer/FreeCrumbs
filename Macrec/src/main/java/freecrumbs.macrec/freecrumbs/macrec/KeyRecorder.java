@@ -94,16 +94,16 @@ public final class KeyRecorder extends JFrame implements KeyListener
     @Override
     public void keyPressed(final KeyEvent evt)
     {
-        receiver.accept(KeyPress.NAME + " " + getParameter(evt.getKeyCode()));
+        receiver.accept(KeyPress.NAME + " " + parameter(evt.getKeyCode()));
     }
 
     @Override
     public void keyReleased(final KeyEvent evt)
     {
-        receiver.accept(KeyRelease.NAME + " " + getParameter(evt.getKeyCode()));
+        receiver.accept(KeyRelease.NAME + " " + parameter(evt.getKeyCode()));
     }
     
-    private String getParameter(final int keyCode)
+    private String parameter(final int keyCode)
     {
         for (final String name : script.variables().names())
         {

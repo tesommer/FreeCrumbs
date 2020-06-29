@@ -77,12 +77,12 @@ public final class MarkLayer implements Layer
         marks.remove(index);
     }
     
-    public Point getMarkPoint(final int index)
+    public Point markPoint(final int index)
     {
         return new Point(marks.get(index).point);
     }
     
-    public int getMarkCount()
+    public int markCount()
     {
         return marks.size();
     }

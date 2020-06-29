@@ -162,7 +162,7 @@ public final class MouseRecorder extends ScreenCaptureFrame
         }
         else if (state == State.SHOWING_XY)
         {
-            showXY(evt);
+            showXy(evt);
         }
     }
 
@@ -220,10 +220,10 @@ public final class MouseRecorder extends ScreenCaptureFrame
     private void recordCapture(final MouseEvent evt)
     {
         addMark(evt);
-        if (markLayer.getMarkCount() == 2)
+        if (markLayer.markCount() == 2)
         {
-            final Point point1 = markLayer.getMarkPoint(0);
-            final Point point2 = markLayer.getMarkPoint(1);
+            final Point point1 = markLayer.markPoint(0);
+            final Point point2 = markLayer.markPoint(1);
             final BufferedImage image = copyCapture(point1, point2);
             try
             {
@@ -237,7 +237,7 @@ public final class MouseRecorder extends ScreenCaptureFrame
         }
     }
     
-    private void showXY(final MouseEvent evt)
+    private void showXy(final MouseEvent evt)
     {
         final String coordinates = "(" + evt.getX() + ", " + evt.getY() + ")";
         receiver.accept(coordinates);
