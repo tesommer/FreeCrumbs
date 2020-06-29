@@ -51,16 +51,16 @@ public final class Eol
         {
                 Field.computed(
                         EOL_COUNT_FIELD_NAME,
-                        new EolCountComputation(counter, Eol::getEolCount)),
+                        new EolCountComputation(counter, Eol::eolCount)),
                 Field.computed(
                         CR_COUNT_FIELD_NAME,
-                        new EolCountComputation(counter, Eol::getCrCount)),
+                        new EolCountComputation(counter, Eol::crCount)),
                 Field.computed(
                         LF_COUNT_FIELD_NAME,
-                        new EolCountComputation(counter, Eol::getLfCount)),
+                        new EolCountComputation(counter, Eol::lfCount)),
                 Field.computed(
                         CRLF_COUNT_FIELD_NAME,
-                        new EolCountComputation(counter, Eol::getCrlfCount)),
+                        new EolCountComputation(counter, Eol::crlfCount)),
                 Field.simple(EOL_FIELD_NAME,  file -> EOL),
                 Field.simple(CR_FIELD_NAME,   file -> "\r"),
                 Field.simple(LF_FIELD_NAME,   file -> "\n"),
@@ -115,23 +115,23 @@ public final class Eol
         
     }
     
-    private static String getEolCount(final EolCounter counter)
+    private static String eolCount(final EolCounter counter)
     {
         return String.valueOf(
                 counter.crCount + counter.lfCount + counter.crlfCount);
     }
     
-    private static String getCrCount(final EolCounter counter)
+    private static String crCount(final EolCounter counter)
     {
         return String.valueOf(counter.crCount);
     }
     
-    private static String getLfCount(final EolCounter counter)
+    private static String lfCount(final EolCounter counter)
     {
         return String.valueOf(counter.lfCount);
     }
     
-    private static String getCrlfCount(final EolCounter counter)
+    private static String crlfCount(final EolCounter counter)
     {
         return String.valueOf(counter.crlfCount);
     }

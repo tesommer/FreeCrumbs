@@ -33,7 +33,7 @@ public final class TokenInfoFormat implements InfoFormat
     public String[] usedFieldNames(final String[] availableFieldNames)
     {
         return Stream.of(availableFieldNames)
-                .filter(name -> format.contains(getToken(name)))
+                .filter(name -> format.contains(token(name)))
                 .toArray(String[]::new);
     }
     
@@ -53,7 +53,7 @@ public final class TokenInfoFormat implements InfoFormat
             final String fieldName,
             final Info info) throws IOException
     {
-        final String token = getToken(fieldName);
+        final String token = token(fieldName);
         if (format.contains(token))
         {
             return format.replace(token, info.value(fieldName));
@@ -61,7 +61,7 @@ public final class TokenInfoFormat implements InfoFormat
         return format;
     }
 
-    private static String getToken(final String fieldName)
+    private static String token(final String fieldName)
     {
         return "${" + fieldName + "}";
     }
