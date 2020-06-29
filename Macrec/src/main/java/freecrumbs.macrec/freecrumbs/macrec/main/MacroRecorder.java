@@ -1,5 +1,7 @@
-package freecrumbs.macrec;
+package freecrumbs.macrec.main;
 
+import freecrumbs.macrec.KeyRecorder;
+import freecrumbs.macrec.MouseRecorder;
 import freecrumbs.macro.MacroException;
 
 /**
