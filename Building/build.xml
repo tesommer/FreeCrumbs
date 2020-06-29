@@ -16,6 +16,7 @@
     
     <property name="dir.src"       value="FreeCrumbs_src-${version}"/>
     <property name="dir.home"      value="FreeCrumbs-${version}"/>
+    <property name="dir.javadoc"   value="FreeCrumbs_javadoc-${version}"/>
     <property name="build.dir"     value="../Build"/>
     <property name="build.dir.src" value="${build.dir}/${dir.src}"/>
     <property name="build.dir.bin" value="${build.dir}/${dir.home}"/>
@@ -186,7 +187,9 @@
             <fileset file="postbuild_*.sh"/>
             <filterchain>
                 <replacetokens>
+                    <token key="dirsrc"     value="${dir.src}"/>
                     <token key="dirhome"    value="${dir.home}"/>
+                    <token key="dirjavadoc" value="${dir.javadoc}"/>
                 </replacetokens>
             </filterchain>
         </copy>
