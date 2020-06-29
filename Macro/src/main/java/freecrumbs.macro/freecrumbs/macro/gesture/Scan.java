@@ -48,7 +48,7 @@ public final class Scan extends Command
     }
     
     @Override
-    protected Gesture getGesture(final String line, final String[] params)
+    protected Gesture gesture(final String line, final String[] params)
             throws MacroException
     {
         return new ScanGesture(new ScanParams(params));
@@ -67,9 +67,9 @@ public final class Scan extends Command
         public void play(final Script script, final Robot robot)
                 throws MacroException
         {
-            final BufferedImage image = params.getImage(script);
+            final BufferedImage image = params.image(script);
             final int[] xy = params.scanScreenForImage(script, robot, image);
-            params.setXYVariables(script, xy);
+            params.setXyVariables(script, xy);
             params.playResultMacro(script, robot, xy);
         }
     }
@@ -89,9 +89,8 @@ public final class Scan extends Command
             this.toY =   params[firstIndex + 3];
         }
         
-        public Scanner getScanner(
-                final Script script,
-                final Robot robot) throws MacroException
+        public Scanner scanner(final Script script, final Robot robot)
+                throws MacroException
         {
             return new Scanner(
                     Util.createScreenCapture(robot),
@@ -113,7 +112,7 @@ public final class Scan extends Command
             this.yVariable = params[firstIndex + 1];
         }
 
-        public void setXYVariables(final Script script, final int[] xy)
+        public void setXyVariables(final Script script, final int[] xy)
         {
             final int x;
             final int y;
@@ -178,16 +177,16 @@ public final class Scan extends Command
             this.fromToParams = new FromToParams(params, 0);
             this.variableParams = new VariableParams(params, 4);
             this.resultMacroParams = new ResultMacroParams(params, 10);
-            this.image      = params[6];
+            this.image            = params[6];
             this.occurrence       = paramOrDefault(params, 7, "1");
             this.delay            = paramOrDefault(params, 8, "0");
             this.times            = paramOrDefault(params, 9, "1");
         }
 
-        public BufferedImage getImage(final Script script)
+        public BufferedImage image(final Script script)
                 throws MacroException
         {
-            return script.images().getOrLoad(image);
+            return script.images().loadIfAbsent(image);
         }
         
         public int[] scanScreenForImage(
@@ -201,15 +200,15 @@ public final class Scan extends Command
                     && time++ < script.variables().value(times))
             {
                 robot.delay(script.variables().value(delay));
-                xy = fromToParams.getScanner(script, robot)
+                xy = fromToParams.scanner(script, robot)
                     .xyOf(image, script.variables().value(occurrence));
             }
             return xy;
         }
         
-        public void setXYVariables(final Script script, final int[] xy)
+        public void setXyVariables(final Script script, final int[] xy)
         {
-            variableParams.setXYVariables(script, xy);
+            variableParams.setXyVariables(script, xy);
         }
         
         public void playResultMacro(

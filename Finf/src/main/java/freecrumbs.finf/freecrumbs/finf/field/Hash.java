@@ -68,7 +68,7 @@ public final class Hash
         }
 
         @Override
-        public String get() throws IOException
+        public String finish() throws IOException
         {
             return EncodingUtil.bytesToHex(false, messageDigest.digest());
         }

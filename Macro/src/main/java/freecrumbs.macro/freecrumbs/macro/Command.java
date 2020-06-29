@@ -76,7 +76,7 @@ public abstract class Command implements GestureParser
         {
             throw new MacroException("Syntax incorrect: " + line);
         }
-        return getGesture(line, params);
+        return gesture(line, params);
     }
     
     /**
@@ -84,7 +84,7 @@ public abstract class Command implements GestureParser
      * @param line the parsed line
      * @param params the command parameters
      */
-    protected abstract Gesture getGesture(String line, String[] params)
+    protected abstract Gesture gesture(String line, String[] params)
             throws MacroException;
 
 }

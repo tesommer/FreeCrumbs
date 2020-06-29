@@ -38,7 +38,7 @@ public final class Wait extends Command
     }
 
     @Override
-    protected Gesture getGesture(final String line, final String[] params)
+    protected Gesture gesture(final String line, final String[] params)
             throws MacroException
     {
         return (script, robot) -> waitForImage(script, robot, params);
@@ -49,13 +49,12 @@ public final class Wait extends Command
             final Robot robot,
             final String[] params) throws MacroException
     {
-        final BufferedImage image = getImage(script, params);
-        final boolean gone = getGone(script, params);
-        final int millis = getMillis(script, params);
+        final BufferedImage image = image(script, params);
+        final boolean gone = isUntilGone(script, params);
+        final int millis = millis(script, params);
         while (true)
         {
-            final int[] xy = getScanner(script, robot, params)
-                .xyOf(image, 1);
+            final int[] xy = scanner(script, robot, params).xyOf(image, 1);
             if (gone == (xy.length == 0))
             {
                 break;
@@ -64,27 +63,27 @@ public final class Wait extends Command
         }
     }
 
-    private static BufferedImage getImage(
+    private static BufferedImage image(
             final Script script, final String[] params) throws MacroException
     {
-        return script.images().getOrLoad(params[4]);
+        return script.images().loadIfAbsent(params[4]);
     }
     
-    private static boolean getGone(final Script script, final String[] params)
-            throws MacroException
+    private static boolean isUntilGone(
+            final Script script, final String[] params) throws MacroException
     {
         return script.variables().value(
                 paramOrDefault(params, 5, DEFAULT_GONE)) != 0;
     }
     
-    private static int getMillis(final Script script, final String[] params)
+    private static int millis(final Script script, final String[] params)
             throws MacroException
     {
         return script.variables().value(
                 paramOrDefault(params, 6, DEFAULT_MILLIS));
     }
     
-    private static Scanner getScanner(
+    private static Scanner scanner(
             final Script script,
             final Robot robot,
             final String[] params) throws MacroException

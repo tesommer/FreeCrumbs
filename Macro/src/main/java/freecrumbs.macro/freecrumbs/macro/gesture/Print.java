@@ -36,11 +36,11 @@ public enum Print implements GestureParser
             throws MacroException
     {
         String output = line.trim().substring(NAME.length()).trim();
-        for (final String variableName : script.variables().getNames())
+        for (final String variableName : script.variables().names())
         {
             output = output.replace(
                     "$" + variableName,
-                    String.valueOf(script.variables().get(variableName)));
+                    String.valueOf(script.variables().variable(variableName)));
         }
         System.out.println(output);
     }

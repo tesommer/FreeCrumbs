@@ -162,7 +162,7 @@ public final class Classification implements FieldComputation
     }
 
     @Override
-    public String get() throws IOException
+    public String finish() throws IOException
     {
         if (category == EMPTY && bytesRead > 0)
         {

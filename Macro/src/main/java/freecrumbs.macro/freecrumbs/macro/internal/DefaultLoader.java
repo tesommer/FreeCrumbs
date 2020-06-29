@@ -23,7 +23,7 @@ public final class DefaultLoader implements Loader
     private static final String COMMENT_PREFIX = "#";
     
     private final RecursionGuard
-    recursionGuard = RecursionGuard.getAtomic(RECURSION_LIMIT);
+    recursionGuard = RecursionGuard.atomic(RECURSION_LIMIT);
     
     private final GestureParser[] gestureParsers;
 
@@ -48,16 +48,16 @@ public final class DefaultLoader implements Loader
             {
                 if (line.trim().isEmpty())
                 {
-                    addMacro(macros, gestures, macroName);
+                    addMacro(macroName, gestures, macros);
                     gestures.clear();
                     macroName = null;
                 }
                 else if (!isComment(line))
                 {
-                    final String name = getMacroName(line);
+                    final String name = macroNameOrNull(line);
                     if (name == null)
                     {
-                        addGesture(gestures, line);
+                        addGesture(line, gestures);
                     }
                     else
                     {
@@ -65,7 +65,7 @@ public final class DefaultLoader implements Loader
                     }
                 }
             }
-            addMacro(macros, gestures, macroName);
+            addMacro(macroName, gestures, macros);
             return macros.stream().toArray(Macro[]::new);
         }
         catch (final IOException ex)
@@ -75,7 +75,7 @@ public final class DefaultLoader implements Loader
     }
     
     @Override
-    public RecursionGuard getRecursionGuard()
+    public RecursionGuard recursionGuard()
     {
         return recursionGuard;
     }
@@ -83,7 +83,7 @@ public final class DefaultLoader implements Loader
     /**
      * Returns null if the given line does not specify the macro name.
      */
-    private static String getMacroName(final String line)
+    private static String macroNameOrNull(final String line)
     {
         if (Util.isFirstWord(NAME_PREFIX, line))
         {
@@ -102,8 +102,8 @@ public final class DefaultLoader implements Loader
      * and adds the resulting gesture to the gestures collection.
      */
     private void addGesture(
-            final Collection<? super Gesture> gestures,
-            final String line) throws MacroException
+            final String line,
+            final Collection<? super Gesture> gestures) throws MacroException
     {
         for (final GestureParser parser : gestureParsers)
         {
@@ -123,9 +123,9 @@ public final class DefaultLoader implements Loader
      * @param macroName the macro name (nullable)
      */
     private static void addMacro(
-            final Collection<? super Macro> macros,
+            final String macroName,
             final Collection<? extends Gesture> gestures,
-            final String macroName)
+            final Collection<? super Macro> macros)
     {
         if (gestures.isEmpty())
         {
@@ -133,12 +133,12 @@ public final class DefaultLoader implements Loader
         }
         if (macroName == null)
         {
-            macros.add(Macro.getNameless(
+            macros.add(Macro.nameless(
                     gestures.stream().toArray(Gesture[]::new)));
         }
         else
         {
-            macros.add(Macro.get(
+            macros.add(Macro.named(
                     macroName,
                     gestures.stream().toArray(Gesture[]::new)));
         }

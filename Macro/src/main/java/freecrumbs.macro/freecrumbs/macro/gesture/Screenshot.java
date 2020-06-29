@@ -30,7 +30,7 @@ public final class Screenshot extends Command
     }
 
     @Override
-    protected Gesture getGesture(final String line, final String[] params)
+    protected Gesture gesture(final String line, final String[] params)
             throws MacroException
     {
         return (script, robot) -> takeScreenshot(script, robot, params);
@@ -43,10 +43,10 @@ public final class Screenshot extends Command
     {
         script.images().set(
                 params[0],
-                robot.createScreenCapture(getRectangle(script, params)));
+                robot.createScreenCapture(rectangle(script, params)));
     }
     
-    private static Rectangle getRectangle(
+    private static Rectangle rectangle(
             final Script script, final String[] params) throws MacroException
     {
         final Dimension screenSize

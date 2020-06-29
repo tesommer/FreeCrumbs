@@ -1,6 +1,6 @@
 package freecrumbs.macro.gesture;
 
-import static freecrumbs.macro.gesture.MousePress.getButtons;
+import static freecrumbs.macro.gesture.MousePress.buttons;
 
 import freecrumbs.macro.Command;
 import freecrumbs.macro.Gesture;
@@ -28,11 +28,10 @@ public final class MouseRelease extends Command
     }
 
     @Override
-    protected Gesture getGesture(final String line, final String[] params)
+    protected Gesture gesture(final String line, final String[] params)
             throws MacroException
     {
-        return (script, robot)
-                -> robot.mouseRelease(getButtons(script, params));
+        return (script, robot) -> robot.mouseRelease(buttons(script, params));
     }
 
 }

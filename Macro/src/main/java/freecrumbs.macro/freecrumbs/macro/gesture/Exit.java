@@ -24,7 +24,7 @@ public final class Exit extends Command
     }
 
     @Override
-    protected Gesture getGesture(final String line, final String[] params)
+    protected Gesture gesture(final String line, final String[] params)
             throws MacroException
     {
         return (script, robot) -> System.exit(0);

@@ -303,7 +303,7 @@ public final class Search
         }
 
         @Override
-        public String get() throws IOException
+        public String finish() throws IOException
         {
             return value.apply(
                     searcher.finish(params.charset, params.occurrence));

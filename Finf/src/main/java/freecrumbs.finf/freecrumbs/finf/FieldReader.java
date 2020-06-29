@@ -195,7 +195,7 @@ public final class FieldReader implements InfoGenerator
         {
             if (field.isComputed())
             {
-                values.put(field.name(), field.computation().get());
+                values.put(field.name(), field.computation().finish());
             }
         }
     }

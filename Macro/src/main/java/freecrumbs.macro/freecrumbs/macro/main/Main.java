@@ -46,8 +46,7 @@ public final class Main
     private static final String HELP_OPTION = "-h";
     
     private static final GestureParser[]
-    GESTURE_PARSERS
-        = new GestureParser[]
+    GESTURE_PARSERS = new GestureParser[]
         {
                 AddKeyCodeVariables.INSTANCE,
                 Beep.INSTANCE,
@@ -105,7 +104,7 @@ public final class Main
     {
         try
         {
-            final Robot robot = new Robot();
+            final var robot = new Robot();
             if (args.macroName == null)
             {
                 script.play(robot, args.times);
@@ -125,7 +124,7 @@ public final class Main
     {
         return Script.load(
                 Location.fromFilePath(args.inputFile),
-                Loader.getDefault(GESTURE_PARSERS));
+                Loader.supporting(GESTURE_PARSERS));
     }
     
     /**

@@ -106,13 +106,13 @@ public final class Script
     public void play(final Robot robot, final int times, final String macroName)
             throws MacroException
     {
-        play(getMacro(macroName), robot, times);
+        play(macro(macroName), robot, times);
     }
     
-    private Macro getMacro(final String name) throws MacroException
+    private Macro macro(final String name) throws MacroException
     {
         return Stream.of(macros)
-            .filter(m -> m.getName().equals(name))
+            .filter(m -> m.name().equals(name))
             .findFirst()
             .orElseThrow(() -> new MacroException("No such macro: " + name));
     }
@@ -122,7 +122,7 @@ public final class Script
     {
         try
         {
-            loader.getRecursionGuard().increment();
+            loader.recursionGuard().increment();
             for (int i = 0; i < times; i++)
             {
                 macro.play(this, robot);
@@ -130,7 +130,7 @@ public final class Script
         }
         finally
         {
-            loader.getRecursionGuard().decrement();
+            loader.recursionGuard().decrement();
         }
     }
 

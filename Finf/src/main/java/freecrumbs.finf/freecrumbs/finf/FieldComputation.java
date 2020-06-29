@@ -45,6 +45,6 @@ public interface FieldComputation
     /**
      * Finishes the computation and returns the calculated value.
      */
-    public abstract String get() throws IOException;
+    public abstract String finish() throws IOException;
 
 }

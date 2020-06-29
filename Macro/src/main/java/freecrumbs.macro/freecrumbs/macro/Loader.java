@@ -14,7 +14,7 @@ public interface Loader
     /**
      * Returns a default loader.
      */
-    public static Loader getDefault(final GestureParser... parsers)
+    public static Loader supporting(final GestureParser... parsers)
     {
         return new DefaultLoader(parsers);
     }
@@ -28,6 +28,6 @@ public interface Loader
      * The recursion guard instance to use
      * by all scripts produced by this loader.
      */
-    public abstract RecursionGuard getRecursionGuard();
+    public abstract RecursionGuard recursionGuard();
 
 }

@@ -30,7 +30,7 @@ public final class ScriptImages
     /**
      * The names of all images stored in the script.
      */
-    public Set<String> getNames()
+    public Set<String> names()
     {
         return Collections.unmodifiableSet(images.keySet());
     }
@@ -58,7 +58,7 @@ public final class ScriptImages
      * Returns the image with the given name.
      * @throws MacroException if the image was not found
      */
-    public BufferedImage get(final String name) throws MacroException
+    public BufferedImage image(final String name) throws MacroException
     {
         if (images.containsKey(name))
         {
@@ -91,12 +91,12 @@ public final class ScriptImages
      * @param nameOrLocation either an image name or location.
      * @throws MacroException if not found.
      */
-    public BufferedImage getOrLoad(final String nameOrLocation)
+    public BufferedImage loadIfAbsent(final String nameOrLocation)
             throws MacroException
     {
         try
         {
-            return get(nameOrLocation);
+            return image(nameOrLocation);
         }
         catch (final MacroException ex)
         {

@@ -90,7 +90,7 @@ public final class BinaryToText
         }
 
         @Override
-        public String get() throws IOException
+        public String finish() throws IOException
         {
             return buffer.toString();
         }
@@ -127,7 +127,7 @@ public final class BinaryToText
         }
 
         @Override
-        public String get() throws IOException
+        public String finish() throws IOException
         {
             return encoder.encodeToString(buffer.toByteArray());
         }

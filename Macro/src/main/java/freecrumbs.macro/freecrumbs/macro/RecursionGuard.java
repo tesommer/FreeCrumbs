@@ -14,7 +14,7 @@ public interface RecursionGuard
      * @param limit the number of recursions at which an exception is thrown
      * @throws IllegalArgumentException if the limit is less than zero
      */
-    public static RecursionGuard getAtomic(final int limit)
+    public static RecursionGuard atomic(final int limit)
     {
         return new AtomicRecursionGuard(limit);
     }

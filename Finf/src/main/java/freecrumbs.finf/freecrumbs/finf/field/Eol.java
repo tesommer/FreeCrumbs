@@ -107,7 +107,7 @@ public final class Eol
         }
 
         @Override
-        public String get() throws IOException
+        public String finish() throws IOException
         {
             counter.finish();
             return value.apply(counter);

@@ -165,7 +165,7 @@ public final class Util
         {
             final boolean existence
                 = script.variables().value(right) != 0;
-            return script.variables().getNames().contains(left) == existence;
+            return script.variables().names().contains(left) == existence;
         }
         final int leftValue = script.variables().value(left);
         final int rightValue = script.variables().value(right);

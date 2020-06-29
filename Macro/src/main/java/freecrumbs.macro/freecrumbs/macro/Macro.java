@@ -26,7 +26,7 @@ public final class Macro
      * @param name the name of this macro
      * @param gestures the gestures that this macro performs
      */
-    public static Macro get(final String name, final Gesture... gestures)
+    public static Macro named(final String name, final Gesture... gestures)
     {
         return new Macro(name, gestures);
     }
@@ -35,7 +35,7 @@ public final class Macro
      * Returns a nameless macro.
      * @param gestures the gestures that this macro performs
      */
-    public static Macro getNameless(final Gesture... gestures)
+    public static Macro nameless(final Gesture... gestures)
     {
         return new Macro("", gestures);
     }
@@ -44,7 +44,7 @@ public final class Macro
      * The name of this macro.
      * @return the empty string if this macro doesn't have a name
      */
-    String getName()
+    String name()
     {
         return name;
     }

@@ -34,7 +34,7 @@ public final class Idle extends Command
     }
 
     @Override
-    protected Gesture getGesture(final String line, final String[] params)
+    protected Gesture gesture(final String line, final String[] params)
             throws MacroException
     {
         if (params.length > 0)

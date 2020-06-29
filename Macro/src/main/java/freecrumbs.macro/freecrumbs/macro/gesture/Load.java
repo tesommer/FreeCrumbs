@@ -24,7 +24,7 @@ public final class Load extends Command
     }
 
     @Override
-    protected Gesture getGesture(final String line, final String[] params)
+    protected Gesture gesture(final String line, final String[] params)
             throws MacroException
     {
         return (script, robot) -> script.images()

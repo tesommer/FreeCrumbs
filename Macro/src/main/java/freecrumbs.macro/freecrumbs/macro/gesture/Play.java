@@ -60,7 +60,7 @@ public final class Play extends Command
     }
 
     @Override
-    protected Gesture getGesture(final String line, final String[] params)
+    protected Gesture gesture(final String line, final String[] params)
             throws MacroException
     {
         if (params.length == 3 || params.length == 4)
@@ -77,7 +77,7 @@ public final class Play extends Command
     {
         final String times = paramOrDefault(params, 1, "1");
         final MacroSpecifier macroSpecifier
-            = getMacroSpecifier(script, params[0]);
+            = macroSpecifier(script, params[0]);
         if (params.length != 5 || Util.evaluateLogical(
                 script, params[2], params[3], params[4]))
         {
@@ -85,7 +85,7 @@ public final class Play extends Command
         }
     }
     
-    private static MacroSpecifier getMacroSpecifier(
+    private static MacroSpecifier macroSpecifier(
             final Script current,
             final String macroParam) throws MacroException
     {
@@ -155,7 +155,7 @@ public final class Play extends Command
             }
         }
 
-        public String getScriptLocation()
+        public String scriptLocation()
         {
             return scriptLocation;
         }
@@ -204,7 +204,7 @@ public final class Play extends Command
                 final Robot robot,
                 final String times) throws MacroException
         {
-            final Script script = getScript(current);
+            final Script script = script(current);
             if (macroName.isEmpty())
             {
                 script.play(robot, current.variables().value(times));
@@ -216,7 +216,7 @@ public final class Play extends Command
             }
         }
         
-        private Script getScript(final Script current) throws MacroException
+        private Script script(final Script current) throws MacroException
         {
             if (scriptSpecifier == null)
             {
@@ -224,7 +224,7 @@ public final class Play extends Command
             }
             final Script script = Script.load(
                     current.location()
-                        .refer(scriptSpecifier.getScriptLocation()),
+                        .refer(scriptSpecifier.scriptLocation()),
                     current.loader());
             scriptSpecifier.setInputVariables(script);
             return script;

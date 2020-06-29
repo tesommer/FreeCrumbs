@@ -28,7 +28,7 @@ public final class MousePress extends Command
         super(NAME, 1, 3);
     }
 
-    static int getButtons(final Script script, final String[] params)
+    static int buttons(final Script script, final String[] params)
             throws MacroException
     {
         int buttons = 0;
@@ -54,10 +54,10 @@ public final class MousePress extends Command
     }
 
     @Override
-    protected Gesture getGesture(final String line, final String[] params)
+    protected Gesture gesture(final String line, final String[] params)
             throws MacroException
     {
-        return (script, robot) -> robot.mousePress(getButtons(script, params));
+        return (script, robot) -> robot.mousePress(buttons(script, params));
     }
 
 }

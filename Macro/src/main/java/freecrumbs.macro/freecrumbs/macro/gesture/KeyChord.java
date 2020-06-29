@@ -29,7 +29,7 @@ public final class KeyChord extends Command
     }
 
     @Override
-    protected Gesture getGesture(final String line, final String[] params)
+    protected Gesture gesture(final String line, final String[] params)
             throws MacroException
     {
         return (script, robot) -> playChord(script, robot, params);
@@ -40,7 +40,7 @@ public final class KeyChord extends Command
             final Robot robot,
             final String[] params) throws MacroException
     {
-        final int[] keyCodes = getKeyCodes(script, params);
+        final int[] keyCodes = keyCodes(script, params);
         IntStream.of(keyCodes).forEach(robot::keyPress);
         for (int i = keyCodes.length - 1; i >= 0; i--)
         {
@@ -48,8 +48,8 @@ public final class KeyChord extends Command
         }
     }
 
-    private static int[] getKeyCodes(
-            final Script script, final String[] params) throws MacroException
+    private static int[] keyCodes(final Script script, final String[] params)
+            throws MacroException
     {
         final int[] keyCodes = new int[params.length];
         for (int i = 0; i < keyCodes.length; i++)

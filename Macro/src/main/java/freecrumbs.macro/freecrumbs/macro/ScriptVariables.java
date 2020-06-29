@@ -23,7 +23,7 @@ public final class ScriptVariables
     /**
      * The names of all variables stored in the script.
      */
-    public Set<String> getNames()
+    public Set<String> names()
     {
         return Collections.unmodifiableSet(variables.keySet());
     }
@@ -53,7 +53,7 @@ public final class ScriptVariables
      * @param name the variable name
      * @throws MacroException if the variable does not exist
      */
-    public int get(final String name) throws MacroException
+    public int variable(final String name) throws MacroException
     {
         if (variables.containsKey(name))
         {
@@ -76,7 +76,7 @@ public final class ScriptVariables
         }
         catch (final NumberFormatException ex)
         {
-            return get(nameOrLiteral);
+            return variable(nameOrLiteral);
         }
     }
 

@@ -52,9 +52,9 @@ public final class KeyRecorder extends JFrame implements KeyListener
             return new Macro[0];
         }
         @Override
-        public RecursionGuard getRecursionGuard()
+        public RecursionGuard recursionGuard()
         {
-            return RecursionGuard.getAtomic(0);
+            return RecursionGuard.atomic(0);
         }
     };
     
@@ -105,11 +105,11 @@ public final class KeyRecorder extends JFrame implements KeyListener
     
     private String getParameter(final int keyCode)
     {
-        for (final String name : script.variables().getNames())
+        for (final String name : script.variables().names())
         {
             try
             {
-                if (script.variables().get(name) == keyCode)
+                if (script.variables().variable(name) == keyCode)
                 {
                     return name;
                 }
