@@ -9,7 +9,7 @@ import freecrumbs.macro.MacroException;
  * 
  * @author Tone Sommerland
  */
-public final class MacroRecorder
+public final class Main
 {
     private static final String
     HELP
@@ -18,7 +18,7 @@ public final class MacroRecorder
     private static final String KEY_REC_OPTION = "-k";
     private static final String MOUSE_REC_OPTION = "-m";
 
-    private MacroRecorder()
+    private Main()
     {
     }
     

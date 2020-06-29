@@ -79,7 +79,7 @@
             token="@macrohelp@"
             value="${macro.help}"/>
         <replace
-            file="${build.dir.src}/main/java/freecrumbs.macrec/freecrumbs/macrec/MacroRecorder.java"
+            file="${build.dir.src}/main/java/freecrumbs.macrec/freecrumbs/macrec/main/Main.java"
             token="@macrechelp@"
             value="${macrec.help}"/>
         
