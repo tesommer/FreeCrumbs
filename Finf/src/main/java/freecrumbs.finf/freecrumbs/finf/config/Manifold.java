@@ -12,6 +12,8 @@ import java.util.stream.Stream;
 import freecrumbs.finf.Info;
 import freecrumbs.finf.InfoFormat;
 import freecrumbs.finf.InfoGenerator;
+import freecrumbs.finf.config.filter.FilterParser;
+import freecrumbs.finf.config.order.OrderParser;
 
 /**
  * This class extracts, from the properties file, four parts for the config:

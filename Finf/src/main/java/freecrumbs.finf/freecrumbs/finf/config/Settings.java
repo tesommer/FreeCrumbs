@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
+import freecrumbs.finf.config.filter.FilterParser;
+import freecrumbs.finf.config.order.OrderParser;
+import freecrumbs.finf.config.search.SearchParser;
 import freecrumbs.finf.field.Classification;
 import freecrumbs.finf.field.DynamicValue;
 import freecrumbs.finf.field.Search;

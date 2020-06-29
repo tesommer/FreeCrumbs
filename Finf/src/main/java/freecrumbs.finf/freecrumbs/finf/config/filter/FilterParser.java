@@ -1,4 +1,4 @@
-package freecrumbs.finf.config;
+package freecrumbs.finf.config.filter;
 
 import java.io.FileFilter;
 import java.io.IOException;
@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import freecrumbs.finf.InfoGenerator;
+import freecrumbs.finf.config.TokenInfoFormat;
 
 /**
  * <p>

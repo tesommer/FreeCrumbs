@@ -1,4 +1,4 @@
-package freecrumbs.finf.config;
+package freecrumbs.finf.config.filter;
 
 import static java.util.Objects.requireNonNull;
 
@@ -12,7 +12,7 @@ import freecrumbs.finf.InfoGenerator;
 
 /**
  * Instances of this class are used by
- * {@link freecrumbs.finf.config.FormatPatternFileFilter}
+ * {@link freecrumbs.finf.config.filter.FormatPatternFileFilter}
  * to include or exclude input files.
  * This class applies a regex pattern to formatted file info
  * and includes or excludes the file depending on matches.

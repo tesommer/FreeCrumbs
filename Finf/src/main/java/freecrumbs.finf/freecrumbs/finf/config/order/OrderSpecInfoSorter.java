@@ -1,4 +1,4 @@
-package freecrumbs.finf.config;
+package freecrumbs.finf.config.order;
 
 import java.util.Comparator;
 import java.util.stream.Stream;

@@ -1,4 +1,4 @@
-package freecrumbs.finf.config;
+package freecrumbs.finf.config.search;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -6,6 +6,9 @@ import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Map;
 
+import freecrumbs.finf.config.AvailableFields;
+import freecrumbs.finf.config.ParameterizedSetting;
+import freecrumbs.finf.config.TokenInfoFormat;
 import freecrumbs.finf.field.DynamicValue;
 import freecrumbs.finf.field.Search;
 

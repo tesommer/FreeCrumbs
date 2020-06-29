@@ -1,4 +1,4 @@
-package freecrumbs.finf.config;
+package freecrumbs.finf.config.filter;
 
 import java.io.File;
 import java.io.FileFilter;
