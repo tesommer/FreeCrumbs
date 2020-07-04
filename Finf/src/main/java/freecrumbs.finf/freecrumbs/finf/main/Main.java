@@ -39,7 +39,7 @@ public final class Main
     {
         try
         {
-            final Args parsedArgs = parseArgs(args);
+            final Args parsedArgs = parsedArgsOrNull(args);
             if (parsedArgs == null)
             {
                 System.out.println(HELP);
@@ -107,13 +107,13 @@ public final class Main
     {
         final var overrides = new HashMap<String, String>();
         args.configOverrides.forEach(
-                override -> addOverride(overrides, override));
+                override -> addOverride(override, overrides));
         return overrides;
     }
 
     private static void addOverride(
-            final Map<? super String, ? super String> overrides,
-            final String override)
+            final String override,
+            final Map<? super String, ? super String> overrides)
     {
         final int indexOfEquals = override.indexOf('=');
         final String key;
@@ -134,7 +134,7 @@ public final class Main
     /**
      * Returns null if help option or if args contains error.
      */
-    private static Args parseArgs(final String[] args)
+    private static Args parsedArgsOrNull(final String[] args)
     {
         String configFile = null;
         final var configOverrides = new ArrayList<String>();

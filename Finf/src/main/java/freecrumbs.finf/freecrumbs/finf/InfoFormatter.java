@@ -8,7 +8,7 @@ import java.io.IOException;
  * @author Tone Sommerland
  */
 @FunctionalInterface
-public interface InfoFormat
+public interface InfoFormatter
 {
     public abstract String stringify(Info info) throws IOException;
 }

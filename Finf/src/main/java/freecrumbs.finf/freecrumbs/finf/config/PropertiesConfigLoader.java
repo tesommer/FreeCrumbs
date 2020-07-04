@@ -57,11 +57,11 @@ public final class PropertiesConfigLoader implements ConfigLoader
     public Config loadConfig(final Reader reader) throws IOException
     {
         final Properties props = properties(reader);
-        final Manifold manifold = new Manifold(props, locale);
+        final var manifold = new Manifold(props, locale);
         return new Config.Builder(
-                manifold.infoGenerator(), manifold.infoFormat())
-                    .setFileFilter(manifold.fileFilter())
-                    .setOrder(manifold.order())
+                manifold.generator(), manifold.formatter())
+                    .setFilter(manifold.filterOrNull())
+                    .setOrder(manifold.orderOrNull())
                     .setCount(Settings.count(props))
                     .build();
     }

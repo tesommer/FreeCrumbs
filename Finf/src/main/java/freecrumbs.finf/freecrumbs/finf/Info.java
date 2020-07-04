@@ -17,7 +17,7 @@ public final class Info
     private final Map<String, String> values;
 
     /**
-     * Creates a file info object.
+     * Creates a file-info object.
      * @param values field names and their associated values
      */
     public Info(final Map<String, String> values)

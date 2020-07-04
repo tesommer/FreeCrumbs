@@ -55,14 +55,15 @@ public final class ParameterizedSetting
         {
             throw new IOException(setting);
         }
-        return setting.substring(1, end);
+        return setting.substring(MAIN_PART_DELIM.length(), end);
     }
     
     private static Map<String, String> params(final String setting)
             throws IOException
     {
         final int endOfMainPart = setting.lastIndexOf(MAIN_PART_DELIM);
-        final String paramsPart = setting.substring(endOfMainPart + 1);
+        final String paramsPart = setting.substring(
+                endOfMainPart + MAIN_PART_DELIM.length());
         if (paramsPart.isEmpty())
         {
             return Map.of();
@@ -85,7 +86,7 @@ public final class ParameterizedSetting
             throw new IOException(param);
         }
         final String key = param.substring(0, index);
-        final String value = param.substring(index + 1);
+        final String value = param.substring(index + KEY_VALUE_DELIM.length());
         params.put(key, value);
     }
 

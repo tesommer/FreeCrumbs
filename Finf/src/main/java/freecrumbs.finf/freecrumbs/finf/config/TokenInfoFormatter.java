@@ -6,15 +6,15 @@ import java.io.IOException;
 import java.util.stream.Stream;
 
 import freecrumbs.finf.Info;
-import freecrumbs.finf.InfoFormat;
+import freecrumbs.finf.InfoFormatter;
 
 /**
- * An info format that replaces tokens on the form
- * ${field name} with the corresponding field value.
+ * An info formatter that replaces tokens on the form
+ * ${field-name} with the corresponding field value.
  * 
  * @author Tone Sommerland
  */
-public final class TokenInfoFormat implements InfoFormat
+public final class TokenInfoFormatter implements InfoFormatter
 {
     private final String format;
 
@@ -22,7 +22,7 @@ public final class TokenInfoFormat implements InfoFormat
      * Creates a new token info-format.
      * @param format the format string containing tokens to be replaced
      */
-    public TokenInfoFormat(final String format)
+    public TokenInfoFormatter(final String format)
     {
         this.format = requireNonNull(format, "format");
     }

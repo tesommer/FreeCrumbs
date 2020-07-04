@@ -24,8 +24,8 @@ public final class Whitespace
     {
         return new Field[]
         {
-                Field.simple(SPACE_FIELD_NAME,   file -> " "),
-                Field.simple(TAB_FIELD_NAME,   file -> "\t"),
+                Field.simple(SPACE_FIELD_NAME, file -> " "),
+                Field.simple(TAB_FIELD_NAME, file -> "\t"),
         };
     }
 

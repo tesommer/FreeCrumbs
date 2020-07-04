@@ -136,7 +136,7 @@
 + "finf -c myconfig.properties main.c\n"
 + "\n"
 + "Example 2: display SHA-1 checksum:\n"
-+ "finf -o \"output=${sha-1}${eol}\" program.zip\n"
++ "finf -o 'output=${sha-1}${eol}' program.zip\n"
 + "\n"
 + "Example 3: read config from standard input:\n"
 + "finf -c - index.php\n"

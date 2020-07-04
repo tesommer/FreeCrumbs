@@ -32,7 +32,7 @@ public interface FieldComputation
      * Updates the computation with the given input.
      * The input array should not be modified by this method.
      * If this method returns {@code false},
-     * it it will not be called again during the ongoing computation.
+     * it will not be called again during the ongoing computation.
      * @param input the next input to process
      * @param offset the offset to start from in the input array
      * @param length the number of bytes to devour

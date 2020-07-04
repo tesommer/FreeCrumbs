@@ -8,7 +8,7 @@ import java.util.Map;
 
 import freecrumbs.finf.config.AvailableFields;
 import freecrumbs.finf.config.ParameterizedSetting;
-import freecrumbs.finf.config.TokenInfoFormat;
+import freecrumbs.finf.config.TokenInfoFormatter;
 import freecrumbs.finf.field.DynamicValue;
 import freecrumbs.finf.field.Search;
 
@@ -45,20 +45,22 @@ public final class SearchParser
             final Search.Params initialSearchParams,
             final String setting) throws IOException
     {
-        final var parameterizedSetting = new ParameterizedSetting(setting);
-        final Search.Params searchParams = initialSearchParams.withRegex(
-                regex(availableFields, parameterizedSetting));
-        return availableFields.coCaching(availableFields.params()
-                .withAnotherSearch(remainingSearchParams(
-                        searchParams, parameterizedSetting)));
+        final var paramSetting = new ParameterizedSetting(setting);
+        final Search.Params searchParamsWithRegex = initialSearchParams
+                .withRegex(regex(paramSetting, availableFields));
+        final Search.Params resultingSearchParams = remainingSearchParams(
+                searchParamsWithRegex, paramSetting);
+        return availableFields.coCaching(
+                availableFields.params().withAnotherSearch(
+                        resultingSearchParams));
     }
     
     private static DynamicValue regex(
-            final AvailableFields availableFields,
-            final ParameterizedSetting setting) throws IOException
+            final ParameterizedSetting setting,
+            final AvailableFields availableFields) throws IOException
     {
         final String regexString = setting.mainPart();
-        final var regexFormat = new TokenInfoFormat(regexString);
+        final var regexFormat = new TokenInfoFormatter(regexString);
         final String[] usedByRegex = regexFormat.usedFieldNames(
                 availableFields.names());
         if (usedByRegex.length == 0)

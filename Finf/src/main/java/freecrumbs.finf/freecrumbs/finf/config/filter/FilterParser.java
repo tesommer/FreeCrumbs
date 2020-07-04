@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import freecrumbs.finf.InfoGenerator;
-import freecrumbs.finf.config.TokenInfoFormat;
+import freecrumbs.finf.config.TokenInfoFormatter;
 
 /**
  * <p>
@@ -40,7 +40,7 @@ public final class FilterParser
 
     private final Collection<FormatPattern> formatPatterns = new ArrayList<>();
     private final String setting;
-    private final TokenInfoFormat infoFormat;
+    private final TokenInfoFormatter formatter;
     
     /**
      * Parses the filter setting.
@@ -51,20 +51,20 @@ public final class FilterParser
         this.setting = setting;
         if (setting == null)
         {
-            this.infoFormat = null;
+            this.formatter = null;
         }
         else
         {
             final Matcher delimiter
                 = Pattern.compile(DELIM_PATTERN).matcher(setting);
-            final Part formatPart = formatPart(setting, delimiter);
+            final Part formatPart = formatPartOrNull(setting, delimiter);
             if (formatPart == null)
             {
-                this.infoFormat = null;
+                this.formatter = null;
             }
             else
             {
-                this.infoFormat = new TokenInfoFormat(formatPart.payload);
+                this.formatter = new TokenInfoFormatter(formatPart.payload);
                 initFormatPatterns(setting, delimiter, formatPart);
             }
         }
@@ -89,32 +89,32 @@ public final class FilterParser
      */
     public String[] usedFieldNames(final String[] availableFieldNames)
     {
-        return infoFormat == null
+        return formatter == null
                 ? new String[0]
-                : infoFormat.usedFieldNames(availableFieldNames);
+                : formatter.usedFieldNames(availableFieldNames);
     }
     
     /**
      * Returns the file filter.
      * @return null if the setting is null
      */
-    public FileFilter fileFilter(
+    public FileFilter filterOrNull(
             final int regexFlags,
-            final InfoGenerator infoGenerator) throws IOException
+            final InfoGenerator generator) throws IOException
     {
         if (setting == null)
         {
             return null;
         }
-        else if (infoFormat == null)
+        else if (formatter == null)
         {
             return new RegexFileFilter(setting, regexFlags);
         }
         else
         {
             return new FormatPatternFileFilter(
-                    infoGenerator,
-                    infoFormat,
+                    generator,
+                    formatter,
                     formatPatterns.stream().toArray(FormatPattern[]::new));
         }
     }
@@ -136,7 +136,7 @@ public final class FilterParser
     /**
      * Returns null if the setting is not a format pattern.
      */
-    private static Part formatPart(
+    private static Part formatPartOrNull(
             final String setting, final Matcher delimiter)
     {
         if (delimiter.find())

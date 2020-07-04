@@ -7,7 +7,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import freecrumbs.finf.InfoFormat;
+import freecrumbs.finf.InfoFormatter;
 import freecrumbs.finf.InfoGenerator;
 
 /**
@@ -21,23 +21,23 @@ public final class FormatPatternFileFilter implements FileFilter
     private static final Logger
     LOGGER = Logger.getLogger(FormatPatternFileFilter.class.getName());
 
-    private final InfoGenerator infoGenerator;
-    private final InfoFormat infoFormat;
+    private final InfoGenerator generator;
+    private final InfoFormatter formatter;
     private final FormatPattern[] formatPatterns;
 
     /**
      * Creates a new format pattern file filter.
-     * @param infoGenerator the info generator to use
-     * @param infoFormat the format to apply to each file's info
+     * @param generator the info generator to use
+     * @param formatter the format to apply to each file's info
      * @param formatPatterns the inclusion or exclusion patterns
      */
     public FormatPatternFileFilter(
-            final InfoGenerator infoGenerator,
-            final InfoFormat infoFormat,
+            final InfoGenerator generator,
+            final InfoFormatter formatter,
             final FormatPattern... formatPatterns)
     {
-        this.infoGenerator = requireNonNull(infoGenerator, "infoGenerator");
-        this.infoFormat = requireNonNull(infoFormat, "infoFormat");
+        this.generator = requireNonNull(generator, "generator");
+        this.formatter = requireNonNull(formatter, "formatter");
         this.formatPatterns = formatPatterns.clone();
     }
 
@@ -59,7 +59,7 @@ public final class FormatPatternFileFilter implements FileFilter
     {
         for (final FormatPattern formatPattern : formatPatterns)
         {
-            if (!formatPattern.includes(file, infoGenerator, infoFormat))
+            if (!formatPattern.includes(file, generator, formatter))
             {
                 return false;
             }

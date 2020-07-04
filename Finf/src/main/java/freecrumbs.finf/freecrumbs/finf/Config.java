@@ -10,9 +10,9 @@ import java.util.Optional;
  * Finf config.
  * Contains the following properties:
  * <ul>
- *  <li>{@code infoGenerator}: for generating file info</li>
- *  <li>{@code infoFormat}: format of the file info units</li>
- *  <li>{@code fileFilter}: filters input files (optional)</li>
+ *  <li>{@code generator}: for generating file info</li>
+ *  <li>{@code formatter}: format of the file info units</li>
+ *  <li>{@code filter}: filters input files (optional)</li>
  *  <li>{@code order}: sort order of the info units (optional)</li>
  *  <li>{@code count}: max info units to output ({@code < 0} = all)</li>
  * </ul>
@@ -28,28 +28,27 @@ public final class Config
      */
     public static final class Builder
     {
-        private final InfoGenerator infoGenerator;
-        private final InfoFormat infoFormat;
-        private FileFilter fileFilter;
+        private final InfoGenerator generator;
+        private final InfoFormatter formatter;
+        private FileFilter filter;
         private Comparator<? super Info> order;
         private int count = -1;
         
         public Builder(
-                final InfoGenerator infoGenerator,
-                final InfoFormat infoFormat)
+                final InfoGenerator generator, final InfoFormatter formatter)
         {
-            this.infoGenerator = requireNonNull(infoGenerator, "infoGenerator");
-            this.infoFormat = requireNonNull(infoFormat, "infoFormat");
+            this.generator = requireNonNull(generator, "generator");
+            this.formatter = requireNonNull(formatter, "formatter");
         }
         
         /**
          * Sets the file filter.
-         * @param fileFilter the file filter (nullable)
+         * @param filter the file filter (nullable)
          * @return {@code this}
          */
-        public Builder setFileFilter(final FileFilter fileFilter)
+        public Builder setFilter(final FileFilter filter)
         {
-            this.fileFilter = fileFilter;
+            this.filter = filter;
             return this;
         }
 
@@ -80,46 +79,45 @@ public final class Config
          */
         public Config build()
         {
-            return new Config(
-                    infoGenerator, infoFormat, fileFilter, order, count);
+            return new Config(generator, formatter, filter, order, count);
         }
     }
     
-    private final InfoGenerator infoGenerator;
-    private final InfoFormat infoFormat;
-    private final FileFilter fileFilter;
+    private final InfoGenerator generator;
+    private final InfoFormatter formatter;
+    private final FileFilter filter;
     private final Comparator<? super Info> order;
     private final int count;
     
     private Config(
-        final InfoGenerator infoGenerator,
-        final InfoFormat infoFormat,
-        final FileFilter fileFilter,
+        final InfoGenerator generator,
+        final InfoFormatter formatter,
+        final FileFilter filter,
         final Comparator<? super Info> order,
         final int count)
     {
-        assert infoGenerator != null;
-        assert infoFormat != null;
-        this.infoGenerator = infoGenerator;
-        this.infoFormat = infoFormat;
-        this.fileFilter = fileFilter;
+        assert generator != null;
+        assert formatter != null;
+        this.generator = generator;
+        this.formatter = formatter;
+        this.filter = filter;
         this.order = order;
         this.count = count;
     }
     
-    public InfoGenerator infoGenerator()
+    public InfoGenerator generator()
     {
-        return infoGenerator;
+        return generator;
     }
     
-    public InfoFormat infoFormat()
+    public InfoFormatter formatter()
     {
-        return infoFormat;
+        return formatter;
     }
     
-    public Optional<FileFilter> fileFilter()
+    public Optional<FileFilter> filter()
     {
-        return Optional.ofNullable(fileFilter);
+        return Optional.ofNullable(filter);
     }
     
     public Optional<Comparator<? super Info>> order()

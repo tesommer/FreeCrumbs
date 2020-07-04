@@ -10,16 +10,16 @@ import java.util.Properties;
 import java.util.stream.Stream;
 
 import freecrumbs.finf.Info;
-import freecrumbs.finf.InfoFormat;
+import freecrumbs.finf.InfoFormatter;
 import freecrumbs.finf.InfoGenerator;
 import freecrumbs.finf.config.filter.FilterParser;
 import freecrumbs.finf.config.order.OrderParser;
 
 /**
  * This class extracts, from the properties file, four parts for the config:
- * {@code infoGenerator},
- * {@code infoFormat},
- * {@code fileFilter} and
+ * {@code generator},
+ * {@code formatter},
+ * {@code filter} and
  * {@code order}.
  * This is done according to the {@code prefilter} setting:
  * If the setting is turned on,
@@ -35,128 +35,128 @@ public final class Manifold
 {
     private static final int REGEX_FLAGS = 0;
 
-    private final InfoGenerator infoGenerator;
-    private final TokenInfoFormat infoFormat;
-    private final FileFilter fileFilter;
+    private final InfoGenerator generator;
+    private final TokenInfoFormatter formatter;
+    private final FileFilter filter;
     private final Comparator<Info> order;
 
     public Manifold(final Properties props, final Locale locale)
             throws IOException
     {
-        this.infoFormat = Settings.output(props);
+        this.formatter = Settings.output(props);
         final AvailableFields availableFields = Settings.availableFields(
                 props, locale);
         final OrderParser orderParser = Settings.orderParser(
                 props, availableFields.names());
-        this.order = orderParser.order();
+        this.order = orderParser.orderOrNull();
         final Collection<FilterParser> filterParsers = Settings.filterParsers(
                 props);
         if (Settings.isPrefilter(props))
         {
-            this.infoGenerator = prefilterInfoGenerator(
+            this.generator = prefilterGenerator(
                     availableFields,
-                    this.infoFormat,
+                    this.formatter,
                     orderParser);
-            this.fileFilter = nullOrAsOne(prefilterFileFilters(
+            this.filter = nullOrAsOne(prefilterFilters(
                     filterParsers, availableFields));
         }
         else
         {
-            this.infoGenerator = nonPrefilterInfoGenerator(
+            this.generator = nonPrefilterGenerator(
                     availableFields,
-                    this.infoFormat,
+                    this.formatter,
                     orderParser,
                     filterParsers);
-            this.fileFilter = nullOrAsOne(nonPrefilterFileFilters(
-                    filterParsers, this.infoGenerator));
+            this.filter = nullOrAsOne(nonPrefilterFilters(
+                    filterParsers, this.generator));
         }
     }
     
-    public InfoGenerator infoGenerator()
+    public InfoGenerator generator()
     {
-        return infoGenerator;
+        return generator;
     }
     
-    public InfoFormat infoFormat()
+    public InfoFormatter formatter()
     {
-        return infoFormat;
+        return formatter;
     }
     
-    public FileFilter fileFilter()
+    public FileFilter filterOrNull()
     {
-        return fileFilter;
+        return filter;
     }
     
-    public Comparator<Info> order()
+    public Comparator<Info> orderOrNull()
     {
         return order;
     }
     
-    private static InfoGenerator prefilterInfoGenerator(
+    private static InfoGenerator prefilterGenerator(
             final AvailableFields availableFields,
-            final TokenInfoFormat infoFormat,
+            final TokenInfoFormatter formatter,
             final OrderParser orderParser)
     {
-        final String[] used1 = infoFormat.usedFieldNames(
+        final String[] used1 = formatter.usedFieldNames(
                 availableFields.names());
         final String[] used2 = orderParser.usedFieldNames();
-        return infoGenerator(availableFields, concat(used1, used2));
+        return generator(availableFields, concat(used1, used2));
     }
     
-    private static InfoGenerator nonPrefilterInfoGenerator(
+    private static InfoGenerator nonPrefilterGenerator(
             final AvailableFields availableFields,
-            final TokenInfoFormat infoFormat,
+            final TokenInfoFormatter formatter,
             final OrderParser orderParser,
             final Collection<FilterParser> filterParsers)
     {
         final String[] availableFieldNames = availableFields.names();
-        final String[] used1 = infoFormat.usedFieldNames(
+        final String[] used1 = formatter.usedFieldNames(
                 availableFieldNames);
         final String[] used2 = orderParser.usedFieldNames();
         final String[] used3 = filterParsers.stream()
                 .map(parser -> parser.usedFieldNames(availableFieldNames))
                 .flatMap(Stream::of)
                 .toArray(String[]::new);
-        return infoGenerator(availableFields, concat(used1, used2, used3));
+        return generator(availableFields, concat(used1, used2, used3));
     }
     
-    private static Collection<FileFilter> prefilterFileFilters(
+    private static Collection<FileFilter> prefilterFilters(
             final Collection<FilterParser> filterParsers,
             final AvailableFields availableFields) throws IOException
     {
-        final var fileFilters = new ArrayList<FileFilter>(filterParsers.size());
+        final var filters = new ArrayList<FileFilter>(filterParsers.size());
         for (final var filterParser : filterParsers)
         {
-            fileFilters.add(
-                    prefilterFileFilter(availableFields, filterParser));
+            filters.add(
+                    prefilterFilter(filterParser, availableFields));
         }
-        return fileFilters;
+        return filters;
     }
     
-    private static Collection<FileFilter> nonPrefilterFileFilters(
+    private static Collection<FileFilter> nonPrefilterFilters(
             final Collection<FilterParser> filterParsers,
-            final InfoGenerator infoGenerator) throws IOException
+            final InfoGenerator generator) throws IOException
     {
-        final var fileFilters = new ArrayList<FileFilter>(filterParsers.size());
+        final var filters = new ArrayList<FileFilter>(filterParsers.size());
         for (final var filterParser : filterParsers)
         {
-            fileFilters.add(
-                    filterParser.fileFilter(REGEX_FLAGS, infoGenerator));
+            filters.add(
+                    filterParser.filterOrNull(REGEX_FLAGS, generator));
         }
-        return fileFilters;
+        return filters;
     }
     
-    private static FileFilter prefilterFileFilter(
-            final AvailableFields availableFields,
-            final FilterParser filterParser) throws IOException
+    private static FileFilter prefilterFilter(
+            final FilterParser filterParser,
+            final AvailableFields availableFields) throws IOException
     {
         final String[] usedFieldNames = filterParser.usedFieldNames(
                 availableFields.names());
-        return filterParser.fileFilter(
-                REGEX_FLAGS, infoGenerator(availableFields, usedFieldNames));
+        return filterParser.filterOrNull(
+                REGEX_FLAGS, generator(availableFields, usedFieldNames));
     }
     
-    private static InfoGenerator infoGenerator(
+    private static InfoGenerator generator(
             final AvailableFields availableFields,
             final String[] usedFieldNames)
     {
@@ -164,13 +164,13 @@ public final class Manifold
     }
     
     private static FileFilter nullOrAsOne(
-            final Collection<FileFilter> fileFilters)
+            final Collection<FileFilter> filters)
     {
-        if (fileFilters.isEmpty())
+        if (filters.isEmpty())
         {
             return null;
         }
-        return file -> !fileFilters.stream().anyMatch(ff -> !ff.accept(file));
+        return file -> !filters.stream().anyMatch(ff -> !ff.accept(file));
     }
     
     private static String[] concat(

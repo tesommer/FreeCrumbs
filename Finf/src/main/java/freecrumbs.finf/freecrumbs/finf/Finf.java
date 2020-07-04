@@ -61,7 +61,7 @@ public final class Finf
                 items,
                 config,
                 out,
-                config.infoGenerator()::infoAbout);
+                config.generator()::infoAbout);
     }
     
     private static List<Info> filterAndSort(
@@ -71,7 +71,7 @@ public final class Finf
         final var items = new ArrayList<Info>();
         for (final File file : filter(files, config))
         {
-            items.add(config.infoGenerator().infoAbout(file));
+            items.add(config.generator().infoAbout(file));
         }
         return items.stream().sorted(config.order().get()).collect(toList());
     }
@@ -101,13 +101,13 @@ public final class Finf
                 && i < items.size(); i++)
         {
             final Info info = informer.provide(items.get(i));
-            out.print(config.infoFormat().stringify(info));
+            out.print(config.formatter().stringify(info));
         }
     }
     
     private static boolean acceptsInput(final File file, final Config config)
     {
-        return config.fileFilter().map(ff -> ff.accept(file)).orElse(true);
+        return config.filter().map(ff -> ff.accept(file)).orElse(true);
     }
 
 }

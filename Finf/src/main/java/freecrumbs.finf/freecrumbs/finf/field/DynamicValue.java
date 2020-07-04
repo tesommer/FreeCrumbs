@@ -1,7 +1,7 @@
 package freecrumbs.finf.field;
 
 import freecrumbs.finf.FieldValue;
-import freecrumbs.finf.InfoFormat;
+import freecrumbs.finf.InfoFormatter;
 import freecrumbs.finf.InfoGenerator;
 
 /**
@@ -27,9 +27,9 @@ public interface DynamicValue extends FieldValue
      * to info returned by the given info generator.
      */
     public static DynamicValue of(
-            final InfoGenerator infoGenerator, final InfoFormat infoFormat)
+            final InfoGenerator generator, final InfoFormatter formatter)
     {
-        return file -> infoFormat.stringify(infoGenerator.infoAbout(file));
+        return file -> formatter.stringify(generator.infoAbout(file));
     }
 
 }

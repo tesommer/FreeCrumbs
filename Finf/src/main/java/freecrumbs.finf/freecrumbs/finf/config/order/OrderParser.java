@@ -45,7 +45,7 @@ public final class OrderParser
      * Return the info sorter.
      * @return null if the setting is null
      */
-    public Comparator<Info> order()
+    public Comparator<Info> orderOrNull()
     {
         return order;
     }

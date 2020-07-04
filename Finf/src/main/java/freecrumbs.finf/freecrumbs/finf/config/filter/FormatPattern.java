@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 
 import freecrumbs.finf.Info;
-import freecrumbs.finf.InfoFormat;
+import freecrumbs.finf.InfoFormatter;
 import freecrumbs.finf.InfoGenerator;
 
 /**
@@ -40,11 +40,11 @@ public final class FormatPattern
      */
     public boolean includes(
             final File file,
-            final InfoGenerator infoGenerator,
-            final InfoFormat infoFormat) throws IOException
+            final InfoGenerator generator,
+            final InfoFormatter formatter) throws IOException
     {
-        final Info info = infoGenerator.infoAbout(file);
-        return pattern.matcher(infoFormat.stringify(info)).matches() == include;
+        final Info info = generator.infoAbout(file);
+        return pattern.matcher(formatter.stringify(info)).matches() == include;
     }
     
 }
