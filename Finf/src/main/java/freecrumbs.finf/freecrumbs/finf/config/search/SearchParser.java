@@ -45,21 +45,21 @@ public final class SearchParser
             final Search.Params initialSearchParams,
             final String setting) throws IOException
     {
-        final var paramSetting = new ParameterizedSetting(setting);
+        final var parameterized = new ParameterizedSetting(setting);
         final Search.Params searchParamsWithRegex = initialSearchParams
-                .withRegex(regex(paramSetting, availableFields));
+                .withRegex(regex(parameterized, availableFields));
         final Search.Params resultingSearchParams = remainingSearchParams(
-                searchParamsWithRegex, paramSetting);
+                searchParamsWithRegex, parameterized);
         return availableFields.coCaching(
                 availableFields.params().withAnotherSearch(
                         resultingSearchParams));
     }
     
     private static DynamicValue regex(
-            final ParameterizedSetting setting,
+            final ParameterizedSetting parameterized,
             final AvailableFields availableFields) throws IOException
     {
-        final String regexString = setting.mainPart();
+        final String regexString = parameterized.mainPart();
         final var regexFormat = new TokenFormatter(regexString);
         final String[] usedByRegex = regexFormat.usedFieldNames(
                 availableFields.names());
@@ -73,13 +73,13 @@ public final class SearchParser
     
     private static Search.Params remainingSearchParams(
             final Search.Params searchParams,
-            final ParameterizedSetting setting) throws IOException
+            final ParameterizedSetting parameterized) throws IOException
     {
-        final Map<String, String> params = setting.params();
+        final Map<String, String> params = parameterized.params();
         return searchParams
-                .withOccurrence(occurrence(params, setting.whole()))
-                .withGroups(groups(params, setting.whole()))
-                .withCharset(charset(params, setting.whole()));
+                .withOccurrence(occurrence(params, parameterized.whole()))
+                .withGroups(groups(params, parameterized.whole()))
+                .withCharset(charset(params, parameterized.whole()));
     }
     
     private static int occurrence(
