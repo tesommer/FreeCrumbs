@@ -8,7 +8,7 @@ import java.util.Map;
 
 import freecrumbs.finf.config.AvailableFields;
 import freecrumbs.finf.config.ParameterizedSetting;
-import freecrumbs.finf.config.TokenInfoFormatter;
+import freecrumbs.finf.config.TokenFormatter;
 import freecrumbs.finf.field.DynamicValue;
 import freecrumbs.finf.field.Search;
 
@@ -60,7 +60,7 @@ public final class SearchParser
             final AvailableFields availableFields) throws IOException
     {
         final String regexString = setting.mainPart();
-        final var regexFormat = new TokenInfoFormatter(regexString);
+        final var regexFormat = new TokenFormatter(regexString);
         final String[] usedByRegex = regexFormat.usedFieldNames(
                 availableFields.names());
         if (usedByRegex.length == 0)

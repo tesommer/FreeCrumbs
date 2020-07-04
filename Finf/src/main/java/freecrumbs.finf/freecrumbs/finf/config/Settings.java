@@ -75,9 +75,9 @@ public final class Settings
         return result;
     }
 
-    public static TokenInfoFormatter output(final Properties props)
+    public static TokenFormatter output(final Properties props)
     {
-        return new TokenInfoFormatter(
+        return new TokenFormatter(
                 props.getProperty(OUTPUT_KEY, DEFAULT_OUTPUT));
     }
 

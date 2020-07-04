@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import freecrumbs.finf.InfoGenerator;
-import freecrumbs.finf.config.TokenInfoFormatter;
+import freecrumbs.finf.config.TokenFormatter;
 
 /**
  * <p>
@@ -40,7 +40,7 @@ public final class FilterParser
 
     private final Collection<FormatPattern> formatPatterns = new ArrayList<>();
     private final String setting;
-    private final TokenInfoFormatter formatter;
+    private final TokenFormatter formatter;
     
     /**
      * Parses the filter setting.
@@ -64,7 +64,7 @@ public final class FilterParser
             }
             else
             {
-                this.formatter = new TokenInfoFormatter(formatPart.payload);
+                this.formatter = new TokenFormatter(formatPart.payload);
                 initFormatPatterns(setting, delimiter, formatPart);
             }
         }

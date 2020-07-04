@@ -14,7 +14,7 @@ import freecrumbs.finf.InfoFormatter;
  * 
  * @author Tone Sommerland
  */
-public final class TokenInfoFormatter implements InfoFormatter
+public final class TokenFormatter implements InfoFormatter
 {
     private final String format;
 
@@ -22,7 +22,7 @@ public final class TokenInfoFormatter implements InfoFormatter
      * Creates a new token info-format.
      * @param format the format string containing tokens to be replaced
      */
-    public TokenInfoFormatter(final String format)
+    public TokenFormatter(final String format)
     {
         this.format = requireNonNull(format, "format");
     }

@@ -36,7 +36,7 @@ public final class Manifold
     private static final int REGEX_FLAGS = 0;
 
     private final InfoGenerator generator;
-    private final TokenInfoFormatter formatter;
+    private final TokenFormatter formatter;
     private final FileFilter filter;
     private final Comparator<Info> order;
 
@@ -94,7 +94,7 @@ public final class Manifold
     
     private static InfoGenerator prefilterGenerator(
             final AvailableFields availableFields,
-            final TokenInfoFormatter formatter,
+            final TokenFormatter formatter,
             final OrderParser orderParser)
     {
         final String[] used1 = formatter.usedFieldNames(
@@ -105,7 +105,7 @@ public final class Manifold
     
     private static InfoGenerator nonPrefilterGenerator(
             final AvailableFields availableFields,
-            final TokenInfoFormatter formatter,
+            final TokenFormatter formatter,
             final OrderParser orderParser,
             final Collection<FilterParser> filterParsers)
     {
