@@ -11,11 +11,11 @@ import java.util.regex.PatternSyntaxException;
  * 
  * @author Tone Sommerland
  */
-public final class RegexFileFilter implements FileFilter
+public final class RegexFilter implements FileFilter
 {
     private final Pattern pattern;
     
-    public RegexFileFilter(final String regex, final int flags)
+    public RegexFilter(final String regex, final int flags)
         throws IOException
     {
         try

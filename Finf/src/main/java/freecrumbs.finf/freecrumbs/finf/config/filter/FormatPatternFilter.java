@@ -16,10 +16,10 @@ import freecrumbs.finf.InfoGenerator;
  * 
  * @author Tone Sommerland
  */
-public final class FormatPatternFileFilter implements FileFilter
+public final class FormatPatternFilter implements FileFilter
 {
     private static final Logger
-    LOGGER = Logger.getLogger(FormatPatternFileFilter.class.getName());
+    LOGGER = Logger.getLogger(FormatPatternFilter.class.getName());
 
     private final InfoGenerator generator;
     private final InfoFormatter formatter;
@@ -31,7 +31,7 @@ public final class FormatPatternFileFilter implements FileFilter
      * @param formatter the format to apply to each file's info
      * @param formatPatterns the inclusion or exclusion patterns
      */
-    public FormatPatternFileFilter(
+    public FormatPatternFilter(
             final InfoGenerator generator,
             final InfoFormatter formatter,
             final FormatPattern... formatPatterns)

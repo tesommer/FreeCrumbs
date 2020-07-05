@@ -108,11 +108,11 @@ public final class FilterParser
         }
         else if (formatter == null)
         {
-            return new RegexFileFilter(setting, regexFlags);
+            return new RegexFilter(setting, regexFlags);
         }
         else
         {
-            return new FormatPatternFileFilter(
+            return new FormatPatternFilter(
                     generator,
                     formatter,
                     formatPatterns.stream().toArray(FormatPattern[]::new));
