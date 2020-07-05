@@ -100,9 +100,9 @@ public final class Config
         assert formatter != null;
         this.generator = generator;
         this.formatter = formatter;
-        this.filter = filter;
-        this.order = order;
-        this.count = count;
+        this.filter    = filter;
+        this.order     = order;
+        this.count     = count;
     }
     
     public InfoGenerator generator()

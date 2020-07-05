@@ -3,7 +3,7 @@ package freecrumbs.finf;
 import java.io.IOException;
 
 /**
- * File info format.
+ * File-info format.
  *
  * @author Tone Sommerland
  */

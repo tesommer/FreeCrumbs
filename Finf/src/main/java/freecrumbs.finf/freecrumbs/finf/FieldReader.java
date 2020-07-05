@@ -36,7 +36,7 @@ public final class FieldReader implements InfoGenerator
         {
             throw new IllegalArgumentException("bufferSize < 1: " + bufferSize);
         }
-        this.cache = cache;
+        this.cache  = cache;
         this.buffer = new byte[bufferSize];
         this.fields = fields.clone();
     }
@@ -74,8 +74,8 @@ public final class FieldReader implements InfoGenerator
     @Override
     public Info infoAbout(final File file) throws IOException
     {
-        final Map<String, String> values
-            = cache.computeIfAbsent(file, key -> new HashMap<>());
+        final Map<String, String> values = cache.computeIfAbsent(
+                file, key -> new HashMap<>());
         putValues(file, values);
         putComputations(file, values);
         return new Info(values);
