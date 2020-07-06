@@ -6,10 +6,10 @@ import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Map;
 
+import freecrumbs.finf.DynamicValue;
 import freecrumbs.finf.config.AvailableFields;
 import freecrumbs.finf.config.ParameterizedSetting;
 import freecrumbs.finf.config.TokenFormatter;
-import freecrumbs.finf.field.DynamicValue;
 import freecrumbs.finf.field.Search;
 
 /**
@@ -23,8 +23,8 @@ import freecrumbs.finf.field.Search;
 public final class SearchParser
 {
     private static final String OCCURRENCE_KEY = "o";
-    private static final String GROUP_KEY = "g";
-    private static final String CHARSET_KEY = "c";
+    private static final String GROUP_KEY      = "g";
+    private static final String CHARSET_KEY    = "c";
 
     private SearchParser()
     {
@@ -68,7 +68,7 @@ public final class SearchParser
             return DynamicValue.of(regexString);
         }
         return DynamicValue.of(
-                availableFields.reader(usedByRegex), regexFormat);
+                availableFields.readerOf(usedByRegex), regexFormat);
     }
     
     private static Search.Params remainingSearchParams(
@@ -77,27 +77,26 @@ public final class SearchParser
     {
         final Map<String, String> params = parameterized.params();
         return searchParams
-                .withOccurrence(occurrence(params, parameterized.whole()))
-                .withGroups(groups(params, parameterized.whole()))
-                .withCharset(charset(params, parameterized.whole()));
+                .withOccurrence(occurrence(
+                        params, "Occurrence: " + parameterized.whole()))
+                .withGroups(groups(
+                        params, "Groups: "     + parameterized.whole()))
+                .withCharset(charset(
+                        params, "Charset: "    + parameterized.whole()));
     }
     
     private static int occurrence(
             final Map<? super String, String> params,
             final String message) throws IOException
     {
-        return parseInt(
-                params.getOrDefault(OCCURRENCE_KEY, "1"),
-                "Occurrence: " + message);
+        return parseInt(params.getOrDefault(OCCURRENCE_KEY, "1"), message);
     }
     
     private static int groups(
             final Map<? super String, String> params,
             final String message) throws IOException
     {
-        return requireZeroPlus(
-                params.getOrDefault(GROUP_KEY, "0"),
-                "Groups: " + message);
+        return requireZeroPlus(params.getOrDefault(GROUP_KEY, "0"), message);
     }
     
     private static Charset charset(
@@ -106,7 +105,7 @@ public final class SearchParser
     {
         if (params.containsKey(CHARSET_KEY))
         {
-            return parseCharset(params.get(CHARSET_KEY), "Charset: " + message);
+            return parseCharset(params.get(CHARSET_KEY), message);
         }
         return Charset.defaultCharset();
     }
@@ -143,7 +142,7 @@ public final class SearchParser
             return Charset.forName(param);
         }
         catch (final IllegalCharsetNameException|
-                       UnsupportedCharsetException ex)
+                     UnsupportedCharsetException ex)
         {
             throw new IOException(message, ex);
         }

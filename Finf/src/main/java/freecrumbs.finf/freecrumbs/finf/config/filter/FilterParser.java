@@ -39,6 +39,12 @@ public final class FilterParser
     private static final int DELIM_LENGTH = 2;
 
     private final Collection<FormatPattern> formatPatterns = new ArrayList<>();
+    
+    /*
+     * setting == null && formatter == null -> filter == null
+     * setting != null && formatter == null -> filter == regex
+     * setting != null && formatter != null -> filter == format pattern
+     */
     private final String setting;
     private final TokenFormatter formatter;
     
@@ -173,7 +179,7 @@ public final class FilterParser
     private static int startOfNextPart(final Part previous)
     {
         return
-                previous.start
+                  previous.start
                 + previous.prefix.length()
                 + previous.payload.length();
     }
@@ -209,12 +215,12 @@ public final class FilterParser
                 final String payload,
                 final boolean last)
         {
-            assert prefix != null;
+            assert prefix  != null;
             assert payload != null;
-            this.start = start;
-            this.prefix = prefix;
+            this.start   = start;
+            this.prefix  = prefix;
             this.payload = payload;
-            this.last = last;
+            this.last    = last;
         }
     }
 

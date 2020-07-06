@@ -14,7 +14,7 @@ import freecrumbs.finf.FieldValue;
  * 
  * @author Tone Sommerland
  */
-public abstract class TimeFieldValue implements FieldValue
+public abstract class TimeValue implements FieldValue
 {
     private final DateFormat dateFormat;
     
@@ -22,7 +22,7 @@ public abstract class TimeFieldValue implements FieldValue
      * Creates an instance that does not use a date format,
      * but returns the value as milliseconds since the epoch.
      */
-    protected TimeFieldValue()
+    protected TimeValue()
     {
         this.dateFormat = null;
     }
@@ -33,7 +33,7 @@ public abstract class TimeFieldValue implements FieldValue
      * @param locale the locale
      * @throws IOException if the date format is incorrect
      */
-    protected TimeFieldValue(final String dateFormat, final Locale locale)
+    protected TimeValue(final String dateFormat, final Locale locale)
             throws IOException
     {
         try

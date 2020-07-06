@@ -25,11 +25,11 @@ import freecrumbs.finf.FieldComputation;
  */
 public final class BinaryToText
 {
-    private static final String HEX_FIELD_NAME = "hex";
+    private static final String HEX_LOWERCASE_FIELD_NAME = "hex";
     private static final String HEX_UPPERCASE_FIELD_NAME = "HEX";
-    private static final String BASE64_FIELD_NAME = "base64";
-    private static final String BASE64_MIME_FIELD_NAME = "base64mime";
-    private static final String BASE64_URL_FIELD_NAME = "base64url";
+    private static final String BASE64_FIELD_NAME        = "base64";
+    private static final String BASE64_MIME_FIELD_NAME   = "base64mime";
+    private static final String BASE64_URL_FIELD_NAME    = "base64url";
 
     private BinaryToText()
     {
@@ -43,7 +43,7 @@ public final class BinaryToText
         return new Field[]
         {
                 Field.computed(
-                        HEX_FIELD_NAME,
+                        HEX_LOWERCASE_FIELD_NAME,
                         new HexComputation(false)),
                 Field.computed(
                         HEX_UPPERCASE_FIELD_NAME,

@@ -160,11 +160,11 @@ public final class Manifold
             final AvailableFields availableFields,
             final String[] usedFieldNames)
     {
-        return availableFields.reader(usedFieldNames);
+        return availableFields.readerOf(usedFieldNames);
     }
     
     private static FileFilter nullOrAsOne(
-            final Collection<FileFilter> filters)
+            final Collection<? extends FileFilter> filters)
     {
         if (filters.isEmpty())
         {

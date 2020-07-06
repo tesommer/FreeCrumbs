@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import freecrumbs.finf.DynamicValue;
 import freecrumbs.finf.Field;
 import freecrumbs.finf.FieldComputation;
 

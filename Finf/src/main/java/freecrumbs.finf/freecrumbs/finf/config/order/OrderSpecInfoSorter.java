@@ -12,15 +12,20 @@ import freecrumbs.finf.Info;
  */
 public final class OrderSpecInfoSorter implements Comparator<Info>
 {
+    private static final Comparator<OrderSpec>
+    BY_PRECEDENCE = (os1, os2)
+        -> Integer.valueOf(os1.precedence())
+            .compareTo(Integer.valueOf(os2.precedence()));
+
     private final OrderSpec[] orderSpecs;
     
     public OrderSpecInfoSorter(final OrderSpec... orderSpecs)
     {
         this.orderSpecs = Stream.of(orderSpecs)
-                .sorted(OrderSpec.COMPARATOR)
+                .sorted(BY_PRECEDENCE)
                 .toArray(OrderSpec[]::new);
     }
-    
+
     /**
      * Returns the field names used by this sorter.
      */

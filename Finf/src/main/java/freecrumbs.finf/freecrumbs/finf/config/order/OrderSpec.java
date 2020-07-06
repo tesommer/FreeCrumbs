@@ -2,8 +2,6 @@ package freecrumbs.finf.config.order;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.Comparator;
-
 /**
  * Specifies ordering by an info field.
  * 
@@ -11,14 +9,6 @@ import java.util.Comparator;
  */
 public final class OrderSpec
 {
-    /**
-     * Order by precedence.
-     */
-    public static final Comparator<OrderSpec>
-    COMPARATOR = (os1, os2)
-        -> Integer.valueOf(os1.precedence())
-            .compareTo(Integer.valueOf(os2.precedence()));
-    
     private final String fieldName;
     private final int precedence;
     private final boolean desc;

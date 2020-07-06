@@ -30,16 +30,15 @@ public final class Hash
      */
     public static Field field(final String name, final String algorithm)
     {
-        return Field.computed(name, new HashFieldComputation(algorithm));
+        return Field.computed(name, new HashComputation(algorithm));
     }
     
-    private static final class HashFieldComputation
-        implements FieldComputation
+    private static final class HashComputation implements FieldComputation
     {
         private final String algorithm;
         private MessageDigest messageDigest;
 
-        private HashFieldComputation(final String algorithm)
+        private HashComputation(final String algorithm)
         {
             this.algorithm = requireNonNull(algorithm, "algorithm");
         }

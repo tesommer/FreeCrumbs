@@ -28,7 +28,7 @@ import freecrumbs.finf.field.Whitespace;
 
 /**
  * Contains available info fields of which
- * {@link #reader(String...) readers} can be created.
+ * {@link #readerOf(String...) readers} can be created.
  * No two fields in an instance of this class have the same name.
  * Each instance of this class has its own instances of the computed fields.
  * This is so that readers from instance A
@@ -256,7 +256,7 @@ public final class AvailableFields
      * @throws NoSuchElementException
      * if any of the specified fields are unavailable
      */
-    public FieldReader reader(final String... usedFieldNames)
+    public FieldReader readerOf(final String... usedFieldNames)
     {
         return mother.coCaching(
                 BUFFER_SIZE,

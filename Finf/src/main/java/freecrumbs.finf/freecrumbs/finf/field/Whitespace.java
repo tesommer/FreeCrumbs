@@ -14,7 +14,7 @@ import freecrumbs.finf.Field;
 public final class Whitespace
 {
     private static final String SPACE_FIELD_NAME = "space";
-    private static final String TAB_FIELD_NAME = "tab";
+    private static final String TAB_FIELD_NAME   = "tab";
 
     private Whitespace()
     {
@@ -25,7 +25,7 @@ public final class Whitespace
         return new Field[]
         {
                 Field.simple(SPACE_FIELD_NAME, file -> " "),
-                Field.simple(TAB_FIELD_NAME, file -> "\t"),
+                Field.simple(TAB_FIELD_NAME,   file -> "\t"),
         };
     }
 

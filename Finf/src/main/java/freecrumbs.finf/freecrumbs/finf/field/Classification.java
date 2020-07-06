@@ -54,8 +54,9 @@ public final class Classification implements FieldComputation
             
         /**
          * The default heuristic uses a limit of 512 bytes,
-         * a threshold of .3 (30 percent)
-         * and chars 32�127 + \r, \n, \t, \b and \f to be text chars.
+         * a threshold of .3 (30 percent),
+         * and considers chars 32 to 127 + \r, \n, \t, \b and \f
+         * to be text chars.
          */
         public static final Heuristic
         DEFAULT = new Heuristic(

@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
+import freecrumbs.finf.DynamicValue;
 import freecrumbs.finf.config.filter.FilterParser;
 import freecrumbs.finf.config.order.OrderParser;
 import freecrumbs.finf.config.search.SearchParser;
 import freecrumbs.finf.field.Classification;
-import freecrumbs.finf.field.DynamicValue;
 import freecrumbs.finf.field.Search;
 
 /**
@@ -20,24 +20,24 @@ import freecrumbs.finf.field.Search;
  */
 public final class Settings
 {
-    private static final String HASH_ALGORITHMS_KEY = "hash.algorithms";
-    private static final String DATE_FORMAT_KEY = "date.format";
-    private static final String PREFILTER_KEY = "prefilter";
-    private static final String OUTPUT_KEY = "output";
-    private static final String FILTER_KEY = "filter";
-    private static final String ORDER_KEY = "order";
-    private static final String COUNT_KEY = "count";
-    private static final String SEARCH_KEY = "search";
+    private static final String HASH_ALGORITHMS_KEY      = "hash.algorithms";
+    private static final String DATE_FORMAT_KEY          = "date.format";
+    private static final String PREFILTER_KEY            = "prefilter";
+    private static final String OUTPUT_KEY               = "output";
+    private static final String FILTER_KEY               = "filter";
+    private static final String ORDER_KEY                = "order";
+    private static final String COUNT_KEY                = "count";
+    private static final String SEARCH_KEY               = "search";
     
-    private static final String DEFAULT_HASH_ALGORITHMS = "md5 sha-1 sha-256";
-    private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm";
-    private static final String DEFAULT_PREFILTER = "1";
-    private static final String DEFAULT_OUTPUT = "${filename}${eol}";
+    private static final String DEFAULT_HASH_ALGORITHMS  = "md5 sha-1 sha-256";
+    private static final String DEFAULT_DATE_FORMAT      = "yyyy-MM-dd HH:mm";
+    private static final String DEFAULT_PREFILTER        = "1";
+    private static final String DEFAULT_OUTPUT           = "${filename}${eol}";
     
-    private static final char KEYSEP = '.';
+    private static final char   KEYSEP                   = '.';
     private static final String HASH_ALGORITHM_DELIMITER = "[ |\\t]+";
-    private static final String FILTER_KEY_PREFIX = FILTER_KEY + KEYSEP;
-    private static final String SEARCH_KEY_PREFIX = SEARCH_KEY + KEYSEP;
+    private static final String FILTER_KEY_PREFIX        = FILTER_KEY + KEYSEP;
+    private static final String SEARCH_KEY_PREFIX        = SEARCH_KEY + KEYSEP;
     
     private Settings()
     {
@@ -103,6 +103,7 @@ public final class Settings
     /**
      * If the filter setting is not present,
      * the returned collection will be empty.
+     * None of the filters from the returned parsers will be null.
      */
     public static List<FilterParser> filterParsers(final Properties props)
             throws IOException

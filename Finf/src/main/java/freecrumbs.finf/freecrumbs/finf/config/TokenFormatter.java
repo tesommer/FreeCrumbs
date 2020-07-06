@@ -19,7 +19,7 @@ public final class TokenFormatter implements InfoFormatter
     private final String format;
 
     /**
-     * Creates a new token info-format.
+     * Creates a new token-based info-formatter.
      * @param format the format string containing tokens to be replaced
      */
     public TokenFormatter(final String format)
@@ -43,12 +43,12 @@ public final class TokenFormatter implements InfoFormatter
         String result = format;
         for (final String fieldName : info.fieldNames())
         {
-            result = replace(result, fieldName, info);
+            result = replaceTokensWithValues(result, fieldName, info);
         }
         return result;
     }
     
-    private static String replace(
+    private static String replaceTokensWithValues(
             final String format,
             final String fieldName,
             final Info info) throws IOException

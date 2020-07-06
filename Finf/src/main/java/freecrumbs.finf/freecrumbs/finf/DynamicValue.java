@@ -1,8 +1,4 @@
-package freecrumbs.finf.field;
-
-import freecrumbs.finf.FieldValue;
-import freecrumbs.finf.InfoFormatter;
-import freecrumbs.finf.InfoGenerator;
+package freecrumbs.finf;
 
 /**
  * A dynamically created value.

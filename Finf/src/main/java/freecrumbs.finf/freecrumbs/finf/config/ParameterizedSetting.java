@@ -15,7 +15,7 @@ import java.util.Map;
 public final class ParameterizedSetting
 {
     private static final String MAIN_PART_DELIM = "/";
-    private static final String PARAM_DELIM = ",";
+    private static final String PARAM_DELIM     = ",";
     private static final String KEY_VALUE_DELIM = "=";
     
     private final String whole;

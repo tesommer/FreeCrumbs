@@ -25,7 +25,7 @@ public final class Modified
      */
     public static Field field()
     {
-        return Field.simple(NAME, new ModifiedFieldValue());
+        return Field.simple(NAME, new ModifiedValue());
     }
     
     /**
@@ -38,16 +38,16 @@ public final class Modified
             throws IOException
     {
         return Field.simple(
-                NAME, new ModifiedFieldValue(dateFormat, locale));
+                NAME, new ModifiedValue(dateFormat, locale));
     }
     
-    private static final class ModifiedFieldValue extends TimeFieldValue
+    private static final class ModifiedValue extends TimeValue
     {
-        private ModifiedFieldValue()
+        private ModifiedValue()
         {
         }
 
-        private ModifiedFieldValue(
+        private ModifiedValue(
                 final String dateFormat,
                 final Locale locale) throws IOException
         {
