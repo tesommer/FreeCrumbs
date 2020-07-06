@@ -25,14 +25,14 @@ import freecrumbs.finf.FieldComputation;
  */
 public final class Eol
 {
-    private static final String EOL_COUNT_FIELD_NAME = "eolcount";
-    private static final String CR_COUNT_FIELD_NAME = "crcount";
-    private static final String LF_COUNT_FIELD_NAME = "lfcount";
+    private static final String EOL_COUNT_FIELD_NAME  = "eolcount";
+    private static final String CR_COUNT_FIELD_NAME   = "crcount";
+    private static final String LF_COUNT_FIELD_NAME   = "lfcount";
     private static final String CRLF_COUNT_FIELD_NAME = "crlfcount";
-    private static final String EOL_FIELD_NAME = "eol";
-    private static final String CR_FIELD_NAME = "cr";
-    private static final String LF_FIELD_NAME = "lf";
-    private static final String CRLF_FIELD_NAME = "crlf";
+    private static final String EOL_FIELD_NAME        = "eol";
+    private static final String CR_FIELD_NAME         = "cr";
+    private static final String LF_FIELD_NAME         = "lf";
+    private static final String CRLF_FIELD_NAME       = "crlf";
     
     private static final String EOL = System.getProperty("line.separator");
 
@@ -78,9 +78,9 @@ public final class Eol
                 final Function<? super EolCounter, String> value)
         {
             assert counter != null;
-            assert value != null;
+            assert value   != null;
             this.counter = counter;
-            this.value = value;
+            this.value   = value;
         }
 
         @Override

@@ -27,9 +27,9 @@ public final class Main
     HELP
         = "@finfhelp@";
     
-    private static final String CONFIG_FILE_OPTION = "-c";
+    private static final String CONFIG_FILE_OPTION     = "-c";
     private static final String CONFIG_OVERRIDE_OPTION = "-o";
-    private static final String HELP_OPTION = "-h";
+    private static final String HELP_OPTION            = "-h";
 
     private Main()
     {
@@ -58,6 +58,7 @@ public final class Main
     private static void handle(final Throwable ex)
     {
         System.err.println(ex.toString());
+        System.exit(1);
     }
 
     private static Collection<File> inputFiles(final Args parsedArgs)

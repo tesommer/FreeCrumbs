@@ -116,7 +116,10 @@ public final class FieldReader implements InfoGenerator
         final Collection<Field> notCachedBeforeReset = nonCached(values);
         reset(computationsIn(notCachedBeforeReset), file);
         final Collection<Field> notCachedAfterReset = nonCached(values);
-        abort(notCachedBeforeReset, notCachedAfterReset, file);
+        // A computation's reset method may use a dynamic value,
+        // which again may use a co-caching reader to obtain its value.
+        // Aborting those that were just cached by reset:
+        abortCachedAfterReset(notCachedBeforeReset, notCachedAfterReset, file);
         return notCachedAfterReset;
     }
     
@@ -147,7 +150,7 @@ public final class FieldReader implements InfoGenerator
         }
     }
     
-    private static void abort(
+    private static void abortCachedAfterReset(
             final Collection<Field> notCachedBeforeReset,
             final Collection<Field> notCachedAfterReset,
             final File file)

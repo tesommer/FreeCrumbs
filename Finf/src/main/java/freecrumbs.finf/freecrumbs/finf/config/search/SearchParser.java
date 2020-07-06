@@ -60,15 +60,15 @@ public final class SearchParser
             final AvailableFields availableFields) throws IOException
     {
         final String regexString = parameterized.mainPart();
-        final var regexFormat = new TokenFormatter(regexString);
-        final String[] usedByRegex = regexFormat.usedFieldNames(
+        final var regexFormatter = new TokenFormatter(regexString);
+        final String[] usedByRegex = regexFormatter.usedFieldNames(
                 availableFields.names());
         if (usedByRegex.length == 0)
         {
             return DynamicValue.of(regexString);
         }
         return DynamicValue.of(
-                availableFields.readerOf(usedByRegex), regexFormat);
+                availableFields.readerOf(usedByRegex), regexFormatter);
     }
     
     private static Search.Params remainingSearchParams(

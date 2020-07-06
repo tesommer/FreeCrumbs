@@ -6,7 +6,9 @@ import freecrumbs.finf.Field;
 
 /**
  * The path without the filename.
- * The path ends with a file separator.
+ * The path ends in a file separator,
+ * unless the path is devoid of separators,
+ * in which case it will be the empty string.
  * The name of this field is {@code "path"}.
  * 
  * @author Tone Sommerland
@@ -26,7 +28,7 @@ public final class Path
         final int index = file.getPath().lastIndexOf(File.separatorChar);
         if (index < 0)
         {
-            return File.separator;
+            return "";
         }
         return file.getPath().substring(0, index + 1);
     }

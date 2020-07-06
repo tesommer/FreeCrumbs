@@ -41,12 +41,12 @@ import freecrumbs.finf.FieldComputation;
  */
 public final class Search
 {
-    private static final String FOUND_FIELD_NAME = "found";
+    private static final String FOUND_FIELD_NAME       = "found";
     private static final String GROUP_COUNT_FIELD_NAME = "groupcount";
-    private static final String LINE_FIELD_NAME = "line";
-    private static final String INPUT_FIELD_NAME = "input";
-    private static final String START_FIELD_NAME = "start";
-    private static final String END_FIELD_NAME = "end";
+    private static final String LINE_FIELD_NAME        = "line";
+    private static final String INPUT_FIELD_NAME       = "input";
+    private static final String START_FIELD_NAME       = "start";
+    private static final String END_FIELD_NAME         = "end";
     
     private static final String SEPARATOR = "-";
     
@@ -280,12 +280,12 @@ public final class Search
                 final Searcher searcher,
                 final Function<? super Hit, String> value)
         {
-            assert params != null;
+            assert params   != null;
             assert searcher != null;
-            assert value != null;
-            this.params = params;
+            assert value    != null;
+            this.params   = params;
             this.searcher = searcher;
-            this.value = value;
+            this.value    = value;
         }
 
         @Override
@@ -482,12 +482,12 @@ public final class Search
         
         private GroupHit(final Matcher matcher, final int groupNumber)
         {
-            assert     matcher != null
+            assert     matcher     != null
                     && groupNumber >= 0
                     && groupNumber <= matcher.groupCount();
             this.input = matcher.group(groupNumber);
             this.start = matcher.start(groupNumber);
-            this.end = matcher.end(groupNumber);
+            this.end   = matcher.end(groupNumber);
         }
     }
 
