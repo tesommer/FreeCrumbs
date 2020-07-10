@@ -90,8 +90,8 @@ public final class Wait extends Command
     {
         final int fromX = script.variables().value(params[0]);
         final int fromY = script.variables().value(params[1]);
-        final int toX = script.variables().value(params[2]);
-        final int toY = script.variables().value(params[3]);
+        final int toX   = script.variables().value(params[2]);
+        final int toY   = script.variables().value(params[3]);
         return new Scanner(
                 Util.createScreenCapture(robot), fromX, fromY, toX, toY);
     }

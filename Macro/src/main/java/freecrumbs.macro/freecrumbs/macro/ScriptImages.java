@@ -69,11 +69,11 @@ public final class ScriptImages
     
     /**
      * Loads an image.
+     * This method does not modify this instance.
      * @param imageLocation the location of the image
      * @throws MacroException if the image could not be loaded
      */
-    public BufferedImage load(final String imageLocation)
-            throws MacroException
+    public BufferedImage load(final String imageLocation) throws MacroException
     {
         try (final InputStream in = location.refer(imageLocation).open())
         {
@@ -88,6 +88,7 @@ public final class ScriptImages
     /**
      * First tries to get the image with the given name,
      * and if that fails, tries to load it.
+     * This method does not modify this instance.
      * @param nameOrLocation either an image name or location.
      * @throws MacroException if not found.
      */

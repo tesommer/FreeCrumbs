@@ -55,6 +55,7 @@ public final class Scanner
      * @param subImage the image to find
      * @param occurrence the occurrence to find
      * @return an array containing x and y, or an empty array
+     * @throws IllegalArgumentException if {@code occurrence < 1}
      */
     public int[] xyOf(final BufferedImage subImage, final int occurrence)
     {
@@ -77,9 +78,7 @@ public final class Scanner
     }
 
     private boolean isSubImageAt(
-            final BufferedImage subImage,
-            final int x,
-            final int y)
+            final BufferedImage subImage, final int x, final int y)
     {
         for (int x2 = 0; x2 < subImage.getWidth(); x2++)
         {

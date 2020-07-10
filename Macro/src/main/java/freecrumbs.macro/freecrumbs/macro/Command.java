@@ -47,7 +47,9 @@ public abstract class Command implements GestureParser
     
     /**
      * Convenience method that either returns a parameter,
-     * or a default value if the index is greater than the parameter array.
+     * or a default value if the index is greater than or equal to
+     * the length of the parameter array.
+     * @throws IllegalArgumentException if {@code index < 0}
      */
     protected static String paramOrDefault(
             final String[] params,
@@ -62,13 +64,13 @@ public abstract class Command implements GestureParser
     }
 
     @Override
-    public boolean supports(final String line)
+    public final boolean supports(final String line)
     {
         return Util.isFirstWord(name, line);
     }
 
     @Override
-    public Gesture parse(final String line) throws MacroException
+    public final Gesture parse(final String line) throws MacroException
     {
         final String[] words = Util.split(line);
         final String[] params = Arrays.copyOfRange(words, 1, words.length);

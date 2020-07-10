@@ -14,7 +14,7 @@ public interface Gesture
     /**
      * Plays this gesture.
      * Any {@code IllegalArgumentException} or {@code SecurityException}
-     * thrown by this method
+     * thrown by the implementation
      * will be re-thrown as {@code MacroException}.
      * @param script the script containing this gesture
      * @param robot the event generator

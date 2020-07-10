@@ -69,7 +69,7 @@ public final class Util
     {
         Stream.of(KeyEvent.class.getDeclaredFields())
             .filter(Util::isKeyCodeConstant)
-            .forEach(field -> addKeyCodeVariable(script, field));
+            .forEach(field -> addKeyCodeVariable(field, script));
     }
     
     private static boolean isKeyCodeConstant(final Field field)
@@ -81,7 +81,7 @@ public final class Util
     }
 
     private static void addKeyCodeVariable(
-            final Script script, final Field field)
+            final Field field, final Script script)
     {
         try
         {
@@ -99,6 +99,10 @@ public final class Util
      * @param left left operand (integer or variable)
      * @param operator one of {@code + - * / %}
      * @param right right operand (integer or variable)
+     * @throws MacroException
+     * if either operand is both nonexistent variable and non-literal,
+     * if the operator is invalid,
+     * or if division by zero
      */
     public static int evaluateArithmetic(
             final Script script,
@@ -154,6 +158,10 @@ public final class Util
      * {@code x isset 1} is true if {@code x} exists and
      * {@code x isset 0} is true if {@code x} is nonexistent.
      * @param right right operand (integer or variable)
+     * @throws MacroException
+     * if either operand is both nonexistent variable and non-literal
+     * (except for the left operand if the operator is isset),
+     * or if the operator is invalid
      */
     public static boolean evaluateLogical(
             final Script script,
@@ -198,10 +206,10 @@ public final class Util
     
     /**
      * Generates key events that types the given value.
-     * @param robot event generator
      * @param value the digits to type
+     * @param robot event generator
      */
-    public static void type(final Robot robot, final int value)
+    public static void type(final int value, final Robot robot)
     {
         final String digits = String.valueOf(value);
         IntStream.iterate(0, index -> index + 1)

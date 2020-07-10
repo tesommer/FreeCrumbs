@@ -106,7 +106,7 @@ public final class Play extends Command
         private final Map<String, Integer> input = new HashMap<>();
         private final String scriptLocation;
 
-        public ScriptSpecifier(final Script current, final String scriptParam)
+        private ScriptSpecifier(final Script current, final String scriptParam)
                 throws MacroException
         {
             final int index = scriptParam.indexOf(SCRIPT_INPUT_SEPARATOR);
@@ -155,12 +155,12 @@ public final class Play extends Command
             }
         }
 
-        public String scriptLocation()
+        private String scriptLocation()
         {
             return scriptLocation;
         }
         
-        public void setInputVariables(final Script script)
+        private void setInputVariables(final Script script)
         {
             for (final String variable : input.keySet())
             {
@@ -183,7 +183,7 @@ public final class Play extends Command
          * @param macroName the macro name
          * @param scriptSpecifier the script location and input (nullable)
          */
-        public MacroSpecifier(
+        private MacroSpecifier(
                 final String macroName, final ScriptSpecifier scriptSpecifier)
         {
             this.macroName = requireNonNull(macroName, "macroName");
@@ -194,12 +194,12 @@ public final class Play extends Command
          * Creates a specifier for a macro in the current script.
          * @param macroName the macro name
          */
-        public MacroSpecifier(final String macroName)
+        private MacroSpecifier(final String macroName)
         {
             this(macroName, null);
         }
         
-        public void play(
+        private void play(
                 final Script current,
                 final Robot robot,
                 final String times) throws MacroException
@@ -207,12 +207,12 @@ public final class Play extends Command
             final Script script = script(current);
             if (macroName.isEmpty())
             {
-                script.play(robot, current.variables().value(times));
+                script.playFirst(robot, current.variables().value(times));
             }
             else
             {
-                script.play(robot, current.variables().value(times),
-                        macroName);
+                script.play(macroName, robot,
+                        current.variables().value(times));
             }
         }
         

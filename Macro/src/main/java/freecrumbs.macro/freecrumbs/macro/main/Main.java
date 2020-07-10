@@ -107,11 +107,11 @@ public final class Main
             final var robot = new Robot();
             if (args.macroName == null)
             {
-                script.play(robot, args.times);
+                script.playFirst(robot, args.times);
             }
             else
             {
-                script.play(robot, args.times, args.macroName);
+                script.play(args.macroName, robot, args.times);
             }
         }
         catch (final AWTException ex)

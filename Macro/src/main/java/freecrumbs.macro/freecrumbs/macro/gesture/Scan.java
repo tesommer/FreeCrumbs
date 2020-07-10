@@ -58,7 +58,7 @@ public final class Scan extends Command
     {
         private final ScanParams params;
         
-        public ScanGesture(final ScanParams params)
+        private ScanGesture(final ScanParams params)
         {
             this.params = params;
         }
@@ -81,7 +81,7 @@ public final class Scan extends Command
         private final String toX;
         private final String toY;
         
-        public FromToParams(final String[] params, final int firstIndex)
+        private FromToParams(final String[] params, final int firstIndex)
         {
             this.fromX = params[firstIndex];
             this.fromY = params[firstIndex + 1];
@@ -89,7 +89,7 @@ public final class Scan extends Command
             this.toY =   params[firstIndex + 3];
         }
         
-        public Scanner scanner(final Script script, final Robot robot)
+        private Scanner scanner(final Script script, final Robot robot)
                 throws MacroException
         {
             return new Scanner(
@@ -106,13 +106,13 @@ public final class Scan extends Command
         private final String xVariable;
         private final String yVariable;
         
-        public VariableParams(final String[] params, final int firstIndex)
+        private VariableParams(final String[] params, final int firstIndex)
         {
             this.xVariable = params[firstIndex];
             this.yVariable = params[firstIndex + 1];
         }
 
-        public void setXyVariables(final Script script, final int[] xy)
+        private void setXyVariables(final Script script, final int[] xy)
         {
             final int x;
             final int y;
@@ -136,14 +136,14 @@ public final class Scan extends Command
         private final String successMacroName;
         private final String failureMacroName;
         
-        public ResultMacroParams(final String[] params, final int firstIndex)
+        private ResultMacroParams(final String[] params, final int firstIndex)
         {
             this.successMacroName = paramOrDefault(params, firstIndex, null);
             this.failureMacroName
                 = paramOrDefault(params, firstIndex + 1, null);
         }
         
-        public void playResultMacro(
+        private void playResultMacro(
                 final Script script,
                 final Robot robot,
                 final int[] xy) throws MacroException
@@ -152,12 +152,12 @@ public final class Scan extends Command
             {
                 if (failureMacroName != null)
                 {
-                    script.play(robot, 1, failureMacroName);
+                    script.play(failureMacroName, robot, 1);
                 }
             }
             else if (successMacroName != null)
             {
-                script.play(robot, 1, successMacroName);
+                script.play(successMacroName, robot, 1);
             }
         }
     }
@@ -172,7 +172,7 @@ public final class Scan extends Command
         private final String delay;
         private final String times;
 
-        public ScanParams(final String[] params)
+        private ScanParams(final String[] params)
         {
             this.fromToParams = new FromToParams(params, 0);
             this.variableParams = new VariableParams(params, 4);
@@ -183,13 +183,13 @@ public final class Scan extends Command
             this.times            = paramOrDefault(params, 9, "1");
         }
 
-        public BufferedImage image(final Script script)
+        private BufferedImage image(final Script script)
                 throws MacroException
         {
             return script.images().loadIfAbsent(image);
         }
         
-        public int[] scanScreenForImage(
+        private int[] scanScreenForImage(
                 final Script script,
                 final Robot robot,
                 final BufferedImage image) throws MacroException
@@ -206,12 +206,12 @@ public final class Scan extends Command
             return xy;
         }
         
-        public void setXyVariables(final Script script, final int[] xy)
+        private void setXyVariables(final Script script, final int[] xy)
         {
             variableParams.setXyVariables(script, xy);
         }
         
-        public void playResultMacro(
+        private void playResultMacro(
                 final Script script,
                 final Robot robot,
                 final int[] xy) throws MacroException

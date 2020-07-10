@@ -29,7 +29,7 @@ public final class Type extends Command
             throws MacroException
     {
         return (script, robot)
-                -> Util.type(robot, script.variables().value(params[0]));
+                -> Util.type(script.variables().value(params[0]), robot);
     }
 
 }

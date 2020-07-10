@@ -83,12 +83,12 @@ public final class Script
     }
 
     /**
-     * Runs this script.
      * Plays the first macro, if any, a specified number of times.
      * @param robot the event generator
      * @param times the number of times to play
      */
-    public void play(final Robot robot, final int times) throws MacroException
+    public void playFirst(final Robot robot, final int times)
+            throws MacroException
     {
         if (macros.length > 0)
         {
@@ -98,12 +98,12 @@ public final class Script
     
     /**
      * Plays a named macro a specified number of times.
+     * @param macroName the name of the macro to play
      * @param robot the event generator
      * @param times the number of times to play
-     * @param macroName the name of the macro to play
      * @throws MacroException in particular if the macro wasn't found
      */
-    public void play(final Robot robot, final int times, final String macroName)
+    public void play(final String macroName, final Robot robot, final int times)
             throws MacroException
     {
         play(macro(macroName), robot, times);
