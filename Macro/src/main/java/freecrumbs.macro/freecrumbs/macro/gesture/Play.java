@@ -76,10 +76,11 @@ public final class Play extends Command
             final String[] params) throws MacroException
     {
         final String times = paramOrDefault(params, 1, "1");
-        final MacroSpecifier macroSpecifier
-            = macroSpecifier(script, params[0]);
-        if (params.length != 5 || Util.evaluateLogical(
-                script, params[2], params[3], params[4]))
+        final MacroSpecifier macroSpecifier = macroSpecifier(script, params[0]);
+        if (
+                   params.length != 5
+                || Util.evaluateLogical(
+                        script, params[2], params[3], params[4]))
         {
             macroSpecifier.play(script, robot, times);
         }

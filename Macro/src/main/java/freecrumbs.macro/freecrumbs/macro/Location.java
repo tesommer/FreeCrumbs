@@ -3,6 +3,7 @@ package freecrumbs.macro;
 import java.io.InputStream;
 
 import freecrumbs.macro.internal.ScriptFile;
+import freecrumbs.macro.internal.StdinLocation;
 
 /**
  * A script location.
@@ -22,6 +23,11 @@ public interface Location
     public static Location fromFilePath(final String filePath)
     {
         return new ScriptFile(filePath);
+    }
+    
+    public static Location stdin()
+    {
+        return StdinLocation.INSTANCE;
     }
     
     /**

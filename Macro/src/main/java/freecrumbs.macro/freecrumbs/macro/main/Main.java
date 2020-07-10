@@ -41,9 +41,10 @@ public final class Main
     HELP
         = "@macrohelp@";
 
-    private static final String TIMES_OPTION = "-t";
+    private static final String TIMES_OPTION      = "-t";
     private static final String MACRO_NAME_OPTION = "-m";
-    private static final String HELP_OPTION = "-h";
+    private static final String HELP_OPTION       = "-h";
+    private static final String STDIN_LOCATION    = "-";
     
     private static final GestureParser[]
     GESTURE_PARSERS = new GestureParser[]
@@ -79,7 +80,7 @@ public final class Main
     {
         try
         {
-            final Args parsedArgs = parseArgs(args);
+            final Args parsedArgs = parsedArgsOrNull(args);
             if (parsedArgs == null)
             {
                 System.out.println(HELP);
@@ -97,6 +98,7 @@ public final class Main
     private static void handle(final MacroException ex)
     {
         System.err.println(ex.toString());
+        System.exit(1);
     }
     
     private static void play(final Script script, final Args args)
@@ -122,17 +124,19 @@ public final class Main
     
     private static Script loadScript(final Args args) throws MacroException
     {
-        return Script.load(
-                Location.fromFilePath(args.inputFile),
-                Loader.supporting(GESTURE_PARSERS));
+        final Location location = STDIN_LOCATION.equals(args.inputFile)
+                ? Location.stdin()
+                : Location.fromFilePath(args.inputFile);
+        return Script.load(location, Loader.supporting(GESTURE_PARSERS));
     }
     
     /**
      * Returns null if help option or if args contains error.
      */
-    private static Args parseArgs(final String[] args) throws MacroException
+    private static Args parsedArgsOrNull(final String[] args)
+            throws MacroException
     {
-        String times = null;
+        String times     = null;
         String macroName = null;
         String inputFile = null;
         int i = -1;
@@ -202,7 +206,7 @@ public final class Main
                 final String inputFile)
         {
             assert inputFile != null;
-            this.times = times;
+            this.times     = times;
             this.macroName = macroName;
             this.inputFile = inputFile;
         }
