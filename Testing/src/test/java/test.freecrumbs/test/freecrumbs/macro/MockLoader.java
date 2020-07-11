@@ -25,7 +25,7 @@ public final class MockLoader implements Loader
     }
 
     @Override
-    public RecursionGuard getRecursionGuard()
+    public RecursionGuard recursionGuard()
     {
         return MockRecursionGuard.LIMIT_2;
     }
