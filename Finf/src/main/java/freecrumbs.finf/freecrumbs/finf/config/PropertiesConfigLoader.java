@@ -18,7 +18,7 @@ import freecrumbs.finf.ConfigLoader;
  * <pre>
  * {@code
  * hash.algorithms=MD5 SHA-1 SHA-256
- * output=${path}${filename} ${size} ${modified} ${md5} ${sha-256}${eol}
+ * output=<path><filename> <size> <modified> <md5> <sha-256><eol>
  * date.format=yyyy-MM-dd HH:mm
  * filter=.*\.html
  * order=filename size asc modified desc
@@ -28,7 +28,7 @@ import freecrumbs.finf.ConfigLoader;
  * Alternative filter &ndash; format pattern:
  * <pre>
  * {@code
- * filter=${filename}++.+\.html--index\..{3,4}
+ * filter=<filename>++.+\.html--index\..{3,4}
  * }
  * </pre>
  * ({@code ++} precedes inclusion patterns and {@code --} exclusion patterns.)

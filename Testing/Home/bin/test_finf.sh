@@ -74,25 +74,25 @@ multiple_filters_are_supported_by_appending_dot_and_something_to_their_keys() {
 
 filter_setting_supports_format_pattern_style() {
     local OUTPUT
-    OUTPUT=`finf -o 'filter=${filename}++finf.*--.*\.bat' "$HOME_DIR"`
+    OUTPUT=`finf -o 'filter=<filename>++finf.*--.*\.bat' "$HOME_DIR"`
     [ "$OUTPUT" = "finf" ] || fail "output: $OUTPUT"
 }
 
 date_format_setting_is_applied_to_time_fields() {
     local OUTPUT
-    OUTPUT=`finf -o 'date.format=yyyy-MM' -o 'output=${modified}' "$ME"`
+    OUTPUT=`finf -o 'date.format=yyyy-MM' -o 'output=<modified>' "$ME"`
     [[ "$OUTPUT" =~ [0-9]+-[0-9]{2} ]] || fail "output: $OUTPUT"
 }
 
 empty_date_format_turns_timestamp_formatting_of() {
     local OUTPUT
-    OUTPUT=`finf -o 'date.format=' -o 'output=${modified}' "$ME"`
+    OUTPUT=`finf -o 'date.format=' -o 'output=<modified>' "$ME"`
     [[ "$OUTPUT" =~ [0-9]+ ]] || fail "output: $OUTPUT"
 }
 
 eolcount_field_is_the_number_of_line_terminators() {
     local OUTPUT
-    OUTPUT=`finf -o 'output=${eolcount} ${path}${filename}' "$ME"`
+    OUTPUT=`finf -o 'output=<eolcount> <path><filename>' "$ME"`
     EXPECTED=`wc -l "$ME"`
     [ "$OUTPUT" = "$EXPECTED" ] || fail "output: $OUTPUT expected: $EXPECTED"
 }

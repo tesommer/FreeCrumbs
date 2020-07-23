@@ -10,7 +10,7 @@ import freecrumbs.finf.InfoFormatter;
 
 /**
  * An info formatter that replaces tokens on the form
- * ${field-name} with the corresponding field value.
+ * <field-name> with the corresponding field value.
  * 
  * @author Tone Sommerland
  */
@@ -63,6 +63,6 @@ public final class TokenFormatter implements InfoFormatter
 
     private static String token(final String fieldName)
     {
-        return "${" + fieldName + "}";
+        return "<" + fieldName + ">";
     }
 }

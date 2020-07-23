@@ -32,7 +32,7 @@ public final class Settings
     private static final String DEFAULT_HASH_ALGORITHMS  = "md5 sha-1 sha-256";
     private static final String DEFAULT_DATE_FORMAT      = "yyyy-MM-dd HH:mm";
     private static final String DEFAULT_PREFILTER        = "1";
-    private static final String DEFAULT_OUTPUT           = "${filename}${eol}";
+    private static final String DEFAULT_OUTPUT           = "<filename><eol>";
     
     private static final char   KEYSEP                   = '.';
     private static final String HASH_ALGORITHM_DELIMITER = "[ |\\t]+";
