@@ -86,11 +86,11 @@ public final class Search
         }
         
         /**
-         * Creates parameters with the given regex.
+         * Creates initial parameters with an empty regex.
          */
-        public Params(final DynamicValue regex)
+        public Params()
         {
-            this("", 0, Charset.defaultCharset(), 1, 0, regex);
+            this("", 0, Charset.defaultCharset(), 1, 0, DynamicValue.of(""));
         }
         
         public Params withFieldNamePrefix(final String fieldNamePrefix)

@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.stream.Stream;
 
-import freecrumbs.finf.DynamicValue;
+import freecrumbs.finf.config.command.CommandParser;
 import freecrumbs.finf.config.filter.FilterParser;
 import freecrumbs.finf.config.order.OrderParser;
 import freecrumbs.finf.config.search.SearchParser;
 import freecrumbs.finf.field.Classification;
+import freecrumbs.finf.field.Command;
 import freecrumbs.finf.field.Search;
 
 /**
@@ -27,7 +29,7 @@ public final class Settings
     private static final String FILTER_KEY               = "filter";
     private static final String ORDER_KEY                = "order";
     private static final String COUNT_KEY                = "count";
-    private static final String SEARCH_KEY               = "search";
+    private static final String VAR_KEY                  = "var";
     
     private static final String DEFAULT_HASH_ALGORITHMS  = "md5 sha-1 sha-256";
     private static final String DEFAULT_DATE_FORMAT      = "yyyy-MM-dd HH:mm";
@@ -35,9 +37,10 @@ public final class Settings
     private static final String DEFAULT_OUTPUT           = "<filename><eol>";
     
     private static final char   KEYSEP                   = '.';
-    private static final String HASH_ALGORITHM_DELIMITER = "[ |\\t]+";
     private static final String FILTER_KEY_PREFIX        = FILTER_KEY + KEYSEP;
-    private static final String SEARCH_KEY_PREFIX        = SEARCH_KEY + KEYSEP;
+    private static final String VAR_KEY_PREFIX           = VAR_KEY + KEYSEP;
+    
+    private static final String WS_DELIMITER             = "[ \\t]+";
     
     private Settings()
     {
@@ -52,25 +55,33 @@ public final class Settings
                 .withTime(dateFormat, locale)
                 .withClassification(Classification.Heuristic.DEFAULT)
                 .withHash(hashAlgorithms(props));
-        return withSearchFields(new AvailableFields(params), props);
+        return withVarFields(new AvailableFields(params), props);
     }
     
-    private static AvailableFields withSearchFields(
+    private static AvailableFields withVarFields(
             final AvailableFields availableFields,
             final Properties props) throws IOException
     {
-        final String[] keys = props.stringPropertyNames().stream()
-                .filter(Settings::isSearchKey)
-                .sorted()
-                .toArray(String[]::new);
-        final var initialSearchParams = new Search.Params(DynamicValue.of(""));
+        final var initialSearchParams = new Search.Params();
+        final var initialCommandParams = new Command.Params();
         var result = availableFields;
-        for (final String key : keys)
+        for (final String key : varKeys(props))
         {
-            result = SearchParser.withAnotherSearch(
-                    result,
-                    initialSearchParams.withFieldNamePrefix(key +  KEYSEP),
-                    props.getProperty(key));
+            final String setting = props.getProperty(key);
+            if (SearchParser.isSearch(setting))
+            {
+                result = SearchParser.withAnotherSearch(
+                        result,
+                        initialSearchParams.withFieldNamePrefix(key +  KEYSEP),
+                        setting);
+            }
+            else if (CommandParser.isCommand(setting))
+            {
+                result = CommandParser.withAnotherCommand(
+                        result,
+                        initialCommandParams.withFieldNamePrefix(key +  KEYSEP),
+                        setting);
+            }
         }
         return result;
     }
@@ -109,11 +120,7 @@ public final class Settings
             throws IOException
     {
         final var filterParsers = new ArrayList<FilterParser>();
-        final String[] keys = props.stringPropertyNames().stream()
-                .filter(Settings::isFilterKey)
-                .sorted()
-                .toArray(String[]::new);
-        for (final String key : keys)
+        for (final String key : filterKeys(props))
         {
             filterParsers.add(new FilterParser(props.getProperty(key)));
         }
@@ -125,25 +132,51 @@ public final class Settings
         return isTrue(props.getProperty(PREFILTER_KEY, DEFAULT_PREFILTER));
     }
     
+    /**
+     * Returns an array containing non-empty, trimmed
+     * space/tab-delimited substrings of the given string.
+     */
+    public static String[] splitAtWhitespace(final String str)
+    {
+        return Stream.of(str.split(WS_DELIMITER))
+                .map(s -> s.trim())
+                .filter(s -> !s.isEmpty())
+                .toArray(String[]::new);
+    }
+    
     private static boolean isFilterKey(final String key)
     {
         return FILTER_KEY.equals(key) || key.startsWith(FILTER_KEY_PREFIX);
     }
     
-    private static boolean isSearchKey(final String key)
+    private static boolean isVarKey(final String key)
     {
-        return SEARCH_KEY.equals(key) || key.startsWith(SEARCH_KEY_PREFIX);
+        return VAR_KEY.equals(key) || key.startsWith(VAR_KEY_PREFIX);
     }
 
     private static String[] hashAlgorithms(final Properties props)
     {
         return props.getProperty(HASH_ALGORITHMS_KEY, DEFAULT_HASH_ALGORITHMS)
-                .split(HASH_ALGORITHM_DELIMITER);
+                .split(WS_DELIMITER);
     }
     
     private static boolean isTrue(final String propertyValue)
     {
         return !"0".equals(propertyValue);
+    }
+
+    private static String[] filterKeys(final Properties props) {
+        return props.stringPropertyNames().stream()
+                .filter(Settings::isFilterKey)
+                .sorted()
+                .toArray(String[]::new);
+    }
+
+    private static String[] varKeys(final Properties props) {
+        return props.stringPropertyNames().stream()
+                .filter(Settings::isVarKey)
+                .sorted()
+                .toArray(String[]::new);
     }
 
 }

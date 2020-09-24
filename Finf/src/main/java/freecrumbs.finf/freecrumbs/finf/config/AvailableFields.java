@@ -17,6 +17,7 @@ import freecrumbs.finf.Field;
 import freecrumbs.finf.FieldReader;
 import freecrumbs.finf.field.BinaryToText;
 import freecrumbs.finf.field.Classification;
+import freecrumbs.finf.field.Command;
 import freecrumbs.finf.field.Eol;
 import freecrumbs.finf.field.Filename;
 import freecrumbs.finf.field.Hash;
@@ -52,13 +53,15 @@ public final class AvailableFields
         private final Classification.Heuristic classHeuristic;
         private final String[] hashAlgorithms;
         private final Search.Params[] searchParams;
+        private final Command.Params[] commandParams;
         
         private Params(
                 final String dateFormat,
                 final Locale locale,
                 final Classification.Heuristic classHeuristic,
                 final String[] hashAlgorithms,
-                final Search.Params[] searchParams)
+                final Search.Params[] searchParams,
+                final Command.Params[] commandParams)
         {
             this.dateFormat = dateFormat;
             this.locale = locale;
@@ -67,11 +70,13 @@ public final class AvailableFields
                 = hashAlgorithms == null ? new String[0] : hashAlgorithms;
             this.searchParams
                 = searchParams == null ? new Search.Params[0] : searchParams;
+            this.commandParams
+                = commandParams == null ? new Command.Params[0] : commandParams;
         }
         
         public Params()
         {
-            this(null, null, null, null, null);
+            this(null, null, null, null, null, null);
         }
         
         /**
@@ -84,7 +89,8 @@ public final class AvailableFields
                     requireNonNull(locale, "locale"),
                     this.classHeuristic,
                     this.hashAlgorithms,
-                    this.searchParams);
+                    this.searchParams,
+                    this.commandParams);
         }
         
         public Params withClassification(
@@ -95,7 +101,8 @@ public final class AvailableFields
                     this.locale,
                     requireNonNull(heuristic, "heuristic"),
                     this.hashAlgorithms,
-                    this.searchParams);
+                    this.searchParams,
+                    this.commandParams);
         }
         
         /**
@@ -110,7 +117,8 @@ public final class AvailableFields
                     this.locale,
                     this.classHeuristic,
                     algorithms.clone(),
-                    this.searchParams);
+                    this.searchParams,
+                    this.commandParams);
         }
         
         public Params withAnotherSearch(final Search.Params params)
@@ -122,7 +130,21 @@ public final class AvailableFields
                     this.hashAlgorithms,
                     Stream.concat(
                             Stream.of(this.searchParams), Stream.of(params))
-                        .toArray(Search.Params[]::new));
+                        .toArray(Search.Params[]::new),
+                    this.commandParams);
+        }
+        
+        public Params withAnotherCommand(final Command.Params params)
+        {
+            return new Params(
+                    this.dateFormat,
+                    this.locale,
+                    this.classHeuristic,
+                    this.hashAlgorithms,
+                    this.searchParams,
+                    Stream.concat(
+                            Stream.of(this.commandParams), Stream.of(params))
+                        .toArray(Command.Params[]::new));
         }
         
         private Field[] freshFields() throws IOException
@@ -147,6 +169,10 @@ public final class AvailableFields
             if (searchParams.length > 0)
             {
                 freshFields.addAll(searchFields(searchParams));
+            }
+            if (commandParams.length > 0)
+            {
+                freshFields.addAll(commandFields(commandParams));
             }
             return freshFields.stream()
                     .filter(distinctByName())
@@ -196,6 +222,15 @@ public final class AvailableFields
         {
             return Stream.of(params)
                     .map(Search::fields)
+                    .flatMap(Stream::of)
+                    .collect(toList());
+        }
+        
+        private static Collection<Field> commandFields(
+                final Command.Params[] params)
+        {
+            return Stream.of(params)
+                    .map(Command::fields)
                     .flatMap(Stream::of)
                     .collect(toList());
         }

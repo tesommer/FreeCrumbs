@@ -22,12 +22,21 @@ import freecrumbs.finf.field.Search;
  */
 public final class SearchParser
 {
-    private static final String OCCURRENCE_KEY = "o";
-    private static final String GROUP_KEY      = "g";
-    private static final String CHARSET_KEY    = "c";
+    private static final String MAIN_PART_DELIM = "/";
+    private static final String OCCURRENCE_KEY  = "o";
+    private static final String GROUP_KEY       = "g";
+    private static final String CHARSET_KEY     = "c";
 
     private SearchParser()
     {
+    }
+    
+    /**
+     * Whether or not the given parameterized setting is a search.
+     */
+    public static boolean isSearch(final String setting)
+    {
+        return ParameterizedSetting.isMainPartDelim(MAIN_PART_DELIM, setting);
     }
     
     /**
@@ -45,7 +54,8 @@ public final class SearchParser
             final Search.Params initialSearchParams,
             final String setting) throws IOException
     {
-        final var parameterized = new ParameterizedSetting(setting);
+        final var parameterized = new ParameterizedSetting(
+                setting, MAIN_PART_DELIM);
         final Search.Params searchParamsWithRegex = initialSearchParams
                 .withRegex(regex(parameterized, availableFields));
         final Search.Params resultingSearchParams = remainingSearchParams(
