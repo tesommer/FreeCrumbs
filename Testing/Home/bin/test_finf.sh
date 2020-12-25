@@ -9,7 +9,7 @@ LIB_DIR="$HOME_DIR/lib"
 
 finf()
 {
-    $MY_DIR/finf "$@"
+    "$MY_DIR"/finf "$@"
 }
 
 fail()
@@ -22,11 +22,6 @@ fail()
 assert_equals_str()
 {
     [ "$1" = "$2" ] || fail "expected: $1, actual $2"
-}
-
-assert_equals_int()
-{
-    [ "$1" -eq "$2" ] || fail "expected: $1, actual $2"
 }
 
 zero_args_yields_success_and_no_output()
@@ -42,20 +37,23 @@ exit_status_is_nonzero_on_error()
 
 default_config_just_outputs_filenames()
 {
-    ACTUAL=`finf $ME` || fail "exit status"
-    assert_equals_str "$MY_FILENAME" "$ACTUAL"
+    EXPECTED="$MY_FILENAME"
+    ACTUAL=`finf "$ME"` || fail "exit status"
+    assert_equals_str "$EXPECTED" "$ACTUAL"
 }
 
 config_setting_can_be_overridden_with_option()
 {
-    ACTUAL=`finf -o output=Abc $ME` || fail "exit status"
-    assert_equals_str "Abc" "$ACTUAL"
+    EXPECTED="Abc"
+    ACTUAL=`finf -o "output=Abc" "$ME"` || fail "exit status"
+    assert_equals_str "$EXPECTED" "$ACTUAL"
 }
 
 omitting_overridden_value_reverts_setting_to_default()
 {
-    ACTUAL=`echo "output=Xyz" | finf -c - -o "output" $ME`
-    assert_equals_str "$MY_FILENAME" "$ACTUAL"
+    EXPECTED="$MY_FILENAME"
+    ACTUAL=`echo "output=Xyz" | finf -c - -o "output" "$ME"`
+    assert_equals_str "$EXPECTED" "$ACTUAL"
 }
 
 order_setting_is_a_list_of_fields_to_order_by()
@@ -86,8 +84,9 @@ multiple_filters_are_supported_by_appending_dot_and_something_to_their_keys()
 
 filter_setting_supports_format_pattern_style()
 {
+    EXPECTED="finf"
     ACTUAL=`finf -o 'filter=<filename>++finf.*--.*\.bat' "$HOME_DIR"`
-    [ "$ACTUAL" = "finf" ] || fail "output: $ACTUAL"
+    assert_equals_str "$EXPECTED" "$ACTUAL"
 }
 
 date_format_setting_is_applied_to_time_fields()
