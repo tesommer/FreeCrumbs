@@ -481,10 +481,13 @@ equals and a value denotes a default value for the parameter.
   Generates key presses and key releases that types the given value.
 
 * ``wait <from-x> <from-y> <to-x> <to-y> <image> [<gone>=0 [<millis>=100]]``:
-  Wait for an image within the current screen capture to either appear or
+  Waits for an image within the current screen capture to either appear or
   disappear. ``gone`` is non-zero to wait until the image is no longer there.
   ``millis`` is the delay in milliseconds between checks. The from/to parameters
   limit the area being searched. They work the same way as with ``scan``.
+
+* ``xy x-variable y-variable``:
+  Stores the x-y coordinates of the current pointer location to variables.
 
 ### <a name="macrec"></a>Macrec
 

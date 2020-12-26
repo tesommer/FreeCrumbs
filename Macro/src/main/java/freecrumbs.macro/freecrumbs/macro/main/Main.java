@@ -29,6 +29,7 @@ import freecrumbs.macro.gesture.Screenshot;
 import freecrumbs.macro.gesture.Set;
 import freecrumbs.macro.gesture.Type;
 import freecrumbs.macro.gesture.Wait;
+import freecrumbs.macro.gesture.Xy;
 
 /**
  * The entry point to Macro.
@@ -70,6 +71,7 @@ public final class Main
                 Set.INSTANCE,
                 Type.INSTANCE,
                 Wait.INSTANCE,
+                Xy.INSTANCE,
         };
 
     private Main()
