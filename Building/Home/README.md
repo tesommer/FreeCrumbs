@@ -1,7 +1,7 @@
 FreeCrumbs
 ==========
 
-A collection of tiny command-line apps.
+A tiny collection of command-line tools.
 
 ```
                                    //|\\      ///|\\\
@@ -26,7 +26,7 @@ A collection of tiny command-line apps.
                             / | \
 ```
 
-_**Note:** Requires Perl and Java._
+_**Note:** Requires Perl and Java 11._
 
 Legal
 -----
@@ -72,7 +72,7 @@ Finf is a command-line tool that prints file information to standard output. The
 ``finf`` command is located in the **bin** directory. There are two executables:
 
 * **finf.bat** for Windows
-* **finf** for Unix/GNU Linux
+* **finf** for Unix and GNU/Linux
 
 A file-info unit might contain the following fields:
 
@@ -159,7 +159,7 @@ ___
 ### Finf config files
 
 The **FinfConfigs** directory contains some ready-to-use config files. A config
-file is a text file on the Java *properties* format.
+file contains parameters specified as key-value pairs.
 
 #### Sample config file:
 
@@ -167,29 +167,29 @@ file is a text file on the Java *properties* format.
 # Searches a Git repository for scripts with both shebang and CRLF line-endings.
 
 # exclude the .git dir
-filter.0=${path}--.*/\\.git/.*
+filter.0=<path>--.*/\.git/.*
 
 # include only non-empty text files
-filter.1=${class}++TEXT
+filter.1=<class>++TEXT
 
 # include files containing CRLF
-filter.2=${crlfcount}--0
+filter.2=<crlfcount>--0
 
 # search for a shebang
-search.0=/^#!.*$/
+var.0=/^#!.*$/
 
 # include files containing a shebang
-filter.3=${search.0.found}++1
+filter.3=<var.0.found>++1
 
 # output each file along with the shebang they contain
-output=${path}${filename}${space}${search.0.input}${eol}
+output=<path><filename><space><var.0.input><eol>
 ```
 
 #### Config settings
 
 * ``output`` is the format of the outputted info. Occurrences of tokens on the
-  form *${field}* (such as *${path}*, *${filename}* and so on) will be replaced
-  by the corresponding field value.
+  form *&lt;field&gt;* (such as *&lt;path&gt;*, *&lt;filename&gt;* and so on)
+  will be replaced by the corresponding field value.
 
 * ``order`` specifies a sort order of the outputted info. It has the fields to
   order by (path, filename, etc), with space in between. Each field may be
@@ -202,7 +202,7 @@ output=${path}${filename}${space}${search.0.input}${eol}
     each preceded by either ``++`` to include matches or ``--`` to exclude
     matches. The format is applied to the file info, and the result is matched
     against the patterns. For example, the format pattern  
-    ``${filename}++.+\.html?--index\..{3,4}``  
+    ``<filename>++.+\.html?--index\..{3,4}``  
     includes files with extension _htm_ and _html_, but not index files.
 
 * ``count`` sets a maximum number of outputted info units. If absent, all are
@@ -221,14 +221,20 @@ output=${path}${filename}${space}${search.0.input}${eol}
   of ``0`` turns it off. When off, the values of all fields referenced in the
   config will be acquired collectively for each file.
 
-* ``search`` specifies parameters for a search in the files' content for a match
-  against a regex pattern. The value of this setting has the following format:  
+* ``var`` specifies parameters for dynamic info fields. The following types are
+  supported:
+  
+    * *search*
+    * *command*
+  
+  The *search* type specifies parameters for a search in the files' content for
+  a match against a regex pattern. The format of a search is:  
   ``/regex/o=occurrence,g=groups,c=charset``  
   ``occurrence`` is the occurrence to search for (default is 1). A negative
   occurrence searches from the bottom rather than the top. An occurrence of zero
   results in not found. ``groups`` is the number of regex groups to include
   (default is 0). ``charset`` is the character encoding to apply (default is the
-  local default charset). This setting makes the following fields available, but
+  default local charset). This setting makes the following fields available, but
   prefixed with this setting's key and a period (.):
   
     * ``found``: 0 or 1 depending on whether a match was found or not
@@ -250,21 +256,49 @@ output=${path}${filename}${space}${search.0.input}${eol}
       found)
   
   If included groups exceed the group count, excess groups will be not found.
+  
+  The *command* type specifies parameters for an external command to be executed
+  for each file. The format is:  
+  `` `command1|command2|...` ``
+  A command execution makes the following fields available, but prefixed with
+  this setting's key and a period (.):
+  
+    * ``count`` number of commands in the pipeline
+    * ``status`` the execution's exit status
+    * ``out`` the execution's ouput to STDOUT
+    * ``err`` the execution's ouput to STDERR
+    * ``pid`` the execution's process ID
+  
+  For each command preceding the last command in a pipeline, the fields will be
+  prefixed with this setting's key, a period (.), the command number and a
+  hyphen (-).
 
-Multiple filters and searches are supported by appending a ``.`` and a suffix to
-the settings' keys (e.g. ``filter.2``, ``search.xyz`` etc.). The settings are
-applied in sort order of their keys.
+
+
+Certain settings can have multiple instances specified in the same config. This
+is accomplished by appending a period (.) and an optional suffix to their
+standard keys, thereby forming unique keys. These settings are applied in sort
+order of their keys. The following settings support this:
+
+ * filter
+ * var
+
+Example: 
+```
+filter=.*.txt
+filter.nonempty=<class>--EMPTY
+```
 
 If Finf doesn't get a config file, it'll use this:
 
     hash.algorithms=MD5 SHA-1 SHA-256
-    output=${filename}${eol}
+    output=<filename><eol>
     date.format=yyyy-MM-dd HH:mm
     prefilter=1
 
 ### Specifying config settings on the command line
 
-    finf -o "output=${sha-512}${eol}" -o "hash.algorithms=SHA-512" hypotheticalfile.zip
+    finf -o "output=<sha-512><eol>" -o "hash.algorithms=SHA-512" hypotheticalfile.zip
 
 The ``-o`` option allows you to override a config setting. In this case no
 config file was given. But if the ``-c`` option is used, a setting given with
@@ -284,7 +318,7 @@ Java's robot API to inject events into the system event queue. The **bin**
 directory contains launchers for Macro:
 
 * **macro.bat** for Windows
-* **macro** for Unix/GNU Linux
+* **macro** for Unix and GNU/Linux
 
 ### Basic usage:
 
@@ -460,7 +494,7 @@ Macrec (Macro recorder) is a utility that prints macro-script lines to STDOUT.
 The **bin** directory contains the Macrec launchers:
 
 * **macrec.bat** for Windows
-* **macrec** for Unix/GNU Linux
+* **macrec** for Unix and GNU/Linux
 
 To record key strokes, start Macrec with the ``-k`` argument:
 
@@ -489,7 +523,7 @@ have three modes that are activated by pressing the following keys:
 Various tiny commands. Each has two files in **bin**:
 
 * a **.bat** file for Windows
-* a Bash script without extension for  GNU/Linux
+* a shell script without extension for Unix and GNU/Linux
 
 ### <a name="dups"></a>dups
 
