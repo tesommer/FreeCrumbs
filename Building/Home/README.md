@@ -234,7 +234,7 @@ output=<path><filename><space><var.0.input><eol>
   occurrence searches from the bottom rather than the top. An occurrence of zero
   results in not found. ``groups`` is the number of regex groups to include
   (default is 0). ``charset`` is the character encoding to apply (default is the
-  default local charset). This setting makes the following fields available, but
+  default local charset). A search makes the following fields available, but
   prefixed with this setting's key and a period (.):
   
     * ``found``: 0 or 1 depending on whether a match was found or not
@@ -259,7 +259,7 @@ output=<path><filename><space><var.0.input><eol>
   
   The *command* type specifies parameters for an external command to be executed
   for each file. The format is:  
-  `` `command1|command2|...` ``
+  `` `command1|command2|...` ``  
   A command execution makes the following fields available, but prefixed with
   this setting's key and a period (.):
   
@@ -272,8 +272,6 @@ output=<path><filename><space><var.0.input><eol>
   For each command preceding the last command in a pipeline, the fields will be
   prefixed with this setting's key, a period (.), the command number and a
   hyphen (-).
-
-
 
 Certain settings can have multiple instances specified in the same config. This
 is accomplished by appending a period (.) and an optional suffix to their
