@@ -1,7 +1,7 @@
 FreeCrumbs
 ==========
 
-A collection of tiny command-line tools.
+A tiny collection of command-line tools.
 
 ```
                                    //|\\      ///|\\\
@@ -30,12 +30,12 @@ How to build
 ------------
 
 ```
-git clone git@github.com:tesommer/FreeCrumbs.git FreeCrumbs.git
-cd FreeCrumbs.git/cd Building
+git clone git@github.com:tesommer/FreeCrumbs.git FreeCrumbs
+cd FreeCrumbs/Building
 ant
 ```
 
-This will create the untracked directory **FreeCrumbs.git/Build**.
+This will create the untracked directory **FreeCrumbs/Build**.
 
 License
 -------
